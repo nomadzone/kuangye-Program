@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "探索",
+  "usingComponents": {
+    "custom-tabbar": "../../components/CustomTabbar"
+  }
+}

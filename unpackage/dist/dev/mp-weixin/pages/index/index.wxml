@@ -1,0 +1,1 @@
+<view class="data-v-1cf27b2a"><home-navbar wx:if="{{b}}" class="data-v-1cf27b2a" bindaction="{{a}}" u-i="1cf27b2a-0" bind:__l="__l" u-p="{{b}}"/><custom-tabbar class="data-v-1cf27b2a" u-i="1cf27b2a-1" bind:__l="__l"/></view>

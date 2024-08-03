@@ -1,0 +1,31 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/explore/explore"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "/static/images/home.png",
+        "selectedIconPath": "/static/images/home_selected.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/explore/explore",
+        "iconPath": "/static/images/explore.png",
+        "selectedIconPath": "/static/images/explore_selected.png",
+        "text": "探索"
+      }
+    ],
+    "custom": true
+  },
+  "usingComponents": {}
+}
