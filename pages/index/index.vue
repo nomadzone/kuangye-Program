@@ -1,6 +1,13 @@
 <template>
   <view>
 	<HomeNavbar @action='doAction' :title="schooolTitle"/>
+	<Map class="map"></Map>
+	<view class="container">
+		<view class="line"></view>
+		<HomeSort></HomeSort>
+		<HomeCate></HomeCate>
+		
+	</view>
     <!-- 页面内容 -->
     <CustomTabbar />
   </view>
@@ -9,20 +16,33 @@
 <script>
 import CustomTabbar from '@/components/CustomTabbar.vue';
 import HomeNavbar from '@/components/HomeNavbar.vue';
+import Map from '@/components/Map/Map.vue';
+import HomeSort from '@/components/HomeSort/HomeSort.vue';
+import HomeCate from '@/components/HomeCate/HomeCate.vue';
 
 export default {
   components: {
     CustomTabbar,
-	HomeNavbar
+	HomeNavbar,
+	HomeSort,
+	HomeCate
   },
   data() {
 	  return {
-		  schooolTitle: '西安交通大学博学楼'
+		  statusBarHeight: 0,
+		  sortIndex: 0,
+		  schooolTitle: '西安交通大学博学楼',
 	  }
+  },
+  created() {
+	  this.statusBarHeight = uni.getStorageSync('statusBarHeight')
   },
   methods: {
 	  doAction() {
 		  
+	  },
+	  doSort(index) {
+		  this.sortIndex = index;
 	  }
   }
 }
@@ -30,4 +50,37 @@ export default {
 
 <style lang="scss" scoped>
 /* 页面样式 */
+.map {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 50vh;
+	z-index: 2;
+}
+.container {
+	margin-top: calc(50vh - 100rpx);
+	min-height: calc(50vh + 100rpx - 50rpx);
+	position: relative;
+	background-color: #fff;
+	padding: 40rpx 16rpx 0 16rpx;
+	border-top-right-radius: 16rpx;
+	border-top-left-radius: 16rpx;
+	z-index: 4;
+}
+.line {
+	position: relative;
+	margin-bottom: 16rpx;
+	&::before {
+		content: '';
+		display: inline-block;
+		position: absolute;
+		left: 50%;
+		margin-left: -50rpx;
+		width: 100rpx;
+		height: 12rpx;
+		border-radius: 8rpx;
+		background: #E9E9E9;
+	}
+}
 </style>

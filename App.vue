@@ -1,7 +1,9 @@
 <script>
 	export default {
 		onLaunch: function() {
-			console.log('App Launch')
+			const sys = wx.getSystemInfoSync()
+			uni.setStorageSync('statusBarHeight', sys.statusBarHeight)
+			uni.setStorageSync('navBarHeight', sys.platform == 'android' ? sys.statusBarHeight + 50 : sys.statusBarHeight + 45)
 		},
 		onShow: function() {
 			console.log('App Show')

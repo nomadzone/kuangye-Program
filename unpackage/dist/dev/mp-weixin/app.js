@@ -7,7 +7,9 @@ if (!Math) {
 }
 const _sfc_main = {
   onLaunch: function() {
-    console.log("App Launch");
+    const sys = common_vendor.wx$1.getSystemInfoSync();
+    common_vendor.index.setStorageSync("statusBarHeight", sys.statusBarHeight);
+    common_vendor.index.setStorageSync("navBarHeight", sys.platform == "android" ? sys.statusBarHeight + 50 : sys.statusBarHeight + 45);
   },
   onShow: function() {
     console.log("App Show");

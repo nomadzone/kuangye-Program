@@ -27,5 +27,11 @@
     ],
     "custom": true
   },
+	"requiredPrivateInfos": ["getLocation"],
+	"permission": {
+		"scope.userLocation": {
+			"desc": "你的位置信息将用于小程序的位置展示"
+		}
+	},
   "usingComponents": {}
 }

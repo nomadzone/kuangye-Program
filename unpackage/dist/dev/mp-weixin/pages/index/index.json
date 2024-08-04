@@ -3,6 +3,9 @@
   "navigationStyle": "custom",
   "usingComponents": {
     "custom-tabbar": "../../components/CustomTabbar",
-    "home-navbar": "../../components/HomeNavbar"
+    "home-navbar": "../../components/HomeNavbar",
+    "home-sort": "../../components/HomeSort/HomeSort",
+    "home-cate": "../../components/HomeCate/HomeCate",
+    "map": "../../components/Map/Map"
   }
 }
