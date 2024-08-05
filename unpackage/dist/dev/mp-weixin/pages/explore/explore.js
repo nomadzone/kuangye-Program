@@ -1,6 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
-const CustomTabbar = () => "../../components/CustomTabbar.js";
+const CustomTabbar = () => "../../components/Tabbar/Tabbar.js";
 const _sfc_main = {
   components: {
     CustomTabbar

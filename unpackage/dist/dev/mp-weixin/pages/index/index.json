@@ -2,10 +2,11 @@
   "navigationBarTitleText": "主页",
   "navigationStyle": "custom",
   "usingComponents": {
-    "custom-tabbar": "../../components/CustomTabbar",
-    "home-navbar": "../../components/HomeNavbar",
+    "custom-tabbar": "../../components/Tabbar/Tabbar",
+    "home-navbar": "../../components/Navbar/Navbar",
     "home-sort": "../../components/HomeSort/HomeSort",
     "home-cate": "../../components/HomeCate/HomeCate",
+    "home-waterfalls": "../../components/HomeWaterfalls/HomeWaterfalls",
     "map": "../../components/Map/Map"
   }
 }

@@ -1,6 +1,6 @@
 "use strict";
-const common_vendor = require("../common/vendor.js");
-const common_assets = require("../common/assets.js");
+const common_vendor = require("../../common/vendor.js");
+const common_assets = require("../../common/assets.js");
 const _sfc_main = {
   props: {
     title: {
@@ -36,5 +36,5 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     e: $data.StatusBar + "px"
   };
 }
-const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-f5063c51"]]);
+const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-05f6b923"]]);
 wx.createComponent(Component);

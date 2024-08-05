@@ -3,29 +3,34 @@
 	<HomeNavbar @action='doAction' :title="schooolTitle"/>
 	<Map class="map"></Map>
 	<view class="container">
-		<view class="line"></view>
-		<HomeSort></HomeSort>
-		<HomeCate></HomeCate>
+		<view class="sticky">
+			<view class="line"></view>
+			<HomeSort></HomeSort>
+			<HomeCate></HomeCate>
+		</view>
+		<HomeWaterfalls class="falls"></HomeWaterfalls>
 		
 	</view>
     <!-- 页面内容 -->
-    <CustomTabbar />
+    <CustomTabbar/>
   </view>
 </template>
 
 <script>
-import CustomTabbar from '@/components/CustomTabbar.vue';
-import HomeNavbar from '@/components/HomeNavbar.vue';
+import CustomTabbar from '@/components/Tabbar/Tabbar.vue';
+import HomeNavbar from '@/components/Navbar/Navbar.vue';
 import Map from '@/components/Map/Map.vue';
 import HomeSort from '@/components/HomeSort/HomeSort.vue';
 import HomeCate from '@/components/HomeCate/HomeCate.vue';
+import HomeWaterfalls from '@/components/HomeWaterfalls/HomeWaterfalls.vue'
 
 export default {
   components: {
     CustomTabbar,
 	HomeNavbar,
 	HomeSort,
-	HomeCate
+	HomeCate,
+	HomeWaterfalls,
   },
   data() {
 	  return {
@@ -82,5 +87,9 @@ export default {
 		border-radius: 8rpx;
 		background: #E9E9E9;
 	}
+}
+.sticky {
+	position:sticky;
+	z-index: 9;
 }
 </style>

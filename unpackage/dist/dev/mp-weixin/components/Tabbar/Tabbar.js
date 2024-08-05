@@ -1,6 +1,6 @@
 "use strict";
-const common_vendor = require("../common/vendor.js");
-const common_assets = require("../common/assets.js");
+const common_vendor = require("../../common/vendor.js");
+const common_assets = require("../../common/assets.js");
 const _sfc_main = {
   data() {
     return {
@@ -46,5 +46,5 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     h: common_vendor.o(($event) => $options.goTo("/pages/explore/explore"))
   };
 }
-const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-a32bde3b"]]);
+const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-306ca082"]]);
 wx.createComponent(Component);
