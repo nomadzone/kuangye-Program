@@ -8,9 +8,10 @@
 			<HomeSort></HomeSort>
 			<HomeCate></HomeCate>
 		</view>
-		<HomeWaterfalls class="falls"></HomeWaterfalls>
+		<HomeWaterfalls isAd></HomeWaterfalls>
 		
 	</view>
+	<view style="height: 200rpx;"></view>
     <!-- 页面内容 -->
     <CustomTabbar/>
   </view>

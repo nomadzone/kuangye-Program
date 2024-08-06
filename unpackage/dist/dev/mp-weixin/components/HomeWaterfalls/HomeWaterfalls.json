@@ -1,6 +1,7 @@
 {
   "component": true,
   "usingComponents": {
-    "home-active": "../HomeActive/HomeActive"
+    "home-active": "../HomeActive/HomeActive",
+    "fall-item": "./Fall-item"
   }
 }

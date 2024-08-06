@@ -1,7 +1,8 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/explore/explore"
+    "pages/explore/explore",
+    "pages/search/search"
   ],
   "subPackages": [],
   "window": {

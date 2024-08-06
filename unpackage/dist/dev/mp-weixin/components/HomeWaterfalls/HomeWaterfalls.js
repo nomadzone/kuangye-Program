@@ -1,9 +1,17 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const HomeActive = () => "../HomeActive/HomeActive.js";
+const FallItem = () => "./Fall-item.js";
 const _sfc_main = {
   components: {
-    HomeActive
+    HomeActive,
+    FallItem
+  },
+  props: {
+    isAd: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -16,9 +24,11 @@ const _sfc_main = {
     let list = [];
     for (let i = 0; i < 20; i++) {
       list.push({
-        bg: `item-bg-${this.getRandomNumber()}`,
-        image: i % 3 == 1 ? "https://q0.itc.cn/q_70/images03/20240607/189efb6201494886a7bbb27331c40722.jpeg" : "",
+        type: this.getRandomNumber() + "",
+        // 1 一起野 2新鲜事 3找搭子
+        image: "https://q0.itc.cn/q_70/images03/20240607/189efb6201494886a7bbb27331c40722.jpeg",
         active: "报名中",
+        like: 239,
         title: "大雁塔飞盘挑战赛",
         creater: "发起人昵称发起人昵称发起人昵称发起人昵称发起人昵称",
         createrAvator: "https://img1.baidu.com/it/u=2743623408,2506891806&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500",
@@ -53,76 +63,39 @@ const _sfc_main = {
       const numbers = [1, 2, 3];
       const randomIndex = Math.floor(Math.random() * numbers.length);
       return numbers[randomIndex];
+    },
+    doButton(item, index) {
+      console.log(item, index);
+    },
+    doItem(item, index) {
+      console.log(item, index);
     }
   }
 };
 if (!Array) {
   const _easycom_HomeActive2 = common_vendor.resolveComponent("HomeActive");
-  _easycom_HomeActive2();
+  const _component_FallItem = common_vendor.resolveComponent("FallItem");
+  (_easycom_HomeActive2 + _component_FallItem)();
 }
 const _easycom_HomeActive = () => "../HomeActive/HomeActive.js";
 if (!Math) {
   _easycom_HomeActive();
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return {
-    a: common_vendor.f($data.left, (item, index, i0) => {
-      return common_vendor.e({
-        a: item.image
-      }, item.image ? {
-        b: item.image
-      } : {}, {
-        c: common_vendor.t(item.title),
-        d: item.createrAvator,
-        e: common_vendor.t(item.creater),
-        f: common_vendor.t(item.gap),
-        g: common_vendor.t(item.time),
-        h: common_vendor.f(item.remainAvators, (img, i, i1) => {
-          return {
-            a: -(i * 6) + "px",
-            b: img,
-            c: i
-          };
-        }),
-        i: `${item.remainAvators.length * (32 - 10)}rpx`,
-        j: common_vendor.t(item.remain),
-        k: item.price
-      }, item.price ? {
-        l: common_vendor.t(item.price)
-      } : {}, {
-        m: common_vendor.n(item.bg),
-        n: index
-      });
+  return common_vendor.e({
+    a: $props.isAd
+  }, $props.isAd ? {} : {}, {
+    b: $props.isAd
+  }, $props.isAd ? {} : {}, {
+    c: common_vendor.o($options.doButton),
+    d: common_vendor.o($options.doItem),
+    e: common_vendor.p({
+      list: $data.right
     }),
-    b: common_vendor.f($data.right, (item, index, i0) => {
-      return common_vendor.e({
-        a: item.image
-      }, item.image ? {
-        b: item.image
-      } : {}, {
-        c: common_vendor.t(item.title),
-        d: item.createrAvator,
-        e: common_vendor.t(item.creater),
-        f: common_vendor.t(item.gap),
-        g: common_vendor.t(item.time),
-        h: common_vendor.f(item.remainAvators, (img, i, i1) => {
-          return {
-            a: -(i * 6) + "px",
-            b: img,
-            c: i
-          };
-        }),
-        i: `${item.remainAvators.length * (32 - 10)}rpx`,
-        j: common_vendor.t(item.remain),
-        k: item.price
-      }, item.price ? {
-        l: common_vendor.t(item.price)
-      } : {}, {
-        m: common_vendor.n(item.bg),
-        n: index
-      });
+    f: common_vendor.p({
+      list: $data.right
     })
-  };
+  });
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-a72748e5"]]);
 wx.createComponent(Component);

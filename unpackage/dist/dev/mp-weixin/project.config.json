@@ -19,9 +19,26 @@
   },
   "compileType": "miniprogram",
   "libVersion": "3.5.0",
-  "appid": "wx8b833c66ca51c502",
+  "appid": "wx2d580cd8e917a8cc",
   "projectname": "kuangye",
-  "condition": {},
+  "condition": {
+    "search": {
+      "current": -1,
+      "list": []
+    },
+    "conversation": {
+      "current": -1,
+      "list": []
+    },
+    "game": {
+      "current": -1,
+      "list": []
+    },
+    "miniprogram": {
+      "current": -1,
+      "list": []
+    }
+  },
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2

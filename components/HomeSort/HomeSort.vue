@@ -3,19 +3,19 @@
 		<view class="sort-item">
 			<view :class="[sortIndex==0?'active':'']" @click="doSort(0)">全部</view>
 			<view class="flex" :class="[sortIndex==1?'active':'']" @click="doSort(1)">
-				<image src="../../static/images/sort-togger.png" mode=""></image>
+				<image :src="`../../static/images/sort-togger${sortIndex==1?'-seleted':''}.png`" mode=""></image>
 				<text>一起野</text>
 			</view>
 			<view class="flex" :class="[sortIndex==2?'active':'']" @click="doSort(2)">
-				<image src="../../static/images/sort-eye.png" mode=""></image>
+				<image :src="`../../static/images/sort-eye${sortIndex==2?'-seleted':''}.png`" mode=""></image>
 				<text>新鲜事</text>
 			</view>
 			<view class="flex" :class="[sortIndex==3?'active':'']" @click="doSort(3)">
-				<image src="../../static/images/sort-go.png" mode=""></image>
+				<image :src="`../../static/images/sort-go${sortIndex==3?'-seleted':''}.png`" mode=""></image>
 				<text>找搭子</text>
 			</view>
 		</view>
-		<view class="sort-search">
+		<view class="sort-search" @click="doSearch">
 			<image src="../../static/images/search.png" mode=""></image>
 		</view>
 	</view>
@@ -31,6 +31,11 @@
 		methods: {
 			doSort(index) {
 					  this.sortIndex = index;
+			},
+			doSearch() {
+				uni.navigateTo({
+					url: '/pages/search/search'
+				})
 			}
 		}
 	}

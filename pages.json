@@ -12,6 +12,12 @@
 			"style": {
 				"navigationBarTitleText": "探索"
 			}
+		},
+		{
+			"path": "pages/search/search",
+			"style": {
+				"navigationBarTitleText": ""
+			}
 		}
 	],
 	"subPackages": [

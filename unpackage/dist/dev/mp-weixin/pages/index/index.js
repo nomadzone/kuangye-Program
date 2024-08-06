@@ -52,6 +52,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     a: common_vendor.o($options.doAction),
     b: common_vendor.p({
       title: $data.schooolTitle
+    }),
+    c: common_vendor.p({
+      isAd: true
     })
   };
 }
