@@ -11,7 +11,7 @@
 		</view>
 		<view class="popup-content" :class="[visible ? 'fade-enter' : 'fade-leave']" v-show="visible">
 		<view class="popup-body" @click.stop>
-			<view class="popup-top">
+			<view class="popup-top" @click="doPath('/pages/toggle/toggle')">
 				<view class="popup-title">一起野</view>
 				<view class="popup-desc">我是活动主理人，发起付费活动</view>
 				<view class="popup-tag">未认证</view>
@@ -61,6 +61,12 @@
 			}
 		},
 		methods: {
+			doPath(url) {
+				if (!url) return 
+				uni.navigateTo({
+					url
+				})
+			},
 			goTo(pagePath) {
 				uni.switchTab({
 					url: pagePath

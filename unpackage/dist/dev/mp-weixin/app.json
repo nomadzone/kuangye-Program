@@ -2,7 +2,8 @@
   "pages": [
     "pages/index/index",
     "pages/explore/explore",
-    "pages/search/search"
+    "pages/search/search",
+    "pages/toggle/toggle"
   ],
   "subPackages": [],
   "window": {

@@ -18,6 +18,12 @@
 			"style": {
 				"navigationBarTitleText": ""
 			}
+		},
+		{
+			"path": "pages/toggle/toggle",
+			"style": {
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"subPackages": [

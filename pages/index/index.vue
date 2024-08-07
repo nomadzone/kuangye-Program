@@ -1,6 +1,7 @@
 <template>
   <view>
 	<HomeNavbar @action='doAction' :title="schooolTitle"/>
+	<Gradual></Gradual>
 	<Map class="map"></Map>
 	<view class="container">
 		<view class="sticky">
@@ -19,11 +20,12 @@
 
 <script>
 import CustomTabbar from '@/components/Tabbar/Tabbar.vue';
-import HomeNavbar from '@/components/Navbar/Navbar.vue';
+import HomeNavbar from '@/components/Navbar/HomeNavbar.vue';
 import Map from '@/components/Map/Map.vue';
 import HomeSort from '@/components/HomeSort/HomeSort.vue';
 import HomeCate from '@/components/HomeCate/HomeCate.vue';
 import HomeWaterfalls from '@/components/HomeWaterfalls/HomeWaterfalls.vue'
+import Gradual from '@/components/Navbar/Gradual.vue'
 
 export default {
   components: {
@@ -32,6 +34,7 @@ export default {
 	HomeSort,
 	HomeCate,
 	HomeWaterfalls,
+	Gradual
   },
   data() {
 	  return {

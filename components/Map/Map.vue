@@ -1,9 +1,10 @@
 <template>
 	<view class="container">
-		<map id="map" longitude="{{longitude}}" latitude="{{latitude}}" scale="16" style="width: 100vw; height: 50vh;"
-			show-location markers="{{markers}}" enable-zoom enable-scroll>
+		<map id="map" :show-location="true" :longitude="longitude" :latitude="latitude" scale="16"
+			style="width: 100vw; height: 50vh;" :markers="markers" enable-zoom enable-rotate @markertap='markertap'
+			@bindcallouttap='onBindcallouttap' @regionchange='regionchange'>
 		</map>
-		<div class="positon">
+		<div class="positon" @click="resetLocation" v-if="isPositon">
 			<image src="/static/images/location_m.png" mode=""></image>
 		</div>
 	</view>
@@ -11,10 +12,18 @@
 
 <script>
 	export default {
+		props: {
+			isPositon: {
+				type: Boolean,
+				default: true
+			}
+		},
 		data() {
 			return {
 				longitude: 0,
 				latitude: 0,
+				initialLongitude: 113.324520, // 初始经度
+				initialLatitude: 23.099994, // 初始纬度
 				markers: []
 			}
 		},
@@ -22,6 +31,51 @@
 			this.getUserLocation();
 		},
 		methods: {
+			markertap(e) {
+				console.log(e)
+			},
+			// 点击了气泡
+			onBindcallouttap(e) {
+				console.log('onBindcallouttap', e);
+			},
+			regionchange(e) {
+				console.log('regionchange', e);
+			},
+			resetLocation() {
+				const mapCtx = uni.createMapContext('map', this);
+				mapCtx.moveToLocation({
+					longitude: this.initialLongitude,
+					latitude: this.initialLatitude
+				});
+			},
+			getDataList() {
+				let markers = []
+				for (let i=0;i<10;i++) {
+					var randomNumber1 = this.latitude + Math.random() * (0.02 - 0.005) + 0.005;
+					var randomNumber2 = this.longitude + Math.random() * (0.02 - 0.005) + 0.005;
+					markers.push({
+							'latitude': randomNumber1,
+							'longitude': randomNumber2,
+							'title': i,
+							// 'iconPath': '../../static/image/popu-2.png',
+							'width': '32',
+							'height': '32',
+							 callout: {
+								 content: `${i}`,
+								 fontSize: 12,
+								 bgColor: "#ff9800",
+								 color: '#fff',
+								 borderWidth: 1,
+								 borderColor: "#ff9800",
+								 borderRadius: 16,
+								 padding: 6,
+								 display: "ALWAYS",
+								 textAlign: "center",
+							 }
+					})
+				}
+				this.markers = markers
+			},
 			getUserLocation() {
 				const _this = this;
 				uni.authorize({
@@ -55,11 +109,14 @@
 				uni.getLocation({
 					type: 'gcj02', // 返回可以用于 wx.openLocation 的坐标
 					success: (res) => {
-						// console.log(res, 'getLocation 定位 gcj02')
+						console.log(res, 'getLocation 定位 gcj02')
+						_this.initialLongitude = res.longitude
+						_this.initialLatitude = res.latitude
 						_this.longitude = res.longitude;
-						_this.latitude = res.longitude;
+						_this.latitude = res.latitude;
+						_this.getDataList()
 					},
-					fail: (res)=> {
+					fail: (res) => {
 						console.log(res, 'fail')
 					}
 				});
@@ -75,7 +132,8 @@
 		height: 100%;
 		position: relative;
 	}
-	.positon{
+
+	.positon {
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -86,6 +144,8 @@
 		height: 80rpx;
 		box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.14);
 		border-radius: 50%;
+		background-color: #fff;
+
 		image {
 			width: 48rpx;
 			height: 48rpx;

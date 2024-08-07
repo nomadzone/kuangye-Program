@@ -8,6 +8,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/toggle/toggle",
+          "pathName": "pages/toggle/toggle",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/search/search",
           "pathName": "pages/search/search",
           "query": "",

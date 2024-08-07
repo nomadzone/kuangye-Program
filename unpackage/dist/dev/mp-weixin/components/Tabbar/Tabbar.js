@@ -9,6 +9,13 @@ const _sfc_main = {
     };
   },
   methods: {
+    doPath(url) {
+      if (!url)
+        return;
+      common_vendor.index.navigateTo({
+        url
+      });
+    },
     goTo(pagePath) {
       common_vendor.index.switchTab({
         url: pagePath
@@ -48,20 +55,21 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   }, $data.visible ? {
     e: common_vendor.o((...args) => $options.handleOverlayClick && $options.handleOverlayClick(...args))
   } : {}, {
-    f: common_assets._imports_0$1,
-    g: common_assets._imports_1$1,
-    h: common_assets._imports_2$1,
-    i: common_vendor.o(() => {
+    f: common_assets._imports_0$2,
+    g: common_vendor.o(($event) => $options.doPath("/pages/toggle/toggle")),
+    h: common_assets._imports_1$1,
+    i: common_assets._imports_2$1,
+    j: common_vendor.o(() => {
     }),
-    j: common_assets._imports_3,
-    k: common_vendor.o((...args) => $options.handleOverlayClick && $options.handleOverlayClick(...args)),
-    l: common_vendor.n($data.visible ? "fade-enter" : "fade-leave"),
-    m: $data.visible,
-    n: common_assets._imports_4,
-    o: common_vendor.o((...args) => $options.addAction && $options.addAction(...args)),
-    p: $data.currentPage === "/pages/explore/explore" ? "/static/images/explore_selected.png" : "/static/images/explore.png",
-    q: common_vendor.n($data.currentPage === "/pages/explore/explore" ? "tab-item_selected" : ""),
-    r: common_vendor.o(($event) => $options.goTo("/pages/explore/explore"))
+    k: common_assets._imports_3,
+    l: common_vendor.o((...args) => $options.handleOverlayClick && $options.handleOverlayClick(...args)),
+    m: common_vendor.n($data.visible ? "fade-enter" : "fade-leave"),
+    n: $data.visible,
+    o: common_assets._imports_4,
+    p: common_vendor.o((...args) => $options.addAction && $options.addAction(...args)),
+    q: $data.currentPage === "/pages/explore/explore" ? "/static/images/explore_selected.png" : "/static/images/explore.png",
+    r: common_vendor.n($data.currentPage === "/pages/explore/explore" ? "tab-item_selected" : ""),
+    s: common_vendor.o(($event) => $options.goTo("/pages/explore/explore"))
   });
 }
 const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-306ca082"]]);

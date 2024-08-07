@@ -3,10 +3,11 @@
   "navigationStyle": "custom",
   "usingComponents": {
     "custom-tabbar": "../../components/Tabbar/Tabbar",
-    "home-navbar": "../../components/Navbar/Navbar",
+    "home-navbar": "../../components/Navbar/HomeNavbar",
     "home-sort": "../../components/HomeSort/HomeSort",
     "home-cate": "../../components/HomeCate/HomeCate",
     "home-waterfalls": "../../components/HomeWaterfalls/HomeWaterfalls",
+    "gradual": "../../components/Navbar/Gradual",
     "map": "../../components/Map/Map"
   }
 }

@@ -1,17 +1,19 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const CustomTabbar = () => "../../components/Tabbar/Tabbar.js";
-const HomeNavbar = () => "../../components/Navbar/Navbar.js";
+const HomeNavbar = () => "../../components/Navbar/HomeNavbar.js";
 const HomeSort = () => "../../components/HomeSort/HomeSort.js";
 const HomeCate = () => "../../components/HomeCate/HomeCate.js";
 const HomeWaterfalls = () => "../../components/HomeWaterfalls/HomeWaterfalls.js";
+const Gradual = () => "../../components/Navbar/Gradual.js";
 const _sfc_main = {
   components: {
     CustomTabbar,
     HomeNavbar,
     HomeSort,
     HomeCate,
-    HomeWaterfalls
+    HomeWaterfalls,
+    Gradual
   },
   data() {
     return {
@@ -33,12 +35,13 @@ const _sfc_main = {
 };
 if (!Array) {
   const _component_HomeNavbar = common_vendor.resolveComponent("HomeNavbar");
+  const _component_Gradual = common_vendor.resolveComponent("Gradual");
   const _easycom_Map2 = common_vendor.resolveComponent("Map");
   const _easycom_HomeSort2 = common_vendor.resolveComponent("HomeSort");
   const _easycom_HomeCate2 = common_vendor.resolveComponent("HomeCate");
   const _easycom_HomeWaterfalls2 = common_vendor.resolveComponent("HomeWaterfalls");
   const _component_CustomTabbar = common_vendor.resolveComponent("CustomTabbar");
-  (_component_HomeNavbar + _easycom_Map2 + _easycom_HomeSort2 + _easycom_HomeCate2 + _easycom_HomeWaterfalls2 + _component_CustomTabbar)();
+  (_component_HomeNavbar + _component_Gradual + _easycom_Map2 + _easycom_HomeSort2 + _easycom_HomeCate2 + _easycom_HomeWaterfalls2 + _component_CustomTabbar)();
 }
 const _easycom_Map = () => "../../components/Map/Map.js";
 const _easycom_HomeSort = () => "../../components/HomeSort/HomeSort.js";

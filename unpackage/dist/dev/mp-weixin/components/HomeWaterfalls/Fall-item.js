@@ -32,7 +32,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         f: common_vendor.t(item.creater),
         g: item.type == 2
       }, item.type == 2 ? {
-        h: common_assets._imports_0$4,
+        h: common_assets._imports_0$6,
         i: common_vendor.t(item.like)
       } : {}, {
         j: item.type != "2"
