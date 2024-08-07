@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "",
-  "usingComponents": {
-    "home-waterfalls": "../../components/HomeWaterfalls/HomeWaterfalls"
-  }
-}
