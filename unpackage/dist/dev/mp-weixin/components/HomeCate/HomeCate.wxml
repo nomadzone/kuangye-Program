@@ -1,1 +1,0 @@
-<view class="cate data-v-0b42a060"><scroll-view class="category-scroll data-v-0b42a060" scroll-x scroll-into-view="{{b}}"><view wx:for="{{a}}" wx:for-item="category" wx:key="b" id="{{category.c}}" class="{{['category-item', 'data-v-0b42a060', category.d && 'active']}}" bindtap="{{category.e}}">{{category.a}}</view></scroll-view></view>
