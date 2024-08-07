@@ -46,6 +46,7 @@ const _sfc_main = {
         var randomNumber1 = this.latitude + Math.random() * (0.02 - 5e-3) + 5e-3;
         var randomNumber2 = this.longitude + Math.random() * (0.02 - 5e-3) + 5e-3;
         markers.push({
+          id: i,
           "latitude": randomNumber1,
           "longitude": randomNumber2,
           "title": i,

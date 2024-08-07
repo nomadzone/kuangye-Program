@@ -54,6 +54,7 @@
 					var randomNumber1 = this.latitude + Math.random() * (0.02 - 0.005) + 0.005;
 					var randomNumber2 = this.longitude + Math.random() * (0.02 - 0.005) + 0.005;
 					markers.push({
+							id: i,	
 							'latitude': randomNumber1,
 							'longitude': randomNumber2,
 							'title': i,
