@@ -27,6 +27,15 @@
 		}
 	],
 	"subPackages": [
+		{
+			"root": "pagesUserCenter",
+			"pages": [
+				{
+					"path":"pages/index/index"
+				}
+			]
+			
+		}
 
 	],
 

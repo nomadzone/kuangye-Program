@@ -1,6 +1,6 @@
 <template>
   <view class="navbar" :style="{ top: StatusBar + 'px'}">
-    <view class="left">
+    <view class="left" @tap="handleGoUserCenter()">
       <image src="https://img0.baidu.com/it/u=2594346301,3432725937&fm=253&fmt=auto&app=120&f=JPEG?w=507&h=500"  class="icon-left" />
     </view>
 	<view class='right'>
@@ -42,7 +42,12 @@ export default {
       console.log('Right button clicked');
 	  this.$emit('action')
       // 你可以在这里执行其他操作
-    }
+    },
+	handleGoUserCenter() {
+		uni.navigateTo({
+			url: '/pagesUserCenter/pages/index/index'
+		})
+	}
   }
 }
 </script>
