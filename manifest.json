@@ -61,7 +61,8 @@
             "scope.userLocation" : {
                 "desc" : "你的位置信息将用于小程序的位置展示"
             }
-        }
+        },
+		"subPackages": true
     },
     "mp-alipay" : {
         "usingComponents" : true
