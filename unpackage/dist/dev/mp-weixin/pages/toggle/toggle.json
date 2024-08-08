@@ -2,6 +2,7 @@
   "navigationStyle": "custom",
   "usingComponents": {
     "navbar": "../../components/Navbar/Navbar",
-    "gradual": "../../components/Navbar/Gradual"
+    "gradual": "../../components/Navbar/Gradual",
+    "upload": "../../components/Upload/Upload"
   }
 }

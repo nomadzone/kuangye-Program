@@ -23,6 +23,12 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+input.data-v-e7c202ee::-webkit-input-placeholder {
+  color: #A3A3A3;
+}
+input.data-v-e7c202ee::placeholder {
+  color: #A3A3A3;
+}
 .gradual.data-v-e7c202ee {
   position: fixed;
   top: 0;

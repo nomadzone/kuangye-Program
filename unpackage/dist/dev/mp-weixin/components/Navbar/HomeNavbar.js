@@ -31,7 +31,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_assets._imports_0$3,
     b: common_vendor.t($props.title),
-    c: common_assets._imports_1$2,
+    c: common_assets._imports_1$3,
     d: common_vendor.o((...args) => $options.handleRightAction && $options.handleRightAction(...args)),
     e: $data.StatusBar + "px"
   };

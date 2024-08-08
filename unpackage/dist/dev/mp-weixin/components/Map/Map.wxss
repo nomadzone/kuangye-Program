@@ -23,6 +23,13 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+input.data-v-0e298514::-webkit-input-placeholder {
+  color: #A3A3A3;
+}
+input.data-v-0e298514::placeholder {
+  color: #A3A3A3;
+}
+
 /* index.wxss */
 .container.data-v-0e298514 {
   width: 100%;
