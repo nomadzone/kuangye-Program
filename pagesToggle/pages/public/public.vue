@@ -50,7 +50,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="module">
+			<view class="module" style="padding-top: 0;padding-bottom: 0;">
 				<view class="line" @click="zcShow = true">
 					<view>退款政策</view>
 					<view>
@@ -382,11 +382,12 @@
 				 }
 			 }
 			.line {
-				padding: 16rpx 0;
+				padding: 32rpx 0;
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
 				color: #222;
+				border-bottom: 1px solid #eee;
 				> view {
 					display: flex;
 					align-items: center;
@@ -401,6 +402,9 @@
 					font-weight: 400;
 					line-height: 40rpx;
 				}
+			}
+			.line:last-child {
+				border-width: 0;
 			}
 			&.contact {
 				> view {
