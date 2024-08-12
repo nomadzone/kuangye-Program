@@ -18,15 +18,21 @@
 			"style": {
 				"navigationBarTitleText": ""
 			}
-		},
-		{
-			"path": "pages/toggle/toggle",
-			"style": {
-				"navigationStyle": "custom"
-			}
 		}
 	],
 	"subPackages": [
+		{
+			"root": "pagesToggle",
+			"pages": [
+				{
+					"path":"pages/public/public",
+					"style": {
+						"navigationStyle": "custom"
+					}
+				}
+			]
+			
+		},
 		{
 			"root": "pagesUserCenter",
 			"pages": [

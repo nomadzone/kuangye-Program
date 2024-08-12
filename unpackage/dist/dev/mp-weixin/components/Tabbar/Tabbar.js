@@ -56,12 +56,12 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     e: common_vendor.o((...args) => $options.handleOverlayClick && $options.handleOverlayClick(...args))
   } : {}, {
     f: common_assets._imports_0$2,
-    g: common_vendor.o(($event) => $options.doPath("/pages/toggle/toggle")),
+    g: common_vendor.o(($event) => $options.doPath("/pagesToggle/pages/public/public")),
     h: common_assets._imports_1$2,
     i: common_assets._imports_2$2,
     j: common_vendor.o(() => {
     }),
-    k: common_assets._imports_3$1,
+    k: common_assets._imports_0$3,
     l: common_vendor.o((...args) => $options.handleOverlayClick && $options.handleOverlayClick(...args)),
     m: common_vendor.n($data.visible ? "fade-enter" : "fade-leave"),
     n: $data.visible,
