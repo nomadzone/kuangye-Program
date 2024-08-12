@@ -26,15 +26,15 @@
 			}
 		}
 	],
-	"subPackages": [
-		{
+	"subPackages": [{
 			"root": "pagesUserCenter",
-			"pages": [
-				{
-					"path":"pages/index/index"
+			"pages": [{
+				"path": "pages/index/index",
+				"style": {
+				"navigationStyle": "custom"
 				}
-			]
-			
+			}]
+
 		}
 
 	],
