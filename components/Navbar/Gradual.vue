@@ -1,5 +1,5 @@
 <template>
-	<view class="gradual" :style="{ 'background-image': background, height: height, 'z-index': zIndex }"></view>
+	<view class="gradual" :style="{ 'background-image': background, height: height, 'z-index': zIndex, ...styles }"></view>
 </template>
 
 <script>
@@ -16,6 +16,12 @@
 			height: {
 				type: String,
 				default: '176rpx'
+			},
+			styles: {
+				type: Object,
+				default: ()=> {
+					return {}
+				}
 			}
 		},
 		data() {

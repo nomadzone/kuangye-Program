@@ -1,8 +1,14 @@
 <template>
-	<view class="upload" @click="doUpload">
-		<view>
-			<image src="../../static/images/upload-add.png" mode=""></image>
-			<text>{{ title }}</text>
+	<view class="upload-wrap">
+		<view class="files" v-for="(item, index) in fileList" :key="index">
+			<image class="close" src="../../static/images/input-close.png" mode=""></image>
+			<image :src="item" mode=""></image>
+		</view>
+		<view class="upload" @click="doUpload" v-if="limit === -1 || fileList.length < limit ">
+			<view>
+				<image src="../../static/images/upload-add.png" mode=""></image>
+				<text>{{ title }}</text>
+			</view>
 		</view>
 	</view>
 </template>
@@ -13,11 +19,15 @@
 			title: {
 				type: String,
 				default: '添加图片'
+			},
+			limit: {
+				type: Number,
+				default: -1
 			}
 		},
 		data() {
 			return {
-				
+				fileList: []
 			}
 		},
 		methods: {
@@ -29,8 +39,8 @@
 				  sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
 				  success: function(res) {
 					var tempFilePaths = res.tempFilePaths;
-					console.log(tempFilePaths);
 					_this.uploadFile(tempFilePaths)
+					_this.fileList = _this.fileList.length === 0 ? tempFilePaths : [..._this.fileList, ...tempFilePaths]
 					// 上传图片到服务器的代码将在这里
 				  },
 				  fail: function(err) {
@@ -63,6 +73,40 @@
 </script>
 
 <style lang="scss" scoped>
+	.upload-wrap {
+		display: flex;
+		gap: 20rpx;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+	.files {
+		border-radius: 12rpx;
+		height: 200rpx;
+		width: 200rpx;
+		box-sizing: border-box;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-color: #F5F5F5;
+		position: relative;
+		image {
+			height: 200rpx;
+			width: 200rpx;
+			border-radius: 12rpx;
+		}
+		.close {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 50%;
+			background-color: #222;
+			position: absolute;
+			top: -10rpx;
+			right: -14rpx;
+			height: 40rpx;
+			width: 40rpx;
+		}
+	}
 	.upload {
 		background-color: #F5F5F5;
 		border-radius: 12rpx;

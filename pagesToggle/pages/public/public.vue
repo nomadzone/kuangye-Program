@@ -35,18 +35,18 @@
 					<view class="opt" @click="timeStartOpen">
 						<view>
 							<image src="/static/images/time-line.png" mode=""></image>
-							<text> 活动开始时间</text>
+							<text v-if="!info.startTimeShow">活动开始时间</text>
+							<view class="time" v-else>活动开始:{{ info.startTimeShow }}</view>
 							<image src="/static/images/arrow-right-s-line_gray.png" mode=""></image>
 						</view>
-						<view>{{ info.startTimeShow }}</view>
 					</view>
 					<view class="opt" @click="timeEndOpen">
 						<view>
 							<image src="/static/images/time-line.png" mode=""></image>
-							<text> 报名截止时间</text>
+							<text v-if="!info.endTimeShow">报名截止时间</text>
+							<view class="time" v-else>活动截止:{{ info.endTimeShow }}</view>
 							<image src="/static/images/arrow-right-s-line_gray.png" mode=""></image>
 						</view>
-						<view>{{ info.endTimeShow }}</view>
 					</view>
 				</view>
 			</view>
@@ -124,7 +124,10 @@
 				</view>
 			</view>
 		</PoupWrap>
-		
+		<!-- 取消返回 toast -->
+		<Toast :show='toastShow' @cancel='toastShow = false' @confirm='toastShow = false' title='退出后内容不保存，要退出吗？'></Toast>
+		<!-- 发布成功 -->
+		<PublicSuccess :show='publicSuccessShow' @close='publicSuccessShow = false' @view='publicSuccessShow = false'></PublicSuccess>
 	</view>
 </template>
 
@@ -133,13 +136,17 @@
 	import Gradual from '@/components/Navbar/Gradual.vue';
 	import Upload from '@/components/Upload/Upload.vue';
 	import PoupWrap from '@/components/Popup/Wrap.vue';
+	import PublicSuccess from '@/components/Popup/PublicSuccess.vue';
+	import Toast from '@/components/Toast/Toast.vue'
 	import { getDayHours, getDayMin, getDatesAndWeeks } from '@/utils/index.js'
 	export default {
 		components: {
 			Navbar,
 			Gradual,
 			Upload,
-			PoupWrap
+			PoupWrap,
+			Toast,
+			PublicSuccess,
 		},
 		data() {
 			return {
@@ -153,6 +160,8 @@
 					minNum: '',
 					maxNum: ''
 				},
+				toastShow: false,
+				publicSuccessShow: false,
 				minNum: '',
 				maxNum: '',
 				StatusBar: 0,
@@ -379,6 +388,9 @@
 							align-items: center;
 						gap: 8rpx;
 					 }
+					 .time {
+						 color: #222222;
+					 }
 				 }
 			 }
 			.line {
@@ -398,7 +410,7 @@
 				&-input {
 					text-align: right;
 					font-family: PingFang SC;
-					font-size: 28rpx;
+					font-size: 32rpx;
 					font-weight: 400;
 					line-height: 40rpx;
 				}
