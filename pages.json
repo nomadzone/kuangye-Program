@@ -29,9 +29,14 @@
 					"style": {
 						"navigationStyle": "custom"
 					}
+				},
+				{
+					"path":"pages/details/details",
+					"style": {
+						"navigationStyle": "custom"
+					}
 				}
 			]
-			
 		},
 		{
 			"root": "pagesUserCenter",

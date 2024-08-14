@@ -3,6 +3,7 @@
     <view class="left" @click="doBack">
       <image src="/static/images/back.png" mode=""></image>
     </view>
+	<slot></slot>
 	<view class='center'>
 		{{ title }}
 	</view>

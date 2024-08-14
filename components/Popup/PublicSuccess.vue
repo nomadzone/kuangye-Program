@@ -22,7 +22,7 @@
 					<view>
 						<image class="wechat" src="../../static/images/wechat-fill.png" mode=""></image>
 						<text>Wade_Warren</text>
-						<image class="copy" src="../../static/images/copy.png" mode=""></image>
+						<image @click="doCopy" class="copy" src="../../static/images/copy.png" mode=""></image>
 					</view>
 				</view>
 				<view class="view">
@@ -64,6 +64,18 @@
 			}
 		},
 		methods: {
+			doCopy() {
+				wx.setClipboardData({
+				  data: '复制成功',
+				  success: function() {
+					wx.showToast({
+					  title: '复制成功',
+					  icon: 'success',
+					  duration: 2000
+					});
+				  }
+				});
+			},
 			onClose() {
 				this.$emit('close')
 			},
