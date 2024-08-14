@@ -37,7 +37,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     a: common_vendor.o(($event) => $options.handleGoUserCenter()),
     b: common_assets._imports_0$7,
     c: common_vendor.t($props.title),
-    d: common_assets._imports_1$3,
+    d: common_assets._imports_1$4,
     e: common_vendor.o((...args) => $options.handleRightAction && $options.handleRightAction(...args)),
     f: $data.StatusBar + "px"
   };
