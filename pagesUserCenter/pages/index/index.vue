@@ -37,6 +37,7 @@
 		</view>
 		<view class="self-nav-container">
 			<SelfNav v-if="pageViewType === 1"/>
+			<OtherPageActions v-else />
 		</view>
 	</view>
 
@@ -48,7 +49,8 @@
 	} from 'vue'
 	import CustomNavBar from '@/components/CustomNavBar/CustomNavBar.vue';
 	import SelfNav from '@/pagesUserCenter/components/selfNav/index.vue'
-	let pageViewType = ref(1) // 页面视角 1 自己 0 他人
+	import OtherPageActions from '@/pagesUserCenter/components/otherPageActions/index.vue'
+	let pageViewType = ref(2) // 页面视角 1 自己 0 他人
 	let userInfo = {
 		gender: 1,
 		name: '荔枝涮黑豆黑豆黑豆黑豆黑豆',
