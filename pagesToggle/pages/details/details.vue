@@ -62,7 +62,7 @@
 					</view>
 				</view>
 				<view class="apply-content">
-					<template  v-for="(item, index) in details.apply">
+					<template  v-for="(item, index) in details.apply" :key="index">
 						<view v-if="index < 6 || showApply" :key="index">
 							<view class="avator">
 								<image :class="[item.sex == '0' ? 'man' : 'woman']" :src="item.avator" mode=""></image>
@@ -95,8 +95,15 @@
 			</view>
 			
 			
-			<view :style='{height: (navHeight / 2 + 152 + 64) + "rpx"}'></view>
+			<view :style='{height: (navHeight / 2 + 152 + 76) + "rpx"}'></view>
 			
+			
+			<!-- <view class="price price-gray" :style="{bottom: (navHeight / 2 + 152) + 'rpx'}">
+				<view>
+					<text>累计收益</text>
+					<text class="big">178元</text>
+				</view>
+			</view> -->
 			<view class="submit" :style='{height: (navHeight / 2 + 152) + "rpx"}'>
 				<button class="outline" hover-class="button-hover">
 					<image src="/static/images/wechat-fill-black.png" mode=""></image>
@@ -106,59 +113,115 @@
 					<text style="margin-right: 32rpx;">¥29/人</text>
 					<text>报名</text>
 				</button>
-				<!-- <button class="outline" hover-class="button-hover">
+				<!-- 已报名，可取消 -->
+				<!-- <button @click='applyPopup = true' class="outline" hover-class="button-hover">
+					<text>取消报名</text>
+				</button>
+				<button class="gray" hover-class="button-hover">
 					<text>取消报名</text>
 				</button> -->
-				<!-- <button class="gray" hover-class="button-hover">
-					<text>取消报名</text>
+				<!-- 自己查看详情 -->
+				<!-- <button class="outline" hover-class="button-hover">
+					<text>下架</text>
+				</button>
+				<button class="outline outline-gray" hover-class="button-hover">
+					<text>下架</text>
+				</button>
+				<button class="fill" hover-class="button-hover">
+					<text>编辑</text>
 				</button> -->
 			</view>
 		</view>
 		
-
-		<uv-picker title='添加活动标签' confirmText='保存' ref="pickerActive" :columns="activeList"
-			@confirm="activeConfirm"></uv-picker>
-		<uv-picker title='选择活动开始时间' confirmText='保存' ref="pickerStart" :columns="timeList"
-			@confirm="timeStartConfirm"></uv-picker>
-		<uv-picker title='选择报名截止时间' confirmText='保存' ref="pickerEnd" :columns="timeList"
-			@confirm="timeEndConfirm"></uv-picker>
-		<!-- 退改政策 -->
-		<PoupWrap :show='zcShow' @close='zcShow = false' title='选择退改政策' @save='doReFund'>
-			<view style="padding-bottom: 48rpx;">
-				<view @click="doZcExpose(index)" v-for="(item, index) in zcList" :key="index" class="update"
-					:class="[zcIndex == index ? 'active':'']">
-					<view class="update-header">
-						<view>{{ item.title }}</view>
-						<view v-if="zcIndex == index">
-							<image src="/static/images/checkbox.png" mode=""></image>
-						</view>
-					</view>
-					<view class="update-desc">
-						{{ item.desc }}
-					</view>
+		<!-- 查看报名人数 -->
+		<PoupWrap :show='viewPopup' @close='viewPopup = false' :title='`仅剩${details.maxApplay - details.apply.length}个名额`' rightText='' @save='doApplyPopup'>
+			<view class="view-apply-people">
+				<view v-for="(item, index) in details.apply" :key="index">
+					<image class="avator" :src="item.avator" mode=""></image>
+					<text>{{ item.name }}</text>
+					<image class="sex" v-if='item.sex == 0' src="/static/images/male.png"></image>
+					<image class="sex" v-if='item.sex == 1' src="/static/images/female.png" mode=""></image>
 				</view>
 			</view>
 		</PoupWrap>
-		<!-- 活动人数范围 -->
-		<PoupWrap :show='numShow' @close='numShow = false' title='填写活动人数' @save='doNum'>
-			<view style="padding-bottom: 48rpx;" class="range">
-				<view>
-					<input type="number" placeholder="最小人数" v-model="minNum">
+		
+		<!--  取消报名 -->
+		<PoupWrap :show='applyPopup' @close='applyPopup = false' :rightText='""' :title=' popupTypeApply ? "确认报名" : "取消报名"' @save='doApplyPopup'>
+			<view  class="apply-popup">
+				<view class="apply-popup-content" :class="[popupTypeApply == '0' ? 'confirm' : '']">
+					<view class="image">
+						<image :src="details.swiper[0]" mode=""></image>
+					</view>
+					<view class="details-content">
+						<view class="title">
+							{{ details.title }}
+						</view>
+						<view class="location">
+							<image src="/static/images/map-pin-line.png" mode=""></image>
+							<text>
+								{{ details.gap }} | {{ details.location }}
+							</text>
+						</view>
+						<view class="date">
+							<image src="/static/images/date-time.png" mode=""></image>
+							<text>{{ details.date }} | {{ details.time }}</text>
+						</view>
+					</view>
 				</view>
-				<view>
-					~
-				</view>
-				<view>
-					<input type="number" placeholder="最大人数" v-model="maxNum">
-				</view>
+				<!-- 取消报名 -->
+				<template v-if="popupTypeApply == '1'">
+					<view class="apply-popup-line">
+						<view>
+							<text> 退款</text>
+							<text class="big">¥158.0</text>
+						</view>
+						<view class="gray">
+							活动开始12小时前取消，可全额退款
+						</view>
+					</view>
+					<view class="submit">
+						<button class="outline" hover-class="button-hover">
+							<image src="/static/images/wechat-fill-black.png" mode=""></image>
+							<text>继续撒野</text>
+						</button>
+						<button class="fill" hover-class="button-hover">
+							<text>确定取消</text>
+						</button>
+					</view>
+				</template>
+				<!-- 报名确认 -->
+				<template v-if="popupTypeApply == '0'">
+					<view class="apply-popup-line confirm"> 
+						<view  class="title">
+							🔐 退改须知
+						</view>
+						<view class="desc">
+							活动开始12小时前申请，退款100%
+							活动开始前12小时～开始前申请，退款50%
+							活动开始后，不支持退款，特殊原因协商
+						</view>
+					</view>
+					<view class="protocols" v-if="popupTypeApply == '0'">
+						<image @click="isReady = !isReady" :src="`/static/images/checkbox${isReady ? '-active' : ''}.png`" mode=""></image>
+						<view>
+							我已知晓并同意 <text class="blue">《活动安全声明同意书》</text>
+						</view>
+					</view>
+					<view class="submit" style="padding-left: 0; padding-right: 0">
+						<button class="fill" hover-class="button-hover">
+							<text>¥29/人</text>
+							<text style="padding: 0 20rpx;color: #525252">|</text>
+							<text>报名</text>
+						</button>
+					</view>
+				</template>
 			</view>
 		</PoupWrap>
 		<!-- 取消返回 toast -->
-		<Toast :show='toastShow' @cancel='toastShow = false' @confirm='toastShow = false' title='退出后内容不保存，要退出吗？'>
-		</Toast>
-		<!-- 发布成功 -->
-		<PublicSuccess :show='publicSuccessShow' @close='publicSuccessShow = false' @view='publicSuccessShow = false'>
-		</PublicSuccess>
+		<Toast :show='toastShow' @cancel='toastShow = false' @confirm='toastShow = false' title='确定下架活动吗？'  confirmText='确定下架' cancelText='再等等' />
+		<!-- 报名成功 -->
+		<ApplySuccess :show='publicSuccessShow' @close='publicSuccessShow = false' @view='publicSuccessShow = false'/>
+	
 	</view>
 </template>
 
@@ -167,7 +230,7 @@
 	import Gradual from '@/components/Navbar/Gradual.vue';
 	import Upload from '@/components/Upload/Upload.vue';
 	import PoupWrap from '@/components/Popup/Wrap.vue';
-	import PublicSuccess from '@/components/Popup/PublicSuccess.vue';
+	import ApplySuccess from '@/components/Popup/ApplySuccess.vue';
 	import Toast from '@/components/Toast/Toast.vue'
 	import {
 		getDayHours,
@@ -181,7 +244,7 @@
 			Upload,
 			PoupWrap,
 			Toast,
-			PublicSuccess,
+			ApplySuccess,
 		},
 		data() {
 			return {
@@ -196,6 +259,7 @@
 					],
 					title: '大雁塔飞盘挑战赛',
 					date: '周三07.03',
+					time: '21:00 - 23:00',
 					location: '雁塔区辉腾体育室外场',
 					gap: '4.8km',
 					longitude: 11,
@@ -247,40 +311,15 @@
 					startTimeShow: '',
 					endTimeShow: '',
 					refund: '',
-					minNum: '',
-					maxNum: ''
 				},
 				toastShow: false,
 				publicSuccessShow: false,
-				minNum: '',
-				maxNum: '',
 				StatusBar: 0,
 				navHeight: 0,
-				zcShow: false,
-				numShow: false,
-				zcIndex: -1,
-				zcList: [{
-					title: '活动开始前12小时全额退',
-					desc: `活动开始12小时前申请，退款100%
-						活动开始前12小时～开始前申请，退款50%
-						活动开始后，不支持退款，特殊原因协商`
-				}],
-				activeList: [
-					[
-						'飞盘',
-						'羽毛球',
-						'游泳',
-						'酒吧',
-						'篮球',
-						'高尔夫',
-					]
-				],
-				getDatesAndWeeksYear: getDatesAndWeeks(true),
-				timeList: [
-					getDatesAndWeeks(),
-					getDayHours(),
-					getDayMin()
-				]
+				isReady: false,
+				popupTypeApply: '0', // 0是报名  1是取消
+				viewPopup: false,
+				applyPopup: false,
 			}
 		},
 		onLoad(options) {
@@ -305,86 +344,9 @@
 					}
 				})
 			},
-			doReFund() {
-				if (this.zcIndex === -1 && this.info.refund) {
-					this.info.refund = ''
-					this.zcShow = false
-					return;
-				} else if (this.zcIndex === -1) {
-					uni.showToast({
-						title: '请选择',
-						icon: 'none'
-					})
-					return;
-				}
-				this.info.refund = this.zcList[this.zcIndex].title
-				this.zcShow = false
+			doApplyPopup() {
+				this.applyPopup = false
 			},
-			openNum() {
-				this.minNum = this.info.minNum
-				this.maxNum = this.info.maxNum
-				this.numShow = true;
-			},
-			doNum() {
-				let title = ''
-				let maxNum = this.maxNum
-				let minNum = this.minNum
-				if (maxNum < minNum) {
-					title = '请正确填写最小值和最大值'
-				}
-				if (isNaN(maxNum) || isNaN(minNum)) {
-					title = '请输入数字'
-				}
-				if (!maxNum || !minNum) {
-					title = '请输入数字'
-				}
-				if (title) {
-					uni.showToast({
-						title,
-						icon: 'none'
-					})
-					return;
-				}
-				this.info.minNum = this.minNum
-				this.info.maxNum = this.maxNum
-				this.numShow = false
-			},
-			doZcExpose(index) {
-				this.zcIndex = index === this.zcIndex ? -1 : index
-			},
-			activeOpen() {
-				this.$refs.pickerActive.open();
-			},
-			timeStartOpen() {
-				this.$refs.pickerStart.open();
-			},
-			timeEndOpen() {
-				this.$refs.pickerEnd.open();
-			},
-			activeConfirm(e) {
-				console.log(e)
-				this.info.tag = e.value[0]
-			},
-			timeStartConfirm(e) {
-				console.log(this.getDatesAndWeeksYear)
-				console.log(e)
-				let value = e.value
-				let date = this.getDatesAndWeeksYear.filter(item => item.indexOf(value[0]) !== -1)[0]
-				let day = date.split(' ')[0]
-				let week = date.split(' ')[1]
-				this.info.startTime = `${day}(${week}) ${value[1]}${value[2]}`
-				this.info.startTimeShow = `${value[0].split(' ')[0]}(${week}) ${value[1]}${value[2]}`
-			},
-			timeEndConfirm(e) {
-				console.log(this.getDatesAndWeeksYear)
-				console.log(e)
-				let value = e.value
-				let date = this.getDatesAndWeeksYear.filter(item => item.indexOf(value[0]) !== -1)[0]
-				let day = date.split(' ')[0]
-				let week = date.split(' ')[1]
-				this.info.endTime = `${day}(${week}) ${value[1]}${value[2]}`
-				this.info.endTimeShow = `${value[0].split(' ')[0]}(${week}) ${value[1]}${value[2]}`
-			}
 		}
 	}
 </script>
@@ -438,6 +400,38 @@
 			height: 192rpx;
 			z-index: 5;
 		}
+		
+		
+		.details-content {
+			padding: 20rpx 0 0 0;
+			font-family: PingFang SC;
+			font-size: 28rpx;
+			font-weight: 400;
+			line-height: 40rpx;
+			color: #646464;
+			> view {
+				display: flex;
+				align-items: center;
+				justify-content: flex-start;
+				margin-bottom: 6rpx;
+			}
+			image {
+				width: 32rpx;
+				height: 32rpx;
+				margin-right: 6rpx;
+			}
+			.title {
+				font-family: PingFang SC;
+				font-size: 32rpx;
+				font-weight: 600;
+				line-height: 45rpx;
+				color: #222;
+				margin-bottom: 16rpx;
+			}
+			.location {
+				margin-bottom: 0;
+			}
+		}
 
 		.module {
 			position: relative;
@@ -467,36 +461,6 @@
 					width: 100%;
 					height: 440rpx;
 					border-radius: 16rpx;
-				}
-			}
-			.details-content {
-				padding: 20rpx 0 0 0;
-				font-family: PingFang SC;
-				font-size: 28rpx;
-				font-weight: 400;
-				line-height: 40rpx;
-				color: #646464;
-				> view {
-					display: flex;
-					align-items: center;
-					justify-content: flex-start;
-					margin-bottom: 6rpx;
-				}
-				image {
-					width: 32rpx;
-					height: 32rpx;
-					margin-right: 6rpx;
-				}
-				.title {
-					font-family: PingFang SC;
-					font-size: 32rpx;
-					font-weight: 600;
-					line-height: 45rpx;
-					color: #222;
-					margin-bottom: 16rpx;
-				}
-				.location {
-					margin-bottom: 0;
 				}
 			}
 			
@@ -635,7 +599,6 @@
 			display: flex;
 			flex-direction: row;
 			gap: 24rpx;
-			align-items: center;
 			justify-content: space-between;
 
 			button {
@@ -661,6 +624,11 @@
 				image {
 					margin-right: 16rpx;
 				}
+			}
+			
+			button.outline-gray {
+				border: 1px solid #A3A3A3;
+				color: #A3A3A3;
 			}
 			
 			button.gray {
@@ -714,34 +682,150 @@
 				color: #646464;
 			}
 		}
+		
+		.view-apply-people {
+			padding: 32rpx 0;
+			> view {
+				display: flex;
+				align-items: center;
+				color: #222;
+				font-size: 28rpx;
+				padding: 32rpx 0;
+				border-bottom: 1px solid #eee;
+				&.last-child {
+					border-bottom: 0;
+				}
+				.avator {
+					width: 48rpx;
+					height: 48rpx;
+					border-radius: 50%;
+				}
+				text {
+					padding: 0 16rpx;
+				}
+				.sex {
+					width: 32rpx;
+					height: 32rpx;
+				}
+			}
+		}
 
-		.range {
+		.apply-popup {
 			display: flex;
 			align-items: center;
-			justify-content: space-around;
-			gap: 10rpx;
-			padding: 40rpx 0;
-
-			>view {
-				flex: 1;
-			}
-
-			>view:nth-child(2) {
-				flex: 0 0 60rpx;
-				text-align: center;
-			}
-
-			input {
-				height: 108rpx;
-				border-radius: 16rpx;
+			flex-direction: column;
+			max-height: 70vh;
+			overflow-y: auto;
+			padding: 0 32rpx;
+			.apply-popup-content {
+				margin: 32rpx 0;
+				display: flex;
 				background-color: #F5F5F5;
-				border: 1px solid #F5F5F5;
-				padding: 36rpx 32rpx;
+				padding: 24rpx;
+				border-radius: 12px;
+				.details-content {
+					padding-top: 0;
+				}
+				.image {
+					width: 144rpx;
+					height: 144rpx;
+					margin-right: 34rpx;
+					image {
+						border-radius: 12px;
+						width: 144rpx;
+						height: 144rpx;
+					}
+				}
+				.date {
+					padding-bottom: 0;
+				}
+				.location {
+					padding-bottom: 6rpx;
+				}
+				&.confirm {
+					background-color: #FFF7E2;
+					text {
+						color: #222;
+					}
+				}
+			}
+			.apply-popup-line {
+				color: #222;
+				width: 100%;
+				font-size: 24rpx;
+				>view {
+					padding-bottom: 8rpx;
+				}
+				.big {
+					padding-left: 8rpx;
+					font-size: 40rpx;
+					line-height: 56rpx;
+					font-weight: 600;
+				}
+				.gray {
+					color: #A3A3A3;
+				}
+				&.confirm {
+					.title {
+						font-size: 28rpx;
+						color: #222;
+						font-weight: 600;
+						padding-bottom: 8rpx;
+					}
+					.desc {
+						line-height: 40rpx;
+						color: #646464;
+						font-size: 28rpx;
+					}
+				}
+			}
+			.protocols {
+				padding-top: 48rpx;
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: flex-start;
+				font-size: 28rpx;
+				width: 100%;
+				image {
+					width: 32rpx;
+					height: 32rpx;
+					margin-right: 8rpx;
+				}
+				.blue {
+					color: #004F99;
+				}
+			}
+			.submit {
+				padding-bottom: 0;
+				position: relative;
+				width: 100%;
 				box-sizing: border-box;
-
-				&:active,
-				&:visited {
-					border: 1px solid #222;
+				padding-left: 0;
+				padding-right: 0;
+			}
+		}
+		.price {
+			position: fixed;
+			left: 0;
+			height: 76rpx;
+			width: 100vw;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background-color: #FFF7E2;
+			color: #646464;
+			z-index: 9;
+			.big {
+				color: #FF8F50;
+				font-size: 32rpx;
+				line-height: 44rpx;
+				font-weight: 600;
+				padding-left: 6rpx;
+			}
+			&.price-gray {
+				.big {
+					color: #A3A3A3;
 				}
 			}
 		}

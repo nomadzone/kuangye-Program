@@ -3,7 +3,7 @@
 		<view class="popup-overlay" v-if="show" @click="handleOverlayClick">
 		</view>
 		<view class="popup-content" :class="[show ? 'fade-enter' : 'fade-leave']" v-show="show">
-			<Gradual :styles="{position: 'absolute', width: '100%', zIndex: -1}" :background="'linear-gradient(to bottom, #E3F7FF, #fff)'" :height="'100rpx'" :zIndex="'98'"/>
+			<Gradual :styles="{position: 'absolute', width: '100%', zIndex: -1}" :background="'linear-gradient(to bottom, #E3F7FF, #fff)'" :height="'120rpx'" :zIndex="'98'"/>
 			<view class="header">
 				<view class="close" @click="handleOverlayClick">
 					 <view v-if="isLeft">
@@ -11,7 +11,7 @@
 					 </view>
 				</view>
 				<view>{{ title }}</view>
-				<view class="save" @click='doSave'>
+				<view  class="save" @click='doSave'>
 					<button v-if="rightText">{{ rightText }}</button>
 				</view>
 			</view>
@@ -65,6 +65,7 @@
 				this.$emit('close')
 			},
 			doSave() {
+				if (!this.rightText) return;
 				this.$emit('save')
 			}
 		}

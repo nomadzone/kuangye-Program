@@ -3,31 +3,34 @@
 		<view class="popup-overlay" v-if="show" @click="onClose">
 		</view>
 		<view class="popup-content" :class="[show ? 'fade-enter' : 'fade-leave']" v-if="show">
-			<Gradual :styles="{position: 'absolute', width: '100%', zIndex: -1}" :background="'linear-gradient(to bottom, #FCEBBC, #fff)'" :height="'400rpx'" :zIndex="'98'"/>
 			<view class="header">
 				<view class="close" @click="onClose" v-if="isClose">
 					 <image src="/static/images/close-white.png" mode=""></image>
 				</view>
 			</view>
+			<image class="qing" src="/static/images/smell.png" mode=""></image>
 			<view class="body">
-				<image class="qing" src="/static/images/qing.png" mode=""></image>
-				<view class="title">发布成功！</view>
-				<view>
-					复制下方微信号添加小助手
-				</view>
-				<view>
-					参与创作者计划，获取更多奖励！
+				<Gradual :styles="{position: 'absolute', width: '100%', zIndex: -1, borderRadius: '12px'}" :background="'linear-gradient(to bottom, #fde279, #fefbdb)'" :height="'686rpx'" :zIndex="'98'"/>
+				<image class="avator" src="https://ww1.sinaimg.cn/mw690/6910b6f2gy1hrkg6qz6ejj20n00n0ac9.jpg" mode=""></image>
+				<view class="name">
+					<text>维多利亚喜欢洗车</text>
+					<image src="/static/images/male.png" mode=""></image>
+					<image src="/static/images/badge.png" mode=""></image>
+					<!-- <image src="/static/images/female.png" mode=""></image> -->
 				</view>
 				<view class="chart">
 					<view>
-						<image class="wechat" src="/static/images/wechat-fill.png" mode=""></image>
+						<image class="wechat" src="/static/images/wechat-fill-black.png" mode=""></image>
 						<text>Wade_Warren</text>
-						<image @click="doCopy" class="copy" src="/static/images/copy.png" mode=""></image>
+						<image @click="doCopy" class="copy" src="/static/images/copy-gray.png" mode=""></image>
 					</view>
 				</view>
-				<view class="view">
-					<button hover-class="hover" @click="doView">查看刚发布内容</button>
+				<view class="qcode">
+					<image src="/static/images/wechat-fill-black.png" mode=""></image>
 				</view>
+			</view>
+			<view class="view">
+				<button hover-class="hover" @click="doView">保存到相册</button>
 			</view>
 		</view>
 	</view>
@@ -80,6 +83,11 @@
 				this.$emit('close')
 			},
 			doView() {
+				wx.showToast({
+				  title: '保存成功',
+				  icon: 'success',
+				  duration: 2000
+				});
 				this.$emit('view')
 			} 
 		}
@@ -132,7 +140,6 @@
 		padding-bottom: 80rpx;
 		border-radius: 10px;
 		transition: transform 0.3s;
-		overflow: hidden;
 	}
 	.header {
 		display: flex;
@@ -145,29 +152,53 @@
 			}
 		}
 	}
+	.qing {
+		position: absolute;
+		top: -100rpx;
+		left: 50%;
+		margin-left: -140rpx;
+		width: 280rpx;
+		height: 280rpx;
+	}
 	.body {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		color: #222;
-		.qing {
-			width: 280rpx;
-			height: 280rpx;
-		}
+		height: 686rpx;
+		position: relative;
+		margin-top: 68rpx;
+		padding: 60rpx 0 0 0;
+		box-sizing: border-box;
 		.title {
 			padding-bottom: 20rpx;
 			font-size: 32rpx;
 		}
+		.avator {
+			width:100rpx;
+			height: 100rpx;
+			border-radius: 12px;
+			border: 1px solid #fff;
+		}
+		.name {
+			display: flex;
+			padding: 10rpx 0 40rpx 0;
+			image {
+				width: 40rpx;
+				height: 40rpx;
+				margin-left: 4rpx;
+			}
+		}
 		.chart {
-			padding: 48rpx 0;
+			padding-bottom: 32rpx;
 			> view {
 				display: flex;
 				gap: 20rpx;
 				flex-direction: row;
 				align-items: center;
 				height: 88rpx;
-				background-color: #222;
-				color: #fff;
+				background-color: #fff;
+				color: #222;
 				padding: 0 20rpx;
 				border-radius: 48rpx;
 			}
@@ -180,25 +211,33 @@
 				height: 56rpx;
 			}
 		}
-		.hover {
-			opacity: 0.8;
+		.qcode {
+			width: 282rpx;
+			height: 282rpx;
+			image {
+				width: 282rpx;
+				height: 282rpx;
+			}
 		}
-		.view {
-			padding: 32rpx 0;
-			width: 100%;
-			button {
-				background-color: transparent;
-				color: #222;
-				border: 1px solid #222;
-				font-size: 28rpx;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				border-radius: 48rpx;
-				height: 88rpx;
-				&:after {
-					display: none;
-				}
+	}
+	.hover {
+		opacity: 0.8;
+	}
+	.view {
+		padding: 32rpx 0;
+		width: 100%;
+		button {
+			background-color: #222;
+			color: #fff;
+			border: 1px solid #222;
+			font-size: 28rpx;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 48rpx;
+			height: 88rpx;
+			&:after {
+				display: none;
 			}
 		}
 	}
