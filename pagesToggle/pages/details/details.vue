@@ -49,6 +49,10 @@
 						</text>
 					</view>
 				</view>
+				<view class="map">
+					<image class="map-positon" src="/static/images/positioning.png" mode=""></image>
+					<image class="map-bg" src="/static/images/map-group.png" mode=""></image>
+				</view>
 			</view>
 			
 			<view class="module apply">
@@ -442,6 +446,29 @@
 			margin-bottom: 24rpx;
 			z-index: 6;
 			box-sizing: border-box;
+			
+			.map {
+				position: absolute;
+				bottom: 0;
+				right: 0;
+				width: 200rpx;
+				height: 200rpx;
+				.map-bg {
+					width:200rpx;
+					height: 140rpx;
+					position: absolute;
+					bottom: 0;
+					right: 0;
+				}
+				.map-positon {
+					z-index: 4;
+					width: 80rpx;
+					height: 80rpx;
+					position: absolute;
+					bottom: 0;
+					right: 0;
+				}
+			}
 			
 			.status-image {
 				position: absolute;

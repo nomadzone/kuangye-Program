@@ -45,8 +45,12 @@
 				"style": {
 				"navigationStyle": "custom"
 				}
+			},{
+				"path": "pages/wallet/wallet",
+				"style": {
+					 "navigationBarTitleText": "钱包"
+				}
 			}]
-
 		}
 
 	],
