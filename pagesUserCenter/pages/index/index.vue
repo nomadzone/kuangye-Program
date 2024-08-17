@@ -38,6 +38,7 @@
 		<view class="self-nav-container">
 			<SelfNav v-if="pageViewType === 1"/>
 			<OtherPageActions v-else />
+			<UserCenterTab :tabs="tabs" :activeTab="activeTab" @changeTab="handleSetActiveTab"></UserCenterTab>
 		</view>
 	</view>
 
@@ -50,6 +51,7 @@
 	import CustomNavBar from '@/components/CustomNavBar/CustomNavBar.vue';
 	import SelfNav from '@/pagesUserCenter/components/selfNav/index.vue'
 	import OtherPageActions from '@/pagesUserCenter/components/otherPageActions/index.vue'
+	import UserCenterTab from '@/pagesUserCenter/components/tab/index.vue'
 	let pageViewType = ref(2) // 页面视角 1 自己 0 他人
 	let userInfo = {
 		gender: 1,
@@ -59,6 +61,18 @@
 		followedNum: 200,
 		fansNum: 200,
 		role: 'user', // user 普通用户 business 商家
+	}
+	
+	let tabs = ref([
+		{label: '一起野',key: 0, defaultIcon: '../../static/icons/tabs/play-together-normal.svg', activeIcon: '../../static/icons/tabs/play-together-active.svg'},
+		{label: '新鲜事',key: 1, defaultIcon: '../../static/icons/tabs/news-normal.svg', activeIcon: '../../static/icons/tabs/news-active.svg'},
+		{label: '找搭子',key: 2, defaultIcon: '../../static/icons/tabs/find-friends-normal.svg', activeIcon: '../../static/icons/tabs/find-friends-active.svg'},
+	])
+	let activeTab = ref(0)
+	
+	// 设置激活tab
+	const handleSetActiveTab = (val) => {
+		activeTab.value = val
 	}
 	
 	
