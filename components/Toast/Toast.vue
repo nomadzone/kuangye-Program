@@ -5,14 +5,17 @@
 		<view class="popup-content" :class="[show ? 'fade-enter' : 'fade-leave']" v-if="show">
 			<view class="popup-body">
 				<Gradual :styles="{position: 'absolute', width: '100%', zIndex: 0}" :background="'linear-gradient(to bottom, #E3F7FF, #fff)'" :height="'200rpx'" :zIndex="'98'"/>
-				<view class="title" v-if="title">
+				<view class="delete-icon" v-if="isDeleteIcon">
+					<image src="../../static/images/failed.png" mode=""></image>
+				</view>
+				<view class="title" v-if="title" :style="{ paddingBottom: desc ? '24rpx' : '32rpx' }">
 					{{ title }}
 				</view>
 				<view class="desc" v-if="desc">
 					{{ desc }}
 				</view>
 				<view class="opt">
-					<view class="button" v-if="isConfirm">
+					<view class="button" v-if="isConfirm" :style="{ paddingBottom: !isCancel ? '0' : '24rpx' }">
 						<button @click='doConfirm' hover-class="hover">{{ confirmText }}</button>
 					</view>
 					<view class="button cancel" v-if='isCancel'>
@@ -35,11 +38,15 @@
 				type: Boolean,
 				default: false
 			},
+			isDeleteIcon: {
+				type: Boolean,
+				default: false
+			},
 			title: {
 				type: String,
 				default: ''
 			},
-			 desc: {
+			desc: {
 				type: String,
 				default: ''
 			},
@@ -139,9 +146,22 @@
 			transition: transform 0.3s;
 			position: relative;
 		}
+		.delete-icon  {
+			padding-bottom: 32rpx;
+			margin: auto;
+			position: relative;
+			z-index: 2;
+			image {
+				width: 96rpx;
+				height: 96rpx;
+				margin: auto;
+				display: block;
+			}
+		}
 		.title {
 			position: relative;
 			padding-bottom: 32rpx;
+			font-weight: 600;
 			text-align: center;
 			color: #222;
 			font-size: 32rpx;
@@ -149,9 +169,9 @@
 		}
 		.desc {
 			position: relative;
-			padding-bottom: 64rpx;
+			padding-bottom: 32rpx;
 			text-align: center;
-			color: #666;
+			color: #212121;
 			font-size:28rpx;
 			z-index: 1;
 		}

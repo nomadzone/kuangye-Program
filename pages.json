@@ -48,7 +48,23 @@
 			},{
 				"path": "pages/wallet/wallet",
 				"style": {
-					 "navigationBarTitleText": "钱包"
+					 "navigationBarTitleText": "钱包",
+					"navigationBarBackgroundColor": "#ffffff",
+					"navigationBarTextStyle": "black"
+				}
+			},{
+				"path": "pages/bindBank/index",
+				"style": {
+					 "navigationBarTitleText": "",
+					"navigationBarBackgroundColor": "#f5f5f5",
+					"navigationBarTextStyle": "black"
+				}
+			},{
+				"path": "pages/funds/index",
+				"style": {
+					 "navigationBarTitleText": "余额提现",
+					"navigationBarBackgroundColor": "#f5f5f5",
+					"navigationBarTextStyle": "black"
 				}
 			}]
 		}
