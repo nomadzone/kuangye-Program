@@ -66,6 +66,13 @@
 					"navigationBarBackgroundColor": "#f5f5f5",
 					"navigationBarTextStyle": "black"
 				}
+			},{
+				"path": "pages/paperclip/index",
+				"style": {
+					"enablePullDownRefresh": true,
+					 "onReachBottomDistance": 50,
+						"navigationStyle": "custom"
+				}
 			}]
 		}
 

@@ -99,7 +99,7 @@
 			</view>
 			
 			
-			<view :style='{height: (navHeight / 2 + 152 / 2 + 76) + "rpx"}'></view>
+			<view :style='{height: (navHeight / 2 + 152 + 76) + "rpx"}'></view>
 			
 			
 			<!-- <view class="price price-gray" :style="{bottom: (navHeight / 2 + 152) + 'rpx'}">
@@ -333,6 +333,15 @@
 			this.StatusBar = uni.getStorageSync('statusBarHeight')
 			this.navHeight = uni.getStorageSync('navBarHeight')
 		},
+		  onPullDownRefresh() {
+			// 模拟请求数据
+			setTimeout(() => {
+			  uni.stopPullDownRefresh(); // 停止下拉刷新
+			}, 2000);
+		  },
+		  onReachBottom() {
+			  
+		  },
 		methods: {
 			openMap() {
 				wx.getLocation({
