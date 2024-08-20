@@ -15,10 +15,14 @@
 			<view style="height: 32rpx"></view>
 			<image class="popu-icon" src="/static/images/details-icon.png" mode=""></image>
 			<view class="module">
+				<!-- 报名中 -->
 				<image class="status-image" src="/static/images/details-status-reply.png" mode=""></image>
-				<!-- <image class="status-image" src="/static/images/details-status-active.png" mode=""></image>
-				<image class="status-image" src="/static/images/details-status-man.png" mode=""></image>
-				<image class="status-image" src="/static/images/details-status-end.png" mode=""></image> -->
+				<!-- 活动中 -->
+				<!-- <image class="status-image" src="/static/images/details-status-active.png" mode=""></image> -->
+				<!-- 已满员 -->
+				<!-- <image class="status-image" src="/static/images/details-status-man.png" mode=""></image> -->
+				<!-- 已结束 -->
+				<!-- <image class="status-image" src="/static/images/details-status-end.png" mode=""></image> -->
 				<view class="swiper">
 				  <swiper 
 					class="swiper-container" 
@@ -415,7 +419,7 @@
 			color: #646464;
 			> view {
 				display: flex;
-				align-items: center;
+				align-items: flex-start;
 				justify-content: flex-start;
 				margin-bottom: 6rpx;
 			}
@@ -423,6 +427,8 @@
 				width: 32rpx;
 				height: 32rpx;
 				margin-right: 6rpx;
+				position: relative;
+				top: 2rpx;
 			}
 			.title {
 				font-family: PingFang SC;
@@ -476,7 +482,7 @@
 				left: -10rpx;
 				width: 190rpx;
 				height: 130rpx;
-				transform: translate(23deg);
+					transform: rotate(8deg);
 				z-index: 9;
 			}
 			

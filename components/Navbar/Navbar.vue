@@ -60,6 +60,9 @@ export default {
 	  flex: 1;
   }
   z-index: 4;
+  .center {
+	  text-align: center;
+  }
   .left {
 	  display: flex;
 	image {

@@ -57,7 +57,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   } : {}, {
     f: common_assets._imports_0$6,
     g: common_vendor.o(($event) => $options.doPath("/pagesToggle/pages/public/public")),
-    h: common_assets._imports_1$4,
+    h: common_assets._imports_1$5,
     i: common_assets._imports_2$5,
     j: common_vendor.o(() => {
     }),
