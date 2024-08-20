@@ -1,6 +1,5 @@
 {
-	"pages": [
-		{
+	"pages": [{
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "主页",
@@ -20,18 +19,16 @@
 			}
 		}
 	],
-	"subPackages": [
-		{
+	"subPackages": [{
 			"root": "pagesToggle",
-			"pages": [
-				{
-					"path":"pages/public/public",
+			"pages": [{
+					"path": "pages/public/public",
 					"style": {
 						"navigationStyle": "custom"
 					}
 				},
 				{
-					"path":"pages/details/details",
+					"path": "pages/details/details",
 					"style": {
 						"navigationStyle": "custom"
 					}
@@ -43,35 +40,51 @@
 			"pages": [{
 				"path": "pages/index/index",
 				"style": {
-				"navigationStyle": "custom"
+					"navigationStyle": "custom"
 				}
-			},{
+			}, {
 				"path": "pages/wallet/wallet",
 				"style": {
-					 "navigationBarTitleText": "钱包",
+					"navigationBarTitleText": "钱包",
 					"navigationBarBackgroundColor": "#ffffff",
 					"navigationBarTextStyle": "black"
 				}
-			},{
+			}, {
 				"path": "pages/bindBank/index",
 				"style": {
-					 "navigationBarTitleText": "",
+					"navigationBarTitleText": "",
 					"navigationBarBackgroundColor": "#f5f5f5",
 					"navigationBarTextStyle": "black"
 				}
-			},{
+			}, {
 				"path": "pages/funds/index",
 				"style": {
-					 "navigationBarTitleText": "余额提现",
+					"navigationBarTitleText": "余额提现",
 					"navigationBarBackgroundColor": "#f5f5f5",
 					"navigationBarTextStyle": "black"
 				}
-			},{
+			}, {
 				"path": "pages/paperclip/index",
 				"style": {
 					"enablePullDownRefresh": true,
-					 "onReachBottomDistance": 50,
-						"navigationStyle": "custom"
+					"onReachBottomDistance": 50,
+					"navigationStyle": "custom"
+				}
+			}, {
+				"path": "pages/audit/index",
+				"style": {
+					"enablePullDownRefresh": true,
+					"onReachBottomDistance": 50,
+					"navigationStyle": "custom"
+				}
+			}, {
+				"path": "pages/order/index",
+				"style": {
+					"enablePullDownRefresh": true,
+					"onReachBottomDistance": 50,
+					"navigationBarTitleText": "我的订单",
+					"navigationBarBackgroundColor": "#fff",
+					"navigationBarTextStyle": "black"
 				}
 			}]
 		}

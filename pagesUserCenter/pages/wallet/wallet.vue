@@ -49,10 +49,7 @@
 				</view>
 			</view>
 			<view class="items" v-if="list.length === 0">
-				<view class="empty">
-					<image src="../../static/images/empty.png" mode=""></image>
-					<text>暂无记录</text>
-				</view>
+				<Empty></Empty>
 			</view>
 		</view>
 		<Toast
@@ -77,9 +74,11 @@
 
 <script>
 	import Toast from '@/components/Toast/Toast.vue'
+	import Empty from '@/components/Empty/index.vue'
 	export default {
 		components: {
-				Toast
+				Toast,
+				Empty
 		},
 		data() {
 			return {

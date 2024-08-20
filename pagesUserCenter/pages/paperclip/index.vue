@@ -87,9 +87,8 @@
 				</view>
 			</view>
 			
-			<view class="empty" v-if="list.length == 0 && !isInit">
-				<image src="../../static/images/empty.png" mode=""></image>
-				<text>暂无数据</text>
+			<view v-if="list.length == 0 && !isInit">
+				<Empty></Empty>
 			</view>
 
 			<view  style="padding-bottom: 64rpx;" v-if="loading">
@@ -189,6 +188,7 @@
 	import ApplySuccess from '@/components/Popup/ApplySuccess.vue';
 	import Toast from '@/components/Toast/Toast.vue'
 	import ListLoading from '@/components/Loading/ListLoading.vue'
+	import Empty from '@/components/Empty/index.vue'
 	import {
 		getDayHours,
 		getDayMin,
@@ -202,7 +202,8 @@
 			PoupWrap,
 			Toast,
 			ApplySuccess,
-			ListLoading
+			ListLoading,
+			Empty
 		},
 		data() {
 			return {
@@ -236,6 +237,8 @@
 		onPullDownRefresh() {
 			// 模拟下拉刷新数据
 			this.page = 1;
+			this.loading = false;
+			this.isInit = true
 			this.list = []; // 清空列表数据
 			this.loadData(); // 重新加载数据
 		},
@@ -353,7 +356,7 @@
 					];
 					this.list = this.list.concat(newData);
 					uni.stopPullDownRefresh(); // 停止下拉刷新动画
-					this.isInit = this.list !== 0 
+					this.isInit = false
 				}, 500);
 			},
 			openMap() {
@@ -736,22 +739,6 @@
 
 			.button-hover {
 				opacity: .8;
-			}
-		}
-		.empty {
-			margin: auto;
-			margin-top: 150rpx;
-			text-align: center;
-			width: 254rpx;
-			color: #646464;
-			font-size: 28rpx;
-			text {
-				margin-top: 10rpx;
-				display: inline-block;
-			}
-			image {
-				width: 254rpx;
-				height: 216rpx;
 			}
 		}
 
