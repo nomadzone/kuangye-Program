@@ -92,7 +92,7 @@
 		gap: 16rpx;
 		flex-wrap: wrap;
 		>view {
-			flex: 0 0 calc(50% - 8rpx);
+			flex: 0 0 calc(50% - 10rpx);
 		}
 	}
 </style>

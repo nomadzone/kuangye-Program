@@ -61,7 +61,7 @@ export default {
 
 <style lang="scss" scoped>
 	.active {
-		flex: 0 0 calc(50% - 8rpx);
+		flex: 0 0 calc(50% - 10rpx);
 	}
 	.hover-class {
 		opacity: .8;

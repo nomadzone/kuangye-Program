@@ -9,7 +9,9 @@
 			<HomeSort></HomeSort>
 			<HomeCate></HomeCate>
 		</view>
-		<HomeWaterfalls isAd></HomeWaterfalls>
+		<view  class="water-view">
+			<HomeWaterfalls isAd></HomeWaterfalls>
+		</view>
 		
 	</view>
 	<view style="height: 200rpx;"></view>
@@ -40,7 +42,7 @@ export default {
 	  return {
 		  statusBarHeight: 0,
 		  sortIndex: 0,
-		  schooolTitle: '西安交通大学博学楼',
+		  schooolTitle: '西安交通大学博学楼1',
 	  }
   },
   created() {
@@ -71,8 +73,7 @@ export default {
 	margin-top: calc(50vh - 100rpx);
 	min-height: calc(50vh + 100rpx - 50rpx);
 	position: relative;
-	background-color: #fff;
-	padding: 40rpx 16rpx 0 16rpx;
+	padding: 0;
 	border-top-right-radius: 16rpx;
 	border-top-left-radius: 16rpx;
 	z-index: 4;
@@ -92,8 +93,18 @@ export default {
 		background: #E9E9E9;
 	}
 }
+.water-view {
+	height: calc(100vh - 400rpx);
+	    overflow-y: auto;
+	    padding: 0 16rpx 0 16rpx;
+	    background-color: #fff;
+	    position: relative;
+}
 .sticky {
 	position:sticky;
+	top: 180rpx;
 	z-index: 9;
+	background-color: #fff;
+	padding: 40rpx 16rpx 0 16rpx;
 }
 </style>
