@@ -87,7 +87,8 @@
 			</view>
 			<view :style='{height: (navHeight / 2 + 152 + 64) + "rpx"}'></view>
 			<view class="submit" :style='{height: (navHeight / 2 + 152) + "rpx"}'>
-				<button class="gray" hover-class="button-hover">发布</button>
+				<button  hover-class="button-hover" @click="doPulish">发布</button>
+				<!-- class="gray" -->
 			</view>
 		</view>
 		
@@ -137,7 +138,8 @@
 	import Upload from '@/components/Upload/Upload.vue';
 	import PoupWrap from '@/components/Popup/Wrap.vue';
 	import PublicSuccess from '@/components/Popup/PublicSuccess.vue';
-	import Toast from '@/components/Toast/Toast.vue'
+	import Toast from '@/components/Toast/Toast.vue';
+	import http from '@/utils/http.js';
 	import { getDayHours, getDayMin, getDatesAndWeeks } from '@/utils/index.js'
 	export default {
 		components: {
@@ -291,6 +293,15 @@
 				let week = date.split(' ')[1]
 				this.info.endTime = `${day}(${week}) ${value[1]}${value[2]}`
 				this.info.endTimeShow = `${value[0].split(' ')[0]}(${week}) ${value[1]}${value[2]}`
+			},
+			async doPulish() {
+				try {
+					let res = await http.posts({
+						
+					})
+				} catch(error) {
+					
+				}
 			}
 		}
 	}

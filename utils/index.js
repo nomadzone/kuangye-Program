@@ -48,3 +48,24 @@ export const getWeekday = (date)=> {
   const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
   return weekdays[date.getDay()];
 }
+
+export const getCode = ()=> {
+	return new Promise((resolve, inject)=> {
+			wx.login({
+			  success: (res) => {
+			    if (res.code) {
+			      // 成功获取 code
+			      console.log('Login code:', res.code);
+				  resolve(res.code)
+			    } else {
+			      console.error('登录失败！' + res.errMsg);
+				  inject(res.errMsg)
+			    }
+			  },
+			  fail: (err) => {
+			    console.error('wx.login API 调用失败', err);
+				  inject(err)
+			  }
+			});
+	})
+}
