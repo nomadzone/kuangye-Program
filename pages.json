@@ -6,12 +6,11 @@
 				"navigationStyle": "custom"
 			}
 		},
-			
 		{
 			"path": "pages/login/index",
 			"style":{
 				"navigationBarTitleText": "登录",
-				"navigationStyle": "custom",
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -91,6 +90,15 @@
 					"enablePullDownRefresh": true,
 					"onReachBottomDistance": 50,
 					"navigationBarTitleText": "我的订单",
+					"navigationBarBackgroundColor": "#fff",
+					"navigationBarTextStyle": "black"
+				}
+			}, {
+				"path": "pages/orderRefund/index",
+				"style": {
+					"enablePullDownRefresh": true,
+					"onReachBottomDistance": 50,
+					"navigationBarTitleText": "申请退款",
 					"navigationBarBackgroundColor": "#fff",
 					"navigationBarTextStyle": "black"
 				}

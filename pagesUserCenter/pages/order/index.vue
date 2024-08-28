@@ -99,12 +99,17 @@
 					return
 				}
 				// item。status
+				if ( true || item?.status === 2) {
+					uni.navigateTo({
+						url:'/pagesUserCenter/pages/orderRefund/index'
+					})
+					return;
+				}
 			},
 			loadData() {
 				// 模拟请求数据
 				setTimeout(() => {
 					const newData = [
-						
 							{
 								id: 1,
 								status: '1', // 1 待支付  2 可使用 3 交易成功  4 已取消  5 退款中
