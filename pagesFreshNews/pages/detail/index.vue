@@ -25,11 +25,29 @@
 		<view class="comment-num-row">
 			评论 <text class="comment-num-text">{{detailInfo.commentNum}}</text>
 		</view>
+		<Comments />
+		<view class="bottom-comment-box">
+			<view class="input-box">
+				<image src="../../static/images/comment-prev-icon.svg" class="prev-icon"></image>
+				<input class="uni-input"  placeholder="说点什么" />
+			</view>
+			<view class="actions">
+				<view class="action-item">
+					<image class="item-icon" src="../../static/images/like-icon.svg"></image>
+					<text class="item-num">{{detailInfo.likeNum}}</text>
+				</view>
+				<view class="action-item">
+					<image class="item-icon" src="../../static/images/comment-icon.svg"></image>
+					<text class="item-num">{{detailInfo.commentNum}}</text>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
 <script setup>
 	import DetailTopNav from '../../components/detailTopNav/index.vue'
+	import Comments from '../../components/comments/index.vue'
 	import {
 		ref
 	} from 'vue'
@@ -44,8 +62,11 @@
 		title: '距离进入宫崎骏的世界只差一杯冰淇淋芭菲🍃',
 		content: '一切的惬意组合在一起大概就像是穿越进了动画中…这一切在愚园路ConnieHe就能实现…愚园路店限定樱花皮肤已上线…🌸在最近大好的阳光下更加出片啦…再配上新品“抹茶柚子蒙布朗冰淇淋芭菲”🍵微风拂面、竟有一点初夏的感觉了🌞',
 		createTime: '5天前发布',
-		commentNum: 100
+		commentNum: 100,
+		likeNum: 198
 	})
+	
+	
 </script>
 
 <style lang="scss" scoped>
@@ -53,7 +74,8 @@
 
 	.fresh-news-detail-page {
 		width: 100vw;
-		height: 100vh;
+		min-height: 100vh;
+		padding-bottom: 200rpx;
 		background: linear-gradient(180deg, #E1FFF8 0%, #E1FFF8 17%, #FFFFFF 33%);
 
 		.top-swipper-box {
@@ -121,6 +143,59 @@
 			text-align: left;
 			.comment-num-text {
 				padding-left: 6rpx;
+			}
+		}
+		.bottom-comment-box {
+			display: flex;
+			flex-direction: row;
+			align-items:flex-start;
+			position: fixed;
+			left: 0;
+			right:0;
+			bottom: 0;
+			background-color: #ffffff;
+			height: 188rpx;
+			padding: 0rpx 32rpx ;
+			padding-top: 24rpx;
+			border-top: 1rpx solid $Color-B-5;
+			box-sizing: border-box;
+			
+			.actions {
+				width:240rpx;
+				display: flex;
+				padding-left: 24rpx;
+				justify-content: space-between;
+				align-items: center;
+				.action-item {
+					display: flex;
+					flex-direction: row;
+					justify-content: flex-start;
+					align-items: center;
+					.item-icon {
+						width: 48rpx;
+						height: 48rpx;
+						margin-right: 3rpx;
+					}
+					.item-num {
+						font-size:30rpx;
+						color:$Color-B-1
+					}
+				}
+			}
+			.input-box {
+				width: calc(100% - 240rpx);
+				display: flex;
+				flex-direction: row;
+				background-color: $Color-B-5;
+				border-radius: 122rpx;
+				height: 72rpx;
+				padding: 0rpx 32rpx;
+				align-items: center;
+				.prev-icon {
+					width: 32rpx;
+					height: 32rpx;
+					margin-right: 16rpx;
+				}
 			}
 		}
 	}

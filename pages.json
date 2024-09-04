@@ -103,8 +103,26 @@
 					"navigationBarTextStyle": "black"
 				}
 			}]
+		},
+		{
+			"root": "pagesFreshNews",
+			"pages": [
+				{
+					"path": "pages/release/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "发布新鲜事"
+					}
+				},
+				{
+					"path": "pages/detail/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "查看新鲜事"
+					}
+				}
+			]
 		}
-
 	],
 
 	"tabBar": {

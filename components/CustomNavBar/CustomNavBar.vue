@@ -1,8 +1,9 @@
 <!-- components/CustomNavBar.vue -->
 <template>
-  <view class="nav-bar" :style="{height: navBarHeight + 'rpx', paddingTop:statusBarHeight+ 'rpx' }">
+  <view class="nav-bar" :style="navBarStyleObj">
     <view class="left" @click="onBack">
-		<image class="back-icon" src="../../static/images/nav_back_light.svg"></image>
+		<image v-if="theme === 'light'" class="back-icon" src="../../static/images/nav_back_light.svg"></image>
+		<image v-else class="back-icon" src="../../static/images/back.png"></image>
     </view>
     <view class="center">
       <text class="nav-text">{{ title }}</text>
@@ -21,15 +22,32 @@ const props = defineProps({
   title: {
     type: String,
     default: ''
+  },
+  navBarStyle:{
+	  type: Object,
+	  default: () =>{
+		  return {}
+	  }
+  },
+  theme:{
+	  type:String,
+	  default: 'light'
   }
 });
 
+const navBarStyleObj = ref({})
 onMounted(() => {
 	uni.getSystemInfo().then(res => {
 		 navBarHeight.value = (res.statusBarHeight + 41)*2
 		 statusBarHeight.value = res.statusBarHeight * 2
 		 
-		 console.log('navBarHeight=========', navBarHeight)
+			
+		navBarStyleObj.value = {
+			...props.navBarStyle,
+			height: (res.statusBarHeight + 41)*2 + 'rpx',
+			paddingTop: res.statusBarHeight * 2 + 'rpx'
+		}
+		 
 	})
 })
 
