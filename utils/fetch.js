@@ -1,8 +1,8 @@
 import env from './env.js';
 
 const BASE_URL = {
-    develop: 'http://39.106.62.98:8080',
-    trial: 'http://39.106.62.98:8080',
+    develop: 'http://120.26.208.147:8081',
+    trial: 'http://120.26.208.147:8081',
     release: '',
 }[env]; // 可以将基本URL单独管理
 

@@ -11,15 +11,15 @@
 					<Upload></Upload>
 				</view>
 				<view class="input-title">
-					<input type="text" placeholder="请填写清晰的活动标题"  placeholder-class="placeholder-style">
+					<input type="text" v-model="activity.title" placeholder="请填写清晰的活动标题"  placeholder-class="placeholder-style">
 				</view>
 				<view class="input-desc">
-					<textarea row='3'  placeholder="描述一下活动亮点、活动内容、推荐人群、贴心tips等，叫大家一起野吧"   placeholder-class="placeholder-style"/>
+					<textarea row='3' v-model="activity.describe" placeholder="描述一下活动亮点、活动内容、推荐人群、贴心tips等，叫大家一起野吧"   placeholder-class="placeholder-style"/>
 				</view>
 				<view class="input-tag">
 					<view class="tag-add" @click="activeOpen">
 						<image src="/static/images/chat-thread-fill.png" mode=""></image>
-						<text>{{ info.tag ? info.tag : '添加活动标签' }}</text>
+						<text>{{ activity.label ? activity.label : '添加活动标签' }}</text>
 						<image src="/static/images/arrow-right-s-line.png"></image>
 					</view>
 				</view>
@@ -35,16 +35,16 @@
 					<view class="opt" @click="timeStartOpen">
 						<view>
 							<image src="/static/images/time-line.png" mode=""></image>
-							<text v-if="!info.startTimeShow">活动开始时间</text>
-							<view class="time" v-else>活动开始:{{ info.startTimeShow }}</view>
+							<text v-if="!activity.startdate">活动开始时间</text>
+							<view class="time" v-else>活动开始: {{ activity.startdate }}</view>
 							<image src="/static/images/arrow-right-s-line_gray.png" mode=""></image>
 						</view>
 					</view>
 					<view class="opt" @click="timeEndOpen">
 						<view>
 							<image src="/static/images/time-line.png" mode=""></image>
-							<text v-if="!info.endTimeShow">报名截止时间</text>
-							<view class="time" v-else>活动截止:{{ info.endTimeShow }}</view>
+							<text v-if="!activity.enddate">报名截止时间</text>
+							<view class="time" v-else>活动截止: {{ activity.enddate }}</view>
 							<image src="/static/images/arrow-right-s-line_gray.png" mode=""></image>
 						</view>
 					</view>
@@ -54,8 +54,8 @@
 				<view class="line" @click="zcShow = true">
 					<view>退款政策</view>
 					<view>
-						<text v-if='info.refund'>{{ info.refund }}</text>
-						<text v-if='!info.refund' style="color: #999">请选择</text>
+						<text v-if='activity.refund'>{{ activity.refund }}</text>
+						<text v-if='!activity.refund' style="color: #999">请选择</text>
 						<!-- <image src="/static/images/arrow-right-s-line-black.png" mode=""></image> -->
 						<image src="/static/images/arrow-right-s-line_gray.png" mode=""></image>
 					</view>
@@ -63,7 +63,7 @@
 				<view class="line" @click="openNum">
 					<view>活动人数</view>
 					<view>
-						<text  v-if="info.maxNum">{{ info.minNum }} ~ {{ info.maxNum }}</text>
+						<text  v-if="activity.maxpeople">{{ activity.minpeople }} ~ {{ activity.maxpeople }}</text>
 						<text class="line-desc" v-else>请输入参与人数范围</text>
 						<image src="/static/images/arrow-right-s-line_gray.png" mode=""></image>
 					</view>
@@ -71,7 +71,7 @@
 				<view class="line">
 					<view>价格（每人）</view>
 					<view class="line-input">
-						<input type="text" placeholder="请输入价格"  placeholder-class="placeholder-style">
+						<input type="text" placeholder="请输入价格" v-model="activity.price"  placeholder-class="placeholder-style">
 					</view>
 				</view>
 			</view>
@@ -102,7 +102,7 @@
 					<view class="update-header">
 						<view>{{ item.title }}</view>
 						<view v-if="zcIndex == index">
-							<image src="/static/images/checkbox.png" mode=""></image>
+							<image src="/static/images/checkbox-blue.png" mode=""></image>
 						</view>
 					</view>
 					<view class="update-desc">
@@ -115,13 +115,13 @@
 		<PoupWrap :show='numShow' @close='numShow = false' title='填写活动人数' @save='doNum'>
 			<view style="padding-bottom: 48rpx;" class="range">
 				<view>
-					<input type="number" placeholder="最小人数" v-model="minNum">
+					<input type="number" placeholder="最小人数" v-model="minpeople">
 				</view>
 				<view>
 					~
 				</view>
 				<view>
-					<input type="number" placeholder="最大人数" v-model="maxNum">
+					<input type="number" placeholder="最大人数" v-model="maxpeople">
 				</view>
 			</view>
 		</PoupWrap>
@@ -152,20 +152,30 @@
 		},
 		data() {
 			return {
-				info: {
-					tag: '',
-					startTime: '',
-					endTime: '',
-					startTimeShow: '',
-					endTimeShow: '',
-					refund: '',
-					minNum: '',
-					maxNum: ''
+				activity: {
+						title: "新鲜事测试",
+						describe: "", // 活动描述
+						label: "个人分享",
+						userId: "dd50e677-f539-4a69-9f37-57f48debbdd7",
+						longitude: "111.111",
+						dimension: "111.111",
+						endTime: '',
+						startdate: "2024-09-06 16:59:25",
+						enddate: "2024-09-06 16:59:25",
+						minpeople: 10,
+						maxpeople: 8,
+						price: 25,
+						contactphoto: "0",
+						wxnumber: "0",
+						status: "0",
+						imges: "",
+						type: "2",
+						refund:''
 				},
 				toastShow: false,
 				publicSuccessShow: false,
-				minNum: '',
-				maxNum: '',
+				minpeople: '',
+				maxpeople: '',
 				StatusBar: 0,
 				navHeight: 0,
 				zcShow: false,
@@ -215,8 +225,8 @@
 				})
 			},
 			doReFund() {
-				if (this.zcIndex === -1 && this.info.refund) {
-					this.info.refund = ''
+				if (this.zcIndex === -1 && this.activity.refund) {
+					this.activity.refund = ''
 					this.zcShow = false
 					return;
 				} else if (this.zcIndex === -1) {
@@ -226,25 +236,25 @@
 					})
 					return;
 				}
-				this.info.refund = this.zcList[this.zcIndex].title
+				this.activity.refund = this.zcList[this.zcIndex].title
 				this.zcShow = false
 			},
 			openNum() {
-				this.minNum = this.info.minNum
-				this.maxNum = this.info.maxNum
+				this.minpeople = this.activity.minpeople
+				this.maxpeople = this.activity.maxpeople
 				this.numShow = true;
 			},
 			doNum() {
 				let title = ''
-				let maxNum = this.maxNum
-				let minNum = this.minNum
-				if (maxNum < minNum) {
+				let maxpeople = this.maxpeople
+				let minpeople = this.minpeople
+				if (maxpeople < minpeople) {
 					title = '请正确填写最小值和最大值'
 				}
-				if (isNaN(maxNum) || isNaN(minNum)) {
+				if (isNaN(maxpeople) || isNaN(minpeople)) {
 					title = '请输入数字'
 				}
-				if (!maxNum || !minNum) {
+				if (!maxpeople || !minpeople) {
 					title = '请输入数字'
 				}
 				if (title) {
@@ -254,8 +264,8 @@
 					})
 					return;
 				}
-				this.info.minNum = this.minNum
-				this.info.maxNum = this.maxNum
+				this.activity.minpeople = this.minpeople
+				this.activity.maxpeople = this.maxpeople
 				this.numShow = false
 			},
 			doZcExpose(index) {
@@ -272,7 +282,7 @@
 			},
 			activeConfirm(e) {
 				console.log(e)
-				this.info.tag = e.value[0]
+				this.activity.label = e.value[0]
 			},
 			timeStartConfirm(e) {
 				console.log(this.getDatesAndWeeksYear)
@@ -281,8 +291,8 @@
 				let date = this.getDatesAndWeeksYear.filter(item=> item.indexOf(value[0]) !== -1)[0]
 				let day = date.split(' ')[0]
 				let week = date.split(' ')[1]
-				this.info.startTime = `${day}(${week}) ${value[1]}${value[2]}`
-				this.info.startTimeShow = `${value[0].split(' ')[0]}(${week}) ${value[1]}${value[2]}`
+				this.activity.startTime = `${day}(${week}) ${value[1]}${value[2]}`
+				this.activity.startdate = `${value[0].split(' ')[0]}(${week}) ${value[1]}${value[2]}`
 			},
 			timeEndConfirm(e) {
 				console.log(this.getDatesAndWeeksYear)
@@ -291,14 +301,37 @@
 				let date = this.getDatesAndWeeksYear.filter(item=> item.indexOf(value[0]) !== -1)[0]
 				let day = date.split(' ')[0]
 				let week = date.split(' ')[1]
-				this.info.endTime = `${day}(${week}) ${value[1]}${value[2]}`
-				this.info.endTimeShow = `${value[0].split(' ')[0]}(${week}) ${value[1]}${value[2]}`
+				this.activity.endTime = `${day}(${week}) ${value[1]}${value[2]}`
+				this.activity.enddate = `${value[0].split(' ')[0]}(${week}) ${value[1]}${value[2]}`
 			},
 			async doPulish() {
 				try {
-					let res = await http.posts({
-						
+					let res = await http.activityAdd({
+						title: "新鲜事测试",
+						label: "个人分享",
+						userId: "dd50e677-f539-4a69-9f37-57f48debbdd7",
+						longitude: "111.111",
+						dimension: "111.111",
+						startdate: "2024-09-06 16:59:25",
+						enddate: "2024-09-06 16:59:25",
+						minpeople: 10,
+						maxpeople: 8,
+						price: 25,
+						contactphoto: "0",
+						wxnumber: "0",
+						status: "0",
+						imges: "",
+						describe: "",
+						type: "2"
 					})
+					if (res.code !== 200) {
+						uni.showToast({
+							title: res.msg,
+							icon: 'error'
+						});
+						return
+					}
+					this.publicSuccessShow = true
 				} catch(error) {
 					
 				}
