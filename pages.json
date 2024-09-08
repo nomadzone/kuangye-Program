@@ -102,6 +102,21 @@
 					"navigationBarBackgroundColor": "#fff",
 					"navigationBarTextStyle": "black"
 				}
+			}, {
+				"path": "pages/personalData/index",
+				"style": {
+					"navigationBarBackgroundColor": "#fff",
+					"navigationBarTextStyle": "black",
+					"navigationBarTitleText": "个人资料"
+					
+				}
+			}, {
+				"path": "pages/followAndFans/index",
+				"style": {
+					"navigationStyle": "custom",
+					"navigationBarTitleText": "个人资料"
+					
+				}
 			}]
 		},
 		{
@@ -119,6 +134,18 @@
 					"style": {
 						"navigationStyle": "custom",
 						"navigationBarTitleText": "查看新鲜事"
+					}
+				}
+			]
+		},
+		{
+			"root": "pagesPartner",
+			"pages":[
+				{
+					"path": "pages/add/index",
+					"style": {
+						"navigationStyle": "custom",
+						"navigationBarTitleText": "发布找搭子"
 					}
 				}
 			]

@@ -35,7 +35,36 @@
 	}
 	
 	const handleWxLogin = async  (e) => {
-		console.log(e)
+		
+		uni.login({
+		  provider: 'weixin', //使用微信登录
+		  success: function (loginRes) {
+		    console.log(loginRes);
+			uni.getUserInfo({
+				success:(res) => {
+					console.log('res===========', res)
+					uni.request({
+					    url: 'http://120.26.208.147:8081/api/weChat/login',
+						method:'POST',
+					    data: {
+							
+							encryptedData:res.encryptedData,
+							code: loginRes.code,
+							iv: res.iv
+					    },
+					    header: {
+					        // 'custom-header': 'hello' //自定义请求头信息
+					    },
+					    success: (res) => {
+					        console.log(res.data);
+					    }
+					});
+				}
+			})
+			
+		  }
+		});
+		
 	}
 	
 	const handleClickLogin = () => {
