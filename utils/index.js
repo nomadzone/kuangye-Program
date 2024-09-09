@@ -1,4 +1,4 @@
-
+import http from './http'
 
 
 export const getDayHours = (start = 0, end = 23)=> {
@@ -67,5 +67,36 @@ export const getCode = ()=> {
 				  inject(err)
 			  }
 			});
+	})
+}
+
+export const getWxUserInfo = async() => {
+	uni.getUserInfo({
+		success:async (target) => {
+			const code = await getCode()
+			const params = {
+				encryptedData: target.encryptedData,
+				code,
+				iv: target.iv,
+			}
+			let res = await http.userLogin(params)
+			if (res.code === '200') {
+				uni.setStorageSync('token', res.data)
+			}
+		}
+	})
+}
+
+export const getUserProfile = async() => {
+	return new Promise((resolve, reject) => {
+		uni.getUserProfile({
+			desc: '用于完善用户资料',
+			success: (res) => {
+				resolve(res)
+			},
+			fail: (err) => {
+				reject(err)
+			}
+		})
 	})
 }
