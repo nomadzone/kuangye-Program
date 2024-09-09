@@ -12,6 +12,39 @@
 				</view>
 			</view>
 			
+			<view class="location-row">
+				<image class="map-icon" src="../../static/images/partner-meet-location.svg"></image>
+				<view class="location">
+					<text class="location-text">{{location ? location : '面基地点（选填）'}}</text>
+					<image class="location-select-icon" src="../../static/images/select-more.svg"></image>
+				</view>
+			</view>
+			<view class="location-row">
+				<image class="map-icon" src="../../static/images/clock.svg"></image>
+				<view class="location">
+					<text class="location-text">{{location ? location : '期望时间（选填）'}}</text>
+					<image class="location-select-icon" src="../../static/images/select-more.svg"></image>
+				</view>
+			</view>
+		</view>
+		
+		<view class="release-form-box">
+			<view class="block-title">联系方式</view>
+			
+			<view class="imgs-box">
+				<view class="item img-upload-btn">
+					<image class="add-img-icon" src="../../static/images/add.svg"></image>
+					<text class="add-img-text">添加图片</text>
+					<text class="add-img-text">(选填)</text>
+				</view>
+			</view>
+			
+			<view class="location-row">
+				<image class="map-icon" src="../../static/images/phone.svg"></image>
+				<view class="location">
+					<text class="location-text">{{location ? location : '输入手机号（选填）'}}</text>
+				</view>
+			</view>
 			
 		</view>
 		<View class="footer-actions">
@@ -31,6 +64,7 @@
 </script>
 
 <style lang="scss" scoped>
+	@import "@/static/config.scss"; // 注意相对路径
 	.partner-add-page {
 		width: 100vw;
 		height: 100vh;
@@ -54,6 +88,17 @@
 			background-color: #ffffff;
 			border-radius: 24rpx;
 			padding: 32rpx 24rpx;
+			margin-bottom: 24rpx;
+				
+			.block-title {
+				font-family: PingFang SC;
+				font-size: 14px;
+				font-weight: 600;
+				line-height: 19.6px;
+				text-align: left;
+				color:$Color-B-5;
+
+			}
 			
 			.imgs-box {
 				display: flex;
@@ -108,6 +153,7 @@
 				flex-direction: row;
 				justify-content: flex-start;
 				align-items: center;
+				margin-bottom: 32rpx;
 				.map-icon{
 					width: 32rpx;
 					height: 32rpx;

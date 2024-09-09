@@ -149,6 +149,14 @@
 					}
 				}
 			]
+		},{
+			"root": "pagesIdentify",
+			"pages":[
+				{
+					"path": "pages/index/index",
+					"navigationBarTitleText": ""
+				}
+			]
 		}
 	],
 
