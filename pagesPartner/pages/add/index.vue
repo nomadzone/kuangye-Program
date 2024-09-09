@@ -1,29 +1,21 @@
 <template>
-	<view class="fresh-news-release-page" >
-		<custom-nav-bar title="发布新鲜事" :navBarStyle="navBarStyle" theme="dark"></custom-nav-bar>
-		<image class="corner-img" src="../../static/images/release-corner-icon.svg"></image>
+	<view class="partner-add-page" >
+		<custom-nav-bar title="发布找搭子" :navBarStyle="navBarStyle" theme="dark"></custom-nav-bar>
+		<image class="corner-img" src="../../static/images/corner-icon.svg"></image>
 		<view class="release-form-box">
+			<textarea class="content-textarea" auto-height placeholder="有没有人浅咖一下？" :maxlength="30"/>
 			<view class="imgs-box">
 				<view class="item img-upload-btn">
-					<image class="add-img-icon" src="../../static/images/add-img-icon.svg"></image>
+					<image class="add-img-icon" src="../../static/images/add.svg"></image>
 					<text class="add-img-text">添加图片</text>
+					<text class="add-img-text">(选填)</text>
 				</view>
 			</view>
-			<input class="title-input" focus placeholder="标题" />
-			<textarea class="content-textarea" auto-height placeholder="介绍一下你周边好玩的事情吧"/>
 			
-			<view class="location-row">
-				<image class="map-icon" src="../../static/images/release-location-icon.svg"></image>
-				<view class="location">
-					<text class="location-text">{{location ? location : '定位'}}</text>
-					<image class="location-select-icon" src="../../static/images/release-more-icon.svg"></image>
-				</view>
-			</view>
+			
 		</view>
-		
 		<View class="footer-actions">
 			<button class="submit-btn">发布</button>
-			
 		</View>
 	</view>
 </template>
@@ -31,21 +23,18 @@
 <script setup>
 	import CustomNavBar from '@/components/CustomNavBar/CustomNavBar.vue';
 	import {ref} from 'vue'
-	
 	const navBarStyle = {
 		position: 'relative',
 		color:'rgba(34, 34, 34, 1)'
 	}
-	
 	let location = ref('')
-	
 </script>
 
 <style lang="scss" scoped>
-	.fresh-news-release-page {
+	.partner-add-page {
 		width: 100vw;
 		height: 100vh;
-		background: linear-gradient(180deg, #E1FFF8 2.62%, #F6F5F5 63.23%);
+		background: linear-gradient(180deg, #E3F7FF 2.62%, #F6F5F5 63.23%);
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-start;
@@ -102,19 +91,12 @@
 					}
 				}
 			}
-			.title-input {
-				font-family: PingFang SC;
-				font-size: 32rpx;
-				font-weight: 600;
-				text-align: left;
-				margin-bottom: 16rpx;
-
-			}
+			
 			
 			.content-textarea {
 				//styleName: 正文-普通;
 				font-family: PingFang SC;
-				font-size: 28rpx;
+				font-size: 32rpx;
 				font-weight: 400;
 				text-align: left;
 				min-height: 260rpx;

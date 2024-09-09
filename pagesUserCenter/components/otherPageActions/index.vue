@@ -2,7 +2,7 @@
 <template>
 	<view class="other-user-page-actions-comp">
 		<view class="action-item">联系TA</view>
-		<view :class="followStatus ? 'action-item-active': 'action-item'">关注</view>
+		<view :class="followStatus ? 'action-item-active': 'action-item'" >关注</view>
 	</view>
 </template>
 
