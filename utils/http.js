@@ -6,6 +6,7 @@ const http = {
 	posts: (data)=> post(`/v1/posts`, data),
 	upload: (data)=> post(`/oss/upload`, data),
 	activityAdd: (data)=> post(`/activity/add`, data),
+	getUserInfo: ()=> get(`/user/getUserInfo`),
 }
 
 

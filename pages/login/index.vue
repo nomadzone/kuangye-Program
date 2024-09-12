@@ -36,7 +36,6 @@
         v-if="accessStatus"
         open-type="getPhoneNumber"
         @getphonenumber="handleWxLogin"
-        @tap="handleClickLogin"
       >
         <image
           class="wechat-icon"
@@ -118,14 +117,24 @@ const handleWxLogin = async({ target }) => {
 	const code = await getCode()
 	const params = {
 		encryptedData: target.encryptedData,
-		code: target.code,
+		code,
 		iv: target.iv,
 	}
 	let res = await http.userLogin(params)
 	uni.hideLoading()
 	if (res.code === '200') {
 		uni.setStorageSync('token', res.data)
-		uni.navigateBack()
+    let userRes = await http.getUserInfo()
+    if (userRes.code === '200') {
+      uni.setStorageSync('userInfo', userRes.data)
+      uni.navigateBack()
+    } else {
+      uni.showToast({
+        title: '获取用户信息失败',
+        icon: 'none',
+        duration: 2000
+      })
+    }
 	} else {
 		uni.showToast({
 			title: '登录失败',

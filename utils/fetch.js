@@ -24,7 +24,7 @@ const httpRequest = (url, method = 'GET', data = null, headers = {}) => {
             data,
             header: {
                 'Content-Type': 'application/json',
-                // 'token': uni.getStorageSync('token'),
+                'token': uni.getStorageSync('token'),
                 ...headers
             },
             success: (res) => {
