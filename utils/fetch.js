@@ -1,10 +1,12 @@
 import env from './env.js';
 
 const BASE_URL = {
-    develop: 'http://120.26.208.147:8081',
-    trial: 'http://120.26.208.147:8081',
+    develop: 'http://120.26.208.147:8081/api',
+    trial: 'http://120.26.208.147:8081/api',
     release: '',
 }[env]; // 可以将基本URL单独管理
+
+export const prefixUrl = BASE_URL
 
 const httpRequest = (url, method = 'GET', data = null, headers = {}) => {
     if (!BASE_URL) {
@@ -22,6 +24,7 @@ const httpRequest = (url, method = 'GET', data = null, headers = {}) => {
             data,
             header: {
                 'Content-Type': 'application/json',
+                // 'token': uni.getStorageSync('token'),
                 ...headers
             },
             success: (res) => {

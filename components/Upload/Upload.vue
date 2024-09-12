@@ -1,139 +1,181 @@
 <template>
-	<view class="upload-wrap">
-		<view class="files" v-for="(item, index) in fileList" :key="index">
-			<image class="close" src="../../static/images/input-close.png" mode=""></image>
-			<image :src="item" mode=""></image>
-		</view>
-		<view class="upload" @click="doUpload" v-if="limit === -1 || fileList.length < limit ">
-			<view>
-				<image src="../../static/images/upload-add.png" mode=""></image>
-				<text>{{ title }}</text>
-			</view>
-		</view>
-	</view>
+  <view class="upload-wrap">
+    <view class="files" v-for="(item, index) in fileList" :key="index">
+      <image
+        class="close"
+        src="../../static/images/input-close.png"
+        mode=""
+        @click="remove(index)"
+      ></image>
+      <image :src="item" mode=""  @click="doUpload(index)"></image>
+    </view>
+    <view
+      class="upload"
+      @click="doUpload(-1)"
+      v-if="limit === 1 || fileList.length < limit"
+    >
+      <view>
+        <image src="../../static/images/upload-add.png" mode=""></image>
+        <text>{{ title }}</text>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script>
-	export default {
-		props: {
-			title: {
-				type: String,
-				default: '添加图片'
-			},
-			limit: {
-				type: Number,
-				default: -1
+import { prefixUrl } from "@/utils/fetch.js";
+export default {
+  props: {
+    title: {
+      type: String,
+      default: "添加图片",
+    },
+    limit: {
+      type: Number,
+      default: 1,
+    },
+  },
+  data() {
+    return {
+      fileList: [],
+    };
+  },
+  methods: {
+    remove(index) {
+      const _this = this;
+      uni.showModal({
+        title: "提示",
+        content: "是否删除该图片",
+        success: function (res) {
+          if (res.confirm) {
+            // 用户点击确定
+            _this.fileList.splice(index, 1);
+          } else if (res.cancel) {
+            // 用户点击取消，可以选择不做任何处理
+            console.log("用户取消删除");
+          }
+        },
+      });
+    },
+    doUpload(index) {
+      const _this = this;
+      wx.chooseImage({
+        count: _this.limit, // 默认9
+        sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+        success: function (res) {
+          const tempFilePaths = res.tempFilePaths; // 获取所有选择的图片路径
+          // 遍历所有文件路径，并逐个上传
+          tempFilePaths.forEach((filePath) => {
+            _this.uploadFile(filePath, index); // 调用上传方法，逐个上传
+          });
+        },
+        fail: function (err) {
+          console.error("选择图片失败", err);
+        },
+      });
+    },
+    uploadFile(filePath, index) {
+      const _this = this;
+      wx.uploadFile({
+        url: `${prefixUrl}/oss/upload`, // 你的服务器接口
+        filePath: filePath, // 选择的文件路径
+        name: "file", // 文件对应的 key
+        header: {
+          "Content-Type": "multipart/form-data",
+          token: uni.getStorageSync("token"),
+        },
+        formData: {
+          // 如果有其他的表单数据，也可以在这里传递
+        },
+        success(uploadRes) {
+			let res = JSON.parse(uploadRes.data);
+			if (res.code !== '200') {
+				uni.showToast({
+					title: res.msg,
+					icon: 'none'
+				})
+				return;
 			}
-		},
-		data() {
-			return {
-				fileList: []
+			if (index === -1) {
+				_this.$emit('upload', [..._this.fileList, res.data]);
+				_this.fileList.push(res.data);
+			} else {
+				_this.$emit('upload', _this.fileList);
+				_this.fileList[index] = res.data;
 			}
-		},
-		methods: {
-			doUpload() {
-				const _this = this;
-				wx.chooseImage({
-				  count: 1, // 默认9
-				  sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-				  sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-				  success: function(res) {
-					var tempFilePaths = res.tempFilePaths;
-					_this.uploadFile(tempFilePaths)
-					_this.fileList = _this.fileList.length === 0 ? tempFilePaths : [..._this.fileList, ...tempFilePaths]
-					// 上传图片到服务器的代码将在这里
-				  },
-				  fail: function(err) {
-					console.error('选择图片失败', err);
-				  }
-				});
-			},
-			uploadFile(e) {
-				// 假设tempFilePaths[0]是我们要上传的图片路径
-				wx.uploadFile({
-				  url: 'https://your-server.com/upload', // 你的服务器地址
-				  filePath: e[0],
-				  name: 'file',
-				  formData: {
-				    'user': 'test'
-				  },
-				  success: function(res) {
-				    var data = res.data;
-				    console.log(data);
-				    // 服务器返回的数据，可以是JSON字符串或二进制数据
-				    // 这里应该解析data并获取图片的URL，然后进行下一步操作
-				  },
-				  fail: function(err) {
-				    console.error('上传图片失败', err);
-				  }
-				});
-			}
-		}
-	}
+        },
+        fail(error) {
+          console.error("上传失败：", error);
+        },
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-	.upload-wrap {
-		display: flex;
-		gap: 20rpx;
-		flex-direction: row;
-		flex-wrap: wrap;
-	}
-	.files {
-		border-radius: 12rpx;
-		height: 200rpx;
-		width: 200rpx;
-		box-sizing: border-box;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		background-color: #F5F5F5;
-		position: relative;
-		image {
-			height: 200rpx;
-			width: 200rpx;
-			border-radius: 12rpx;
-		}
-		.close {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			border-radius: 50%;
-			background-color: #222;
-			position: absolute;
-			top: -10rpx;
-			right: -14rpx;
-			height: 40rpx;
-			width: 40rpx;
-		}
-	}
-	.upload {
-		background-color: #F5F5F5;
-		border-radius: 12rpx;
-		height: 200rpx;
-		width: 200rpx;
-		box-sizing: border-box;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		> view {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-		}
-		image {
-			width: 40rpx;
-			height: 40rpx;
-		}
-		text {
-			padding-top: 12rpx;
-			font-family: PingFang SC;
-			font-size: 24rpx;
-			font-weight: 400;
-			line-height: 28rpx;
-			text-align: center;
-			color: #A3A3A3;
-			width: 120rpx;
-		}
-	}
+.upload-wrap {
+  display: flex;
+  gap: 20rpx;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.files {
+  border-radius: 12rpx;
+  height: 200rpx;
+  width: 200rpx;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5;
+  position: relative;
+  image {
+    height: 200rpx;
+    width: 200rpx;
+    border-radius: 12rpx;
+  }
+  .close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #222;
+    position: absolute;
+    top: -10rpx;
+    right: -14rpx;
+    height: 40rpx;
+    width: 40rpx;
+  }
+}
+.upload {
+  background-color: #f5f5f5;
+  border-radius: 12rpx;
+  height: 200rpx;
+  width: 200rpx;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  > view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  image {
+    width: 40rpx;
+    height: 40rpx;
+  }
+  text {
+    padding-top: 12rpx;
+    font-family: PingFang SC;
+    font-size: 24rpx;
+    font-weight: 400;
+    line-height: 28rpx;
+    text-align: center;
+    color: #a3a3a3;
+    width: 120rpx;
+  }
+}
 </style>
