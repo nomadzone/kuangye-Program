@@ -12,7 +12,7 @@
     <view
       class="upload"
       @click="doUpload(-1)"
-      v-if="limit === 1 || fileList.length < limit"
+      v-if="fileList.length < limit"
     >
       <view>
         <image src="../../static/images/upload-add.png" mode=""></image>
