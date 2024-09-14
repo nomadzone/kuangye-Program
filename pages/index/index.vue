@@ -2,7 +2,7 @@
   <view>
 	<HomeNavbar @action='doAction' :title="schooolTitle"/>
 	<Gradual></Gradual>
-	<Map class="map"></Map>
+	<Map ref="map" class="map"></Map>
 	<view class="container">
 		<view class="sticky">
 			<view class="line"></view>
@@ -10,7 +10,7 @@
 			<HomeCate></HomeCate>
 		</view>
 		<view  class="water-view">
-			<HomeWaterfalls isAd></HomeWaterfalls>
+			<HomeWaterfalls ref="HomeWaterfalls" isAd></HomeWaterfalls>
 		</view>
 		
 	</view>
@@ -47,6 +47,10 @@ export default {
   },
   created() {
 	  this.statusBarHeight = uni.getStorageSync('statusBarHeight')
+  },
+  onShow() {
+	this.$refs.map.getUserLocation()
+	this.$refs.HomeWaterfalls.getList()
   },
   methods: {
 	  doAction() {

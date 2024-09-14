@@ -77,7 +77,11 @@ export default {
     },
     uploadFile(filePath, index) {
       const _this = this;
-      wx.uploadFile({
+      uni.showLoading({
+        title: '上传中...',
+        mask: true
+      })
+      uni.uploadFile({
         url: `${prefixUrl}/oss/upload`, // 你的服务器接口
         filePath: filePath, // 选择的文件路径
         name: "file", // 文件对应的 key
@@ -89,6 +93,7 @@ export default {
           // 如果有其他的表单数据，也可以在这里传递
         },
         success(uploadRes) {
+          uni.hideLoading()
 			let res = JSON.parse(uploadRes.data);
 			if (res.code !== '200') {
 				uni.showToast({
@@ -106,6 +111,7 @@ export default {
 			}
         },
         fail(error) {
+          uni.hideLoading()
           console.error("上传失败：", error);
         },
       });
