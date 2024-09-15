@@ -18,7 +18,7 @@
 				<image src="../../static/images/popu-1.png" mode=""></image>
 			</view>
 			<view class="popup-bottom">
-				<view>
+				<view @tap="doPath('/pagesPartner/pages/add/index')">
 					<view class="popup-title">找搭子</view>
 					<view class="popup-desc">找搭子一起玩</view>
 					<image src="../../static/images/popu-2.png" mode=""></image>

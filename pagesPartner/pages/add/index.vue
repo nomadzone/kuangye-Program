@@ -2,6 +2,7 @@
 	<view class="partner-add-page" >
 		<custom-nav-bar title="发布找搭子" :navBarStyle="navBarStyle" theme="dark"></custom-nav-bar>
 		<image class="corner-img" src="../../static/images/corner-icon.svg"></image>
+		<form>
 		<view class="release-form-box">
 			<textarea class="content-textarea" auto-height placeholder="有没有人浅咖一下？" :maxlength="30"/>
 			<view class="imgs-box">
@@ -50,6 +51,7 @@
 		<View class="footer-actions">
 			<button class="submit-btn">发布</button>
 		</View>
+		</form>
 	</view>
 </template>
 
