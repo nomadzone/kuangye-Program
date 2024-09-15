@@ -31,7 +31,13 @@ const httpRequest = (url, method = 'GET', data = null, headers = {}) => {
                 if (res.statusCode === 200) {
                     resolve(res.data);
                 } else {
-                    reject(new Error(`HTTP error! status: ${res.statusCode}`));
+                    if (res.data.msg.indexOf('重新登录') > -1) {
+                        uni.navigateTo({
+                            url: '/pages/login/index'
+                        })
+                        return
+                    }
+                    reject(res);
                 }
             },
             fail: (err) => {
@@ -43,8 +49,8 @@ const httpRequest = (url, method = 'GET', data = null, headers = {}) => {
 };
 
 // GET 方法封装
-export const get = (url, headers = {}) => {
-    return httpRequest(url, 'GET', null, headers);
+export const get = (url, data, headers = {}) => {
+    return httpRequest(url, 'GET', data, headers);
 };
 
 // POST 方法封装

@@ -8,7 +8,7 @@
 		},
 		{
 			"path": "pages/login/index",
-			"style":{
+			"style": {
 				"navigationBarTitleText": "登录",
 				"navigationStyle": "custom"
 			}
@@ -16,12 +16,17 @@
 		{
 			"path": "pages/explore/explore",
 			"style": {
-				"navigationBarTitleText": "探索",
-				"navigationStyle": "custom"
+				"navigationBarTitleText": "探索"
 			}
 		},
 		{
 			"path": "pages/search/search",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path": "pages/webview/index",
 			"style": {
 				"navigationBarTitleText": ""
 			}
@@ -109,21 +114,20 @@
 					"navigationBarBackgroundColor": "#fff",
 					"navigationBarTextStyle": "black",
 					"navigationBarTitleText": "个人资料"
-					
+
 				}
 			}, {
 				"path": "pages/followAndFans/index",
 				"style": {
 					"navigationStyle": "custom",
 					"navigationBarTitleText": "个人资料"
-					
+
 				}
 			}]
 		},
 		{
 			"root": "pagesFreshNews",
-			"pages": [
-				{
+			"pages": [{
 					"path": "pages/release/index",
 					"style": {
 						"navigationStyle": "custom",
@@ -141,21 +145,18 @@
 		},
 		{
 			"root": "pagesPartner",
-			"pages":[
-				{
-					"path": "pages/add/index",
-					"style": {
-						"navigationStyle": "custom",
-						"navigationBarTitleText": "发布找搭子"
-					}
+			"pages": [{
+				"path": "pages/add/index",
+				"style": {
+					"navigationStyle": "custom",
+					"navigationBarTitleText": "发布找搭子"
 				}
-			]
-		},{
+			}]
+		}, {
 			"root": "pagesIdentify",
-			"pages":[
-				{
+			"pages": [{
 					"path": "pages/index/index",
-					"navigationBarTitleText": null
+					"navigationBarTitleText": ""
 				},
 				{
 					"path": "pages/infoCheck/index",
@@ -165,8 +166,11 @@
 					"path": "pages/result/index",
 					"navigationBarTitleText": null
 				}
+
 			]
 		}
+
+
 	],
 
 	"tabBar": {
@@ -187,12 +191,12 @@
 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "",
+		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
 	},
 	"uniIdRouter": {},
-	"requiredPrivateInfos": ["getLocation"],
+	"requiredPrivateInfos": ["getLocation", "chooseLocation"],
 	"permission": {
 		"scope.userLocation": {
 			"desc": "你的位置信息将用于小程序的位置展示"

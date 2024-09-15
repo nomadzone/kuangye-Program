@@ -40,7 +40,7 @@ export const formatDate = (isYear = false, date)=> {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
   const day = String(date.getDate()).padStart(2, '0');
-  return `${ isYear ? year + '年' : ''}${month}月${day}日`;
+  return `${ isYear ? year + '-' : ''}${month}-${day}`;
 }
 
 // Helper function to get the day of the week in Chinese
@@ -48,6 +48,28 @@ export const getWeekday = (date)=> {
   const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
   return weekdays[date.getDay()];
 }
+
+export const formatDateString = (dateString) => {
+	// 处理包含中文日期和时间的格式
+	if (dateString.includes('年') || dateString.includes('周')) {
+	  // 去掉 "年", "月", "日", "周X" 等字符
+	  dateString = dateString.replace(/年|月/g, '-').replace(/日/g, '').replace(/(周[一二三四五六日])/g, '').trim();
+	}
+	if (dateString.includes('时') || dateString.includes('分') || dateString.includes('秒')) {
+		// 去掉 "年", "月", "日", "周X" 等字符
+		dateString = dateString.replace(/时|分/g, ':').replace(/秒/g, '').trim();
+	  }
+  
+	const date = new Date(dateString);
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+	const hours = String(date.getHours()).padStart(2, '0');
+	const minutes = String(date.getMinutes()).padStart(2, '0');
+	const seconds = String(date.getSeconds()).padStart(2, '0');
+	
+	return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
 
 export const getCode = ()=> {
 	return new Promise((resolve, inject)=> {

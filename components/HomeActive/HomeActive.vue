@@ -12,14 +12,15 @@
 	    :circular="true"
 	    :indicator-active-color="indicatorActiveColor"
 	  >
-	    <swiper-item v-for="(image, index) in images" :key="index">
-	      <image :src="image" class="swiper-image"></image>
+	    <swiper-item v-for="(item, index) in images" :key="index">
+	      <image :src="item.images" @click="doItem(item, index)" class="swiper-image"></image>
 	    </swiper-item>
 	  </swiper>
   </view>
 </template>
 
 <script>
+import http from '@/utils/http.js'
 export default {
   props: {
     autoplay: {
@@ -41,12 +42,22 @@ export default {
   },
   data() {
 	  return {
-		  images: [
-			  'https://img2.baidu.com/it/u=184291116,1680755030&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=620',
-			  'https://img.zcool.cn/community/01ec0d5c094270a801209252977f83.jpg@3000w_1l_0o_100sh.jpg',
-			  'https://img0.baidu.com/it/u=1317875771,334317502&fm=253&fmt=auto&app=138&f=JPEG?w=375&h=500'
-		  ]
+		  images: []
 	  }
+  },
+  async created() {
+	let res = await http.homeNoticeList({
+		type: 1
+	})
+	console.log(res, 1111)
+	this.images = res.data
+  },
+  methods: {
+	doItem(item, index) {
+		uni.navigateTo({
+			url: '/pages/webview/index?url=' + item.url
+		})
+	}
   }
 }
 </script>

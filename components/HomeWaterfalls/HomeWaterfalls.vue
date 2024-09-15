@@ -14,6 +14,7 @@
 <script>
 	import HomeActive from '@/components/HomeActive/HomeActive.vue'
 	import FallItem from './Fall-item.vue'
+	import http from '@/utils/http.js'
 	export default {
 		components: {
 			HomeActive,
@@ -31,6 +32,9 @@
 				left: [],
 				right: [],
 			}
+		},
+		onShow() {
+			this.getList()
 		},
 		created() {
 			let list = []
@@ -70,6 +74,16 @@
 			this.left = left
 		},
 		methods: {
+			async getList() {
+				let res = await http.homeActivity({
+					longitude: '77' || this.longitude,
+					latitude: '38.8833' || this.latitude,
+					"type": 1,
+					"limi": 1,
+					"page": 1
+				});	
+				console.log(res)
+			},
 			getRandomNumber() {
 			  const numbers = [1, 2, 3];
 			  const randomIndex = Math.floor(Math.random() * numbers.length);

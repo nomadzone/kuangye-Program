@@ -332,12 +332,19 @@
 		},
 		onLoad(options) {
 			this.id = options.id
+			this.getDetails()
 		},
 		created() {
 			this.StatusBar = uni.getStorageSync('statusBarHeight')
 			this.navHeight = uni.getStorageSync('navBarHeight')
 		},
 		methods: {
+			async getDetails() {
+				let res = await http.selectWildTogether({
+					id: this.id
+				});	
+				console.log(res)
+			},
 			openMap() {
 				wx.getLocation({
 					type: 'gcj02', //返回可以用于wx.openLocation的经纬度

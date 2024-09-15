@@ -45,7 +45,8 @@
           <view class="opt" @click="openMap">
             <view>
               <image src="/static/images/map-pin-line.png" mode=""></image>
-              <text> 集合地点</text>
+              <text v-if="!activity.address">集合地点</text>
+              <text v-else style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; color: #1b1b1b;">{{ activity.address }}</text>
               <image
                 src="/static/images/arrow-right-s-line_gray.png"
                 mode=""
@@ -53,6 +54,7 @@
             </view>
             <view></view>
           </view>
+
           <view class="opt" @click="timeStartOpen">
             <view>
               <image src="/static/images/time-line.png" mode=""></image>
@@ -69,8 +71,33 @@
           <view class="opt" @click="timeEndOpen">
             <view>
               <image src="/static/images/time-line.png" mode=""></image>
-              <text v-if="!activity.enddate">报名截止时间</text>
-              <view class="time" v-else>活动截止: {{ activity.enddate }}</view>
+              <text v-if="!activity.enddate ">活动结束时间</text>
+              <view class="time" v-else>活动结束: {{ activity.enddate  }}</view>
+              <image
+                src="/static/images/arrow-right-s-line_gray.png"
+                mode=""
+              ></image>
+            </view>
+          </view>
+
+          <view class="opt" @click="timeStartSignOpen">
+            <view>
+              <image src="/static/images/time-line.png" mode=""></image>
+              <text v-if="!activity.signUpStartDate">报名开始时间</text>
+              <view class="time" v-else
+                >报名开始: {{ activity.signUpStartDate }}</view
+              >
+              <image
+                src="/static/images/arrow-right-s-line_gray.png"
+                mode=""
+              ></image>
+            </view>
+          </view>
+          <view class="opt" @click="timeEndSignOpen">
+            <view>
+              <image src="/static/images/time-line.png" mode=""></image>
+              <text v-if="!activity.signUpEndDate ">报名截止时间</text>
+              <view class="time" v-else>报名截止: {{ activity.signUpEndDate  }}</view>
               <image
                 src="/static/images/arrow-right-s-line_gray.png"
                 mode=""
@@ -120,14 +147,14 @@
       <view class="module contact">
         <view class="title"> 联系方式</view>
         <view>
-          <Upload :title="'添加联系微信二维码'"></Upload>
+          <Upload :title="'添加联系微信二维码'"  :limit="1" @upload="doUploadContact"></Upload>
         </view>
         <view class="echat">
           <image
             src="/static/images/tdesign_logo-wechat-stroke.png"
             mode=""
           ></image>
-          <input type="text" placeholder="输入微信号（选填）" />
+          <input type="text" placeholder="输入微信号（选填）" v-model="activity.wxnumber" />
         </view>
       </view>
       <view :style="{ height: navHeight / 2 + 152 + 64 + 'rpx' }"></view>
@@ -152,11 +179,26 @@
       @confirm="timeStartConfirm"
     ></uv-picker>
     <uv-picker
-      title="选择报名截止时间"
+      title="选择活动结束时间"
       confirmText="保存"
       ref="pickerEnd"
       :columns="timeList"
       @confirm="timeEndConfirm"
+    ></uv-picker>
+    
+    <uv-picker
+      title="选择报名开始时间"
+      confirmText="保存"
+      ref="pickerStartSign"
+      :columns="timeList"
+      @confirm="timeStartSignConfirm"
+    ></uv-picker>
+    <uv-picker
+      title="选择报名截止时间"
+      confirmText="保存"
+      ref="pickerEndSign"
+      :columns="timeList"
+      @confirm="timeEndSignConfirm"
     ></uv-picker>
     <!-- 退改政策 -->
     <PoupWrap
@@ -213,7 +255,7 @@
     <PublicSuccess
       :show="publicSuccessShow"
       @close="publicSuccessShow = false"
-      @view="publicSuccessShow = false"
+      @view="doView"
     ></PublicSuccess>
   </view>
 </template>
@@ -226,7 +268,8 @@ import PoupWrap from "@/components/Popup/Wrap.vue";
 import PublicSuccess from "@/components/Popup/PublicSuccess.vue";
 import Toast from "@/components/Toast/Toast.vue";
 import http from "@/utils/http.js";
-import { getDayHours, getDayMin, getDatesAndWeeks } from "@/utils/index.js";
+import { getDayHours, getDayMin, getDatesAndWeeks, formatDateString } from "@/utils/index.js";
+
 export default {
   components: {
     Navbar,
@@ -239,25 +282,26 @@ export default {
   data() {
     return {
       activity: {
-        title: "新鲜事测试",
+        title: "",
         describe: "", // 活动描述
-        label: "个人分享",
-        userId: "dd50e677-f539-4a69-9f37-57f48debbdd7",
-        longitude: "111.111",
-        dimension: "111.111",
+        label: "",
+        latitude: 22.55329,
+        longitude: 113.88308,
+        address: "",
         endTime: "",
-        startdate: "2024-09-06 16:59:25",
-        enddate: "2024-09-06 16:59:25",
-        minpeople: 10,
-        maxpeople: 8,
-        price: 25,
-        contactphoto: "0",
-        wxnumber: "0",
-        status: "0",
-        imges: "",
-        type: "2",
+        startdate:'',
+        enddate:'',
+        signUpStartDate: "",
+        signUpEndDate : "",
+        minpeople: '',
+        maxpeople: '',
+        price: '',
+        contactphoto: "",
+        wxnumber: "",
+        images: "",
         refund: "",
       },
+      id: '',
       toastShow: false,
       publicSuccessShow: false,
       minpeople: "",
@@ -277,7 +321,7 @@ export default {
       ],
       activeList: [["飞盘", "羽毛球", "游泳", "酒吧", "篮球", "高尔夫"]],
       getDatesAndWeeksYear: getDatesAndWeeks(true),
-      timeList: [getDatesAndWeeks(), getDayHours(), getDayMin()],
+      timeList: [getDatesAndWeeks(true), getDayHours(), getDayMin()],
     };
   },
   created() {
@@ -293,21 +337,36 @@ export default {
   },
   methods: {
     doUpload(imgs) {
-      console.log(imgs, 121222);
+      this.activity.images = imgs.join(",");
+    },
+    doUploadContact(imgs) {
+      this.activity.contactphoto = imgs.join(",");
     },
     openMap() {
-      wx.getLocation({
-        type: "gcj02", //返回可以用于wx.openLocation的经纬度
-        success(res) {
-          const latitude = res.latitude;
-          const longitude = res.longitude;
-          wx.openLocation({
-            latitude,
-            longitude,
-            scale: 18,
-          });
+      let that = this
+      wx.chooseLocation({
+        success: function (res) {
+          console.log(res);
+          that.activity.address = res.address
+          that.activity.latitude = res.latitude
+          that.activity.longitude = res.longitude
         },
+        fail: function (err) {
+          console.log(err, '用户未选择地址');
+        }
       });
+      // wx.getLocation({
+      //   type: "gcj02", //返回可以用于wx.openLocation的经纬度
+      //   success(res) {
+      //     const latitude = res.latitude;
+      //     const longitude = res.longitude;
+      //     wx.openLocation({
+      //       latitude,
+      //       longitude,
+      //       scale: 18,
+      //     });
+      //   },
+      // });
     },
     doReFund() {
       if (this.zcIndex === -1 && this.activity.refund) {
@@ -365,59 +424,133 @@ export default {
     timeEndOpen() {
       this.$refs.pickerEnd.open();
     },
+    timeStartSignOpen() {
+      this.$refs.pickerStartSign.open();
+    },
+    timeEndSignOpen() {
+      this.$refs.pickerEndSign.open();
+    },
     activeConfirm(e) {
       console.log(e);
       this.activity.label = e.value[0];
     },
     timeStartConfirm(e) {
-      console.log(this.getDatesAndWeeksYear);
-      console.log(e);
       let value = e.value;
       let date = this.getDatesAndWeeksYear.filter(
         (item) => item.indexOf(value[0]) !== -1
       )[0];
       let day = date.split(" ")[0];
       let week = date.split(" ")[1];
-      this.activity.startTime = `${day}(${week}) ${value[1]}${value[2]}`;
       this.activity.startdate = `${value[0].split(" ")[0]}(${week}) ${
         value[1]
       }${value[2]}`;
     },
     timeEndConfirm(e) {
-      console.log(this.getDatesAndWeeksYear);
-      console.log(e);
       let value = e.value;
       let date = this.getDatesAndWeeksYear.filter(
         (item) => item.indexOf(value[0]) !== -1
       )[0];
       let day = date.split(" ")[0];
       let week = date.split(" ")[1];
-      this.activity.endTime = `${day}(${week}) ${value[1]}${value[2]}`;
-      this.activity.enddate = `${value[0].split(" ")[0]}(${week}) ${value[1]}${
+      this.activity.enddate  = `${value[0].split(" ")[0]}(${week}) ${value[1]}${
+        value[2]
+      }`;
+    },
+    timeStartSignConfirm(e) {
+      let value = e.value;
+      let date = this.getDatesAndWeeksYear.filter(
+        (item) => item.indexOf(value[0]) !== -1
+      )[0];
+      let day = date.split(" ")[0];
+      let week = date.split(" ")[1];
+      this.activity.signUpStartDate = `${value[0].split(" ")[0]}(${week}) ${
+        value[1]
+      }${value[2]}`;
+    },
+    timeEndSignConfirm(e) {
+      let value = e.value;
+      let date = this.getDatesAndWeeksYear.filter(
+        (item) => item.indexOf(value[0]) !== -1
+      )[0];
+      let day = date.split(" ")[0];
+      let week = date.split(" ")[1];
+      this.activity.signUpEndDate  = `${value[0].split(" ")[0]}(${week}) ${value[1]}${
         value[2]
       }`;
     },
     async doPulish() {
       try {
-        let res = await http.activityAdd({
-          title: "新鲜事测试",
-          label: "个人分享",
-          userId: "dd50e677-f539-4a69-9f37-57f48debbdd7",
-          longitude: "111.111",
-          dimension: "111.111",
-          startdate: "2024-09-06 16:59:25",
-          enddate: "2024-09-06 16:59:25",
-          minpeople: 10,
-          maxpeople: 8,
-          price: 25,
-          contactphoto: "0",
-          wxnumber: "0",
-          status: "0",
-          imges: "",
-          describe: "",
-          type: "2",
-        });
-        if (res.code !== 200) {
+        const currentTime = new Date(); // 当前时间
+        const params = {
+          title: this.activity.title,
+          describe: this.activity.describe,
+          label: this.activity.label,
+          latitude: this.activity.latitude,
+          longitude: this.activity.longitude,
+          address: this.activity.address,
+          startdate: formatDateString(this.activity.startdate),
+          enddate : formatDateString(this.activity.enddate ),
+          signUpStartDate: formatDateString(this.activity.signUpStartDate),
+          signUpEndDate : formatDateString(this.activity.signUpEndDate ),
+          minpeople: Number(this.activity.minpeople),
+          maxpeople:  Number(this.activity.maxpeople),
+          price: Number(this.activity.price),
+          contactphoto: this.activity.contactphoto,
+          wxnumber: this.activity.wxnumber,
+          images: this.activity.images,
+          type: 1,
+        }
+        let tip = ''
+        if (!params.images) {
+          tip = '请上传活动图片'
+        } else if (!params.title) {
+          tip = '请输入活动名称'
+        } else if (!params.describe) {
+          tip = '请输入活动描述'
+        } else if (!params.label) {
+          tip = '请输入活动标签'
+        } else if (new Date(params.signUpEndDate) <= currentTime) {
+          tip = '活动报名结束时间必须大于当前时间';
+        } else if (new Date(params.startdate) <= currentTime) {
+          tip = '活动开始时间必须大于当前时间';
+        } else if (new Date(params.enddate) <= currentTime) {
+          tip = '活动结束时间必须大于当前时间';
+        } else if (new Date(params.signUpEndDate) >= new Date(params.startdate)) {
+          tip = '活动报名结束时间必须早于活动开始时间';
+        } else if (new Date(params.startdate) >= new Date(params.enddate)) {
+          tip = '活动开始时间必须早于活动结束时间';
+        } else if (!params.price) {
+          tip = '请输入活动价格'
+        } else if (!this.activity.refund) {
+          tip = '请选择退款政策'
+        } else if (!params.minpeople) {
+          tip = '请输入最少活动人数'
+        } else if (!params.maxpeople) {
+          tip = '请输入最多活动人数'
+        } else if (params.minpeople > params.maxpeople) {
+          tip = '最少人数不能大于最多人数'
+        } else if (params.minpeople < 1) {
+          tip = '最少人数不能小于1'
+        } else if (params.maxpeople < 1) {
+          tip = '最多人数不能小于1'
+        } else if (!params.contactphoto) {
+          tip = '请上传联系微信二维码'
+        } else if (!params.wxnumber) {
+          tip = '请输入微信号'
+        }
+        if (tip) {
+          uni.showToast({
+            title: tip,
+            icon: "none",
+          });
+          return;
+        }
+        uni.showLoading({
+          title: '发布中...'
+        })
+        let res = await http.activityAdd(params);
+        uni.hideLoading()
+        if (res.code !== '200') {
           uni.showToast({
             title: res.msg,
             icon: "error",
@@ -425,8 +558,15 @@ export default {
           return;
         }
         this.publicSuccessShow = true;
+        this.id = res.data
       } catch (error) {}
     },
+    doView() {
+      uni.redirectTo({
+        url: `/pagesToggle/pages/details/details?id=${this.id}&type=self`
+      })
+      publicSuccessShow = false
+    }
   },
 };
 </script>
