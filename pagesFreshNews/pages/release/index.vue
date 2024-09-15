@@ -31,6 +31,7 @@
 <script setup>
 	import CustomNavBar from '@/components/CustomNavBar/CustomNavBar.vue';
 	import {ref} from 'vue'
+	import FreshNewsService from '@/pagesFreshNews/service/service.js'
 	
 	const navBarStyle = {
 		position: 'relative',
