@@ -23,7 +23,7 @@
 					<view class="popup-desc">找搭子一起玩</view>
 					<image src="../../static/images/popu-2.png" mode=""></image>
 				</view>
-				<view>
+				<view @tap="doPath('/pagesFreshNews/pages/release/index')">
 					<view class="popup-title">新鲜事</view>
 					<view class="popup-desc">记录附近新鲜事</view>
 					<image src="../../static/images/popu-3.png" mode=""></image>
