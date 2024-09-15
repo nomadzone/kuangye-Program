@@ -16,7 +16,8 @@
 		{
 			"path": "pages/explore/explore",
 			"style": {
-				"navigationBarTitleText": "探索"
+				"navigationBarTitleText": "探索",
+				"navigationStyle": "custom"
 			}
 		},
 		{
