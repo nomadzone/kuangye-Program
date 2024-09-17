@@ -2,9 +2,9 @@
 	<view class="page details">
 		<Navbar>
 			<view class="navbar">
-				<image :src="details.avator" mode=""></image>
-				<text>{{ details.name }}</text>
-				<view class="fllow">
+				<image v-if="activityVo.initiatorUrl" :src="activityVo.initiatorUrl" mode=""></image>
+				<text  v-if="activityVo.initiatorName">{{ activityVo.initiatorName }}</text>
+				<view class="fllow" v-if="info.userLaunchStatus == 1">
 					<text>+ 关注</text>
 				</view>
 			</view>
@@ -16,13 +16,13 @@
 			<image class="popu-icon" src="/static/images/details-icon.png" mode=""></image>
 			<view class="module">
 				<!-- 报名中 -->
-				<image class="status-image" src="/static/images/details-status-reply.png" mode=""></image>
+				<image class="status-image" v-if="activityVo.status == 101" src="/static/images/details-status-reply.png" mode=""></image>
 				<!-- 活动中 -->
-				<!-- <image class="status-image" src="/static/images/details-status-active.png" mode=""></image> -->
+				<image class="status-image" v-if="activityVo.status == 102" src="/static/images/details-status-active.png" mode=""></image>
 				<!-- 已满员 -->
-				<!-- <image class="status-image" src="/static/images/details-status-man.png" mode=""></image> -->
+				<image class="status-image" v-if="activityVo.status == 103" src="/static/images/details-status-man.png" mode=""></image>
 				<!-- 已结束 -->
-				<!-- <image class="status-image" src="/static/images/details-status-end.png" mode=""></image> -->
+				<image class="status-image" v-if="activityVo.status == 104" src="/static/images/details-status-end.png" mode=""></image>
 				<view class="swiper">
 				  <swiper 
 					class="swiper-container" 
@@ -33,27 +33,27 @@
 					indicator-active-color="#fff"
 					interval="5000" 
 					duration="500">
-					<swiper-item v-for="(picUrl, picIndex) in details.swiper" :key="picIndex">
+					<swiper-item v-for="(picUrl, picIndex) in activityVo.images" :key="picIndex">
 					  <image :src="picUrl" class="img"></image>
 					</swiper-item>
 				  </swiper>
 				</view>
 				<view class="details-content">
 					<view class="title">
-						{{ details.title }}
+						{{ activityVo.title }}
 					</view>
 					<view class="date">
 						<image src="/static/images/date-time.png" mode=""></image>
-						<text>{{ details.date }}</text>
+						<text>{{ activityVo.startdate }}</text>
 					</view>
 					<view class="location">
 						<image src="/static/images/map-pin-line.png" mode=""></image>
 						<text>
-							{{ details.gap }} | {{ details.location }}
+							{{ activityVo.distanceMeters / 1000 }} | {{ activityVo.address }}
 						</text>
 					</view>
 				</view>
-				<view class="map">
+				<view class="map" @click="goMap" v-if="activityVo.longitude && activityVo.latitude">
 					<image class="map-positon" src="/static/images/positioning.png" mode=""></image>
 					<image class="map-bg" src="/static/images/map-group.png" mode=""></image>
 				</view>
@@ -63,24 +63,24 @@
 				<view class="apply-title">
 					<view>
 						<text class="big">报名人数</text>
-						<text>(18/20)</text>
+						<text>({{info.alreadyNumber}}/{{info.total}})</text>
 					</view>
 					<view class="more" :class="[details.applyStatus == '0' ? 'gray' : '']">
-						仅剩2个名额 >
+						仅剩{{info.surplusNumber}}个名额 >
 					</view>
 				</view>
-				<view class="apply-content">
-					<template  v-for="(item, index) in details.apply" :key="index">
+				<view class="apply-content" v-if="userActivityUpVo.length > 0">
+					<template  v-for="(item, index) in userActivityUpVo" :key="index">
 						<view v-if="index < 6 || showApply" :key="index">
 							<view class="avator">
-								<image :class="[item.sex == '0' ? 'man' : 'woman']" :src="item.avator" mode=""></image>
-								<image class="sex" v-if="item.sex == '0'" src="/static/images/man-icon.png" mode=""></image>
-								<image class="sex" v-if="item.sex == '1'" src="/static/images/woman-icon.png" mode=""></image>
-								<view @click="showApply = true" class="chao" v-if="details.apply.length > 6 && index == 5 && !showApply">
+								<image :class="[item.sex == '0' ? 'man' : 'woman']" :src="item.images" mode=""></image>
+								<image class="sex" v-if="item.gender == 0" src="/static/images/man-icon.png" mode=""></image>
+								<image class="sex" v-if="item.gender == 1" src="/static/images/woman-icon.png" mode=""></image>
+								<view @click="showApply = true" class="chao" v-if="userActivityUpVo.length > 6 && index == 5 && !showApply">
 									<text>...</text>
 								</view>
 							</view>
-							<text>{{ item.name }}</text>
+							<text>{{ item.nickname }}</text>
 						</view>
 					</template>
 					<view class="shouqi" v-if="showApply"  @click="showApply = false">
@@ -92,13 +92,7 @@
 			<view class="module descption">
 				<view class="title">活动描述</view>
 				<view>
-					听说你是“社恐”？来玩飞盘!
-					
-					对于飞盘这项运动，一千个人有一千种看法。有人觉得它是年轻男女通过社群推广形成的又一波“快时尚”浪潮，也有人觉得它为企业团建破冰提供了另类选择。
-					
-					然而，这些都只是飞盘运动的“冰山一角”。真实的飞盘运动包含了强竞技性的极限飞盘运动与注重趣味性的有氧飞盘运动两大类别。酷飒与休闲，都是它。
-					
-					“以前飞盘没那么多人，所以加别的队伍比赛很正常，当时恨不得有人在问我们干什么，我们就把他拉来玩飞盘。”
+					{{ activityVo.describe }}
 				</view>
 			</view>
 			
@@ -106,38 +100,58 @@
 			<view :style='{height: (navHeight / 2 + 152 / 2 + 76) + "rpx"}'></view>
 			
 			
-			<!-- <view class="price price-gray" :style="{bottom: (navHeight / 2 + 152) + 'rpx'}">
+			<view class="price price-gray" v-if="info.userLaunchStatus == 1" :style="{bottom: (navHeight / 2 + 152) + 'rpx'}">
 				<view>
 					<text>累计收益</text>
 					<text class="big">178元</text>
 				</view>
-			</view> -->
+			</view>
 			<view class="submit" :style='{height: (navHeight / 2 + 152) + "rpx"}'>
-				<button class="outline" hover-class="button-hover">
+				<button class="outline" hover-class="button-hover"  v-if="info.userLaunchStatus != 1">
 					<image src="/static/images/wechat-fill-black.png" mode=""></image>
 					<text>联系发起人</text>
 				</button>
-				<button class="fill" hover-class="button-hover">
+				<button class="fill" hover-class="button-hover" v-if="info.userLaunchStatus != 1">
 					<text style="margin-right: 32rpx;">¥29/人</text>
 					<text>报名</text>
 				</button>
 				<!-- 已报名，可取消 -->
-				<!-- <button @click='applyPopup = true' class="outline" hover-class="button-hover">
+				<button @click='applyPopup = true' class="outline" hover-class="button-hover" v-if="info.userLaunchStatus != 1 && info.userStatus == 1 && (
+					activityVo.status == 100 ||
+					activityVo.status == 101
+				)">
 					<text>取消报名</text>
 				</button>
-				<button class="gray" hover-class="button-hover">
+				<button class="gray" hover-class="button-hover" v-if="info.userLaunchStatus != 1 && info.userStatus == 1 && (
+					activityVo.status == 102 ||
+					activityVo.status == 103 ||
+					activityVo.status == 104 ||
+					activityVo.status == 105 ||
+					activityVo.status == 106 ||
+					activityVo.status == 107
+				)">
 					<text>取消报名</text>
-				</button> -->
+				</button>
 				<!-- 自己查看详情 -->
-				<!-- <button class="outline" hover-class="button-hover">
+				<button class="outline" hover-class="button-hover" v-if="info.userLaunchStatus == 1 && (
+					activityVo.status == 100 ||
+					activityVo.status == 101
+				)">
 					<text>下架</text>
 				</button>
-				<button class="outline outline-gray" hover-class="button-hover">
+				<button class="outline outline-gray" hover-class="button-hover" v-if="info.userLaunchStatus == 1 && (
+					activityVo.status == 102 ||
+					activityVo.status == 103 ||
+					activityVo.status == 104 ||
+					activityVo.status == 105 ||
+					activityVo.status == 106 ||
+					activityVo.status == 107
+				)">
 					<text>下架</text>
 				</button>
-				<button class="fill" hover-class="button-hover">
+				<button class="fill" hover-class="button-hover" v-if="info.userLaunchStatus == 1">
 					<text>编辑</text>
-				</button> -->
+				</button>
 			</view>
 		</view>
 		
@@ -216,7 +230,7 @@
 						</view>
 					</view>
 					<view class="submit" style="padding-left: 0; padding-right: 0">
-						<button class="fill" hover-class="button-hover">
+						<button class="fill" :class="[activityVo.status !== 101 ? 'disabled' : '']" hover-class="button-hover" @click="doApply">
 							<text>¥29/人</text>
 							<text style="padding: 0 20rpx;color: #525252">|</text>
 							<text>报名</text>
@@ -241,6 +255,7 @@
 	import ApplySuccess from '@/components/Popup/ApplySuccess.vue';
 	import Toast from '@/components/Toast/Toast.vue';
 	import http from '@/utils/http.js';
+	import { formatDateText } from '@/utils/index.js'
 	import {
 		getDayHours,
 		getDayMin,
@@ -380,14 +395,53 @@
 			this.navHeight = uni.getStorageSync('navBarHeight')
 		},
 		methods: {
+			goMap() {
+				const {longitude, latitude} = this.activityVo
+				wx.getLocation({
+				type: 'gcj02', //返回可以用于wx.openLocation的经纬度
+				success (res) {
+						wx.openLocation({
+							latitude: Number(latitude),
+							longitude: Number(longitude),
+							scale: 18
+						})
+					}
+				})
+			},
+			doApply() {
+				if (this.activityVo.status !== 101) {
+					uni.showToast({
+						title: '活动已过，无法报名',
+						icon: 'none'
+					})
+					return
+				}
+			},
 			async getDetails() {
 				let location = uni.getStorageSync('location')
 				let res = await http.selectWildTogether({
 					id: this.id,
 					longitude: location?.longitude || null,
 					latitude: location?.latitude || null,
-				});	
-				console.log(res)
+				});
+				if (res?.code == '200') {
+					if (res?.data.activityVo?.images) {
+						res.data.activityVo.images = res?.data?.activityVo?.images?.split(',')
+					} else {
+						res.data.activityVo.images = []
+					}
+					if (res?.data?.activityVo?.startdate) {
+						res.data.activityVo.startdate = formatDateText(res?.data?.activityVo?.startdate)
+					}
+					this.activityVo = res?.data.activityVo
+					this.userActivityUpVo = res?.data.userActivityUpVo
+					this.info = res.data
+				} else {
+					uni.showToast({
+						title: res?.msg,
+						icon: 'none'
+					})
+				}
 			},
 			openMap() {
 				wx.getLocation({
@@ -414,7 +468,7 @@
 	.page.details {
 		.navbar {
 			display: flex;
-			z-index: 9;
+			z-index: 99;
 			position: relative;
 			left: -50rpx;
 			top: 2px;
@@ -457,7 +511,7 @@
 			left: 80rpx;
 			width: 192rpx;
 			height: 192rpx;
-			z-index: 5;
+			z-index: 0;
 		}
 		
 		
@@ -491,6 +545,11 @@
 			}
 			.location {
 				margin-bottom: 0;
+				width: 80%;
+				image {
+					width: 36rpx;
+					height: 32rpx;
+				}
 			}
 		}
 
@@ -714,8 +773,7 @@
 				border: 1px solid #A3A3A3;
 				color: #A3A3A3;
 			}
-			
-			button.gray {
+			button.disabled, button.gray {
 				background-color: #F5F5F5;
 				color: #A8A8A8;
 			}

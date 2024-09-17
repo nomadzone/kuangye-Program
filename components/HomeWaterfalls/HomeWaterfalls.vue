@@ -115,7 +115,7 @@
 			async doLike(item, index) {
 				console.log(item, index)
 				let title = ''
-				if (item?.upUserStatus == 0) {
+				if (item?.userUpStatus == 0) {
 					const res = await http.userUp({
 						"commentId": item.id,
 						"type": item.type
