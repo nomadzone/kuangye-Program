@@ -12,13 +12,13 @@
 				<text :class="item.type == 3 ? 'ellipsis-2' : 'ellipsis'">{{ item.title }}</text>
 			</view>
 			<view class="creater">
-				<view>
+				<view v-if="item.type != 3">
 					<image :src="item.initiatorUrl" mode=""></image>
 					<text>{{ item.initiatorName }}</text>
 				</view>
-				<view class="like" v-if='item.type == 2'>
+				<view class="like" v-if='item.type == 2' @click.stop="doLike(item, index)">
 					<image src="../../static/images/like.png" mode=""></image>
-					<text c>{{item.like}}</text>
+					<text>{{item.like}}</text>
 				</view>
 			</view>
 			<view class="desc" v-if="item.type != 2">
@@ -57,12 +57,21 @@ export default {
 			yiqiyuan: constant.yiqiyuan,
 		}
 	},
+	watch: {
+		list(val1, val2) {
+			console.log(val1, 'val1')
+			console.log(val2, 'val2')
+		}
+	},
 	methods: {
 		doButton(item, index) {
 			this.$emit('doButton', item, index)
 		},
 		doItem(item, index) {
 			this.$emit('doItem', item, index)
+		},
+		doLike(item, index) {
+			this.$emit('doLike', item, index)
 		}
 	}
 }
@@ -79,10 +88,10 @@ export default {
 		background-color: #FFF7E2;
 	}
 	.item-bg-2 {
-		background-color: #E3F7FF;
+		background-color: #E1FFF8;
 	}
 	.item-bg-3 {
-		background-color: #E1FFF8;
+		background-color: #E3F7FF;
 	}
 	.no-wrap {
 		white-space: nowrap;
@@ -155,7 +164,6 @@ export default {
 			color: #fff;
 		}
 		.creater {
-			padding: 8rpx 0;
 			display: flex;
 			flex-direction: row;
 			align-items: center;
@@ -164,6 +172,7 @@ export default {
 				display: flex;
 				flex-direction: row;
 				align-items: center;
+				padding: 8rpx 0;
 			}
 			.like {
 				display: flex;
@@ -193,11 +202,11 @@ export default {
 			  line-clamp: 1;
 			  color: #646464;
 			  padding-left: 8rpx;
-			  font-size: 28rpx;
+			  font-size: 24rpx;
 			}
 		}
 		.desc {
-			font-size: 28rpx;
+			font-size: 24rpx;
 			display: flex;
 			align-items: center;
 			justify-content: flex-start;

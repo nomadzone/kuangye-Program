@@ -239,7 +239,8 @@
 	import Upload from '@/components/Upload/Upload.vue';
 	import PoupWrap from '@/components/Popup/Wrap.vue';
 	import ApplySuccess from '@/components/Popup/ApplySuccess.vue';
-	import Toast from '@/components/Toast/Toast.vue'
+	import Toast from '@/components/Toast/Toast.vue';
+	import http from '@/utils/http.js';
 	import {
 		getDayHours,
 		getDayMin,
@@ -258,6 +259,46 @@
 			return {
 				id: '',
 				showApply: false,
+				activityVo: {
+					"id": "9bb03c14-6172-4c4e-a76c-9361eb55eb2f",
+					"title": "五个专场活动将在第十四届北京科学嘉年华闪亮登场",
+					"label": "飞盘",
+					"longitude": "113.88308",
+					"address": "",
+					"latitude": "22.55329",
+					"startdate": "2024-09-16 00:00:00",
+					"enddate": "2024-09-20 00:00:00",
+					"signUpStartDate": "2024-09-13 00:00:00",
+					"signUpEndDate": "2024-09-15 00:00:00",
+					"expectdate": null,
+					"minpeople": 1,
+					"maxpeople": 11,
+					"price": 99,
+					"contactphoto": "http://120.26.208.147:19000/ky-images/1726156006778.png",
+					"number": null,
+					"status": 100,
+					"images": "http://120.26.208.147:19000/ky-images/1726155974103.png",
+					"describe": "记者从北京科协举办的新闻发布会上获悉，9月15日至25日，2024年全国科普日活动暨第十四届北京科学嘉年华在北京科学中心举办主场活动，同时联动国家自然博物馆、中国铁道博物馆正阳门展馆、天坛公园、钟鼓楼文化广场、石景山首钢园同步开展科普主题专场活动，动员全社会各方力量积极参与开展首",
+					"initiatorUrl": null,
+					"initiatorName": null,
+					"orderNumber": 0,
+					"participateStatus": 0,
+					"type": 1,
+					"distanceMeters": 185.81,
+					"userActivityVo": null,
+					"userStatus": 0,
+					"userPreferenceList": null
+				},
+				userActivityUpVo: [],
+				info: {
+					"userLaunchStatus": 1,
+					"userActivityUpVo": [
+					],
+					"total": 11,
+					"alreadyNumber": 0,
+					"surplusNumber": 11,
+					"userStatus": 0
+				},
 				details: {
 					avator: 'https://ww1.sinaimg.cn/mw690/6910b6f2gy1hrkg6qz6ejj20n00n0ac9.jpg',
 					name: '行吗姓名姓名',
@@ -340,8 +381,11 @@
 		},
 		methods: {
 			async getDetails() {
+				let location = uni.getStorageSync('location')
 				let res = await http.selectWildTogether({
-					id: this.id
+					id: this.id,
+					longitude: location?.longitude || null,
+					latitude: location?.latitude || null,
 				});	
 				console.log(res)
 			},

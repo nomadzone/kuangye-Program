@@ -14,7 +14,9 @@ const http = {
 	selectWildTogether: (data)=> get(`/activity/selectWildTogether`, data),
 	fansUpdate: (data)=> get(`/fans/update`, data),
 	upUserDown: (data)=> get(`/up/userDown`, data),
-	getIdentifyUrl:(data) => get('/auth/getAuthUrl', data)
+	getIdentifyUrl:(data) => get('/auth/getAuthUrl', data),
+	userUp:(data) => post('/up/userUp', data),
+	userDown:(data) => post('/up/userDown', data)
 	}
 
 

@@ -140,6 +140,10 @@ export default {
           _this.initialLatitude = res.latitude;
           _this.longitude = res.longitude;
           _this.latitude = res.latitude;
+          uni.setStorageSync('location', {
+            longitude: res.longitude,
+            latitude: res.latitude,
+          })
           _this.getDataList();
         },
         fail: (res) => {

@@ -6,7 +6,7 @@
 	<view class="container">
 		<view class="sticky">
 			<view class="line"></view>
-			<HomeSort></HomeSort>
+			<HomeSort @action='doSort'></HomeSort>
 			<HomeCate></HomeCate>
 		</view>
 		<view  class="water-view">
@@ -45,8 +45,10 @@ export default {
 		  schooolTitle: '西安交通大学博学楼1',
 	  }
   },
-  created() {
+  async created() {
 	  this.statusBarHeight = uni.getStorageSync('statusBarHeight')
+		await this.getHomeList()
+		await this.getUserLocation()
   },
   async onShow() {
 	await this.getHomeList()
@@ -63,10 +65,24 @@ export default {
 				}
 			})
 		},
-		getHomeList() {
+		async doSort(type) {
+			uni.showLoading({
+				title: '加载中...',
+				mask: true
+			})
+			this.sortIndex = type;
+			try {
+				await this.$refs.HomeWaterfalls.getList(type)
+				uni.hideLoading()
+			} catch (err) {
+				uni.hideLoading()
+			}
+		},
+		getHomeList(type) {
+			const _this = this;
 			return new Promise(async(resolve, reject) => {
 				try {
-					await this.$refs.HomeWaterfalls.getList()
+					await _this.$refs?.HomeWaterfalls?.getList(type)
 					resolve()
 				} catch (err) {
 					reject(err)
@@ -75,9 +91,6 @@ export default {
 		},
 	  doAction() {
 		  
-	  },
-	  doSort(index) {
-		  this.sortIndex = index;
 	  }
   }
 }
