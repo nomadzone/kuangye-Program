@@ -153,7 +153,8 @@
 					"navigationBarTitleText": "发布找搭子"
 				}
 			}]
-		}, {
+		}, 
+		{
 			"root": "pagesIdentify",
 			"pages": [{
 					"path": "pages/index/index",
@@ -166,8 +167,25 @@
 				{
 					"path": "pages/result/index",
 					"navigationBarTitleText": null
+				},
+				{
+					"path": "pages/webview/index",
+					"navigationBarTitleText": null
 				}
-
+			]
+		},
+			
+		{
+			"root":"pagesExplore",
+			"pages":[
+				{
+					"path": "pages/shop/index",
+					"navigationStyle": "custom"
+				},
+				{
+					"path": "pages/package/index",
+					"navigationBarTitleText": null
+				}
 			]
 		}
 
