@@ -1,7 +1,7 @@
 
 
 <template>
-  <view class="active">
+  <view class="active" v-if="images.length > 0">
 	  <text class="tags">平台活动</text>
 	  <swiper
 	    class="swiper"
@@ -46,11 +46,14 @@ export default {
 	  }
   },
   async created() {
-	let res = await http.homeNoticeList({
-		type: 1
-	})
-	console.log(res, 1111)
-	this.images = res.data
+	try {	
+		let res = await http.homeNoticeList({
+			type: 1
+		})
+		this.images = res.data || []
+	} catch (error) {
+		console.log(error)
+	}
   },
   methods: {
 	doItem(item, index) {

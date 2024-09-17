@@ -1,36 +1,39 @@
 <template>
 	<view class="item" :class="[`item-bg-${item.type}`]" v-for="(item, index) in list" :key="index" @click="doItem(item, index)">
-		<view class="image" v-if="item.type != '3'">
+		<view class="image" v-if="item.type != 3">
 			<image :src="item.image" mode=""></image>
+		</view>
+		<view class="status-tag" v-if="item.type == 1">
+			<text>{{yiqiyuan[item.status]}}</text>
 		</view>
 		<view class="item-body">
 			<view class="title">
-				<text class="da-tag" v-if="item.type == '3'">找搭子</text>
-				<text>{{ item.title }}</text>
+				<text class="da-tag" v-if="item.type == 3">找搭子</text>
+				<text :class="item.type == 3 ? 'ellipsis-2' : 'ellipsis'">{{ item.title }}</text>
 			</view>
 			<view class="creater">
 				<view>
-					<image :src="item.createrAvator" mode=""></image>
-					<text>{{ item.creater }}</text>
+					<image :src="item.initiatorUrl" mode=""></image>
+					<text>{{ item.initiatorName }}</text>
 				</view>
 				<view class="like" v-if='item.type == 2'>
 					<image src="../../static/images/like.png" mode=""></image>
-					<text>{{item.like}}</text>
+					<text c>{{item.like}}</text>
 				</view>
 			</view>
-			<view class="desc" v-if="item.type != '2'">
-				<view class="gap">{{ item.gap }}</view>
-				<view>{{ item.time }}</view>
+			<view class="desc" v-if="item.type != 2">
+				<view class="gap no-wrap">{{ item.distanceMeters }}km</view>
+				<view  class="no-wrap">{{ item.startdate }}</view>
 			</view>
-			<view class="remain" v-if="item.type == '1'">
-				<view class="imgs" :style="{width: `${item.remainAvators.length*(32-10)}rpx`}" >
-					<view class="img" v-for="(img, i) in item.remainAvators" :key="i">
+			<view class="remain" v-if="item.type == 1 && item?.userActivityVo?.allImages?.length > 0">
+				<view class="imgs" :style="{width: `${item.userActivityVo?.allImages.length*(32-10)}rpx`}" >
+					<view class="img" v-for="(img, i) in item.userActivityVo?.allImages" :key="i">
 						<image :style="{left: -(i*6) + 'px'}" :src="img" mode=""></image>
 					</view>
 				</view>
-				<view class="num">{{ item.remain }}</view>
+				<view class="num">{{ item.userActivityVo?.surplus }}</view>
 			</view>
-			<view class="btn-group" v-if="item.type == '1'">
+			<view class="btn-group" v-if="item.type == 1">
 				<button hover-class="hover-class" @click.stop="doButton(item, index)">
 					<text>¥{{item.price}}/人</text>
 					<text>报名</text>
@@ -41,11 +44,17 @@
 </template>
 
 <script>
+import constant from '@/utils/constant'
 export default {
 	props: {
 		list: {
 			type: Array,
 			default: []
+		}
+	},
+	data() {
+		return {
+			yiqiyuan: constant.yiqiyuan,
 		}
 	},
 	methods: {
@@ -75,10 +84,40 @@ export default {
 	.item-bg-3 {
 		background-color: #E1FFF8;
 	}
+	.no-wrap {
+		white-space: nowrap;
+	}
+	.ellipsis {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		display: block;
+	}
+	.ellipsis-2 {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+		display: block;
+	}
 	.item {
 		border-radius: 24rpx;
 		margin-bottom: 16rpx;
 		overflow: hidden;
+		position: relative;
+		.status-tag {
+			position: absolute;
+			top: 16rpx;
+			left: 16rpx;
+			padding: 4rpx 12rpx;
+			border-radius: 24rpx;
+			background-color: rgba(0, 0, 0, 0.4);
+			z-index: 2;
+			font-size: 24rpx;
+			color: #fff;
+		}
 		.image {
 			height: 224rpx;
 			image {
@@ -88,6 +127,7 @@ export default {
 		}
 		.item-body {
 			padding: 8rpx 16rpx;
+			position: relative;
 		}
 		.title {
 			display: flex;

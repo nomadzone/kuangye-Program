@@ -66,23 +66,25 @@ export default {
           longitude:  77.027719,
           latitude: 38.869968,
         });	
-        console.log(res)
+        let data = res.data
         let markers = [];
-        for (let i = 0; i < 10; i++) {
-          var randomNumber1 =
-            this.latitude + Math.random() * (0.02 - 0.005) + 0.005;
-          var randomNumber2 =
-            this.longitude + Math.random() * (0.02 - 0.005) + 0.005;
+        for (let i = 0; i < data.length; i++) {
+          let item = data[i]
+          // var randomNumber1 =
+          //   this.latitude + Math.random() * (0.02 - 0.005) + 0.005;
+          // var randomNumber2 =
+          //   this.longitude + Math.random() * (0.02 - 0.005) + 0.005;
           markers.push({
             id: i,
-            latitude: randomNumber1,
-            longitude: randomNumber2,
-            title: i,
+            latitude: Number(item.latitude),
+            longitude: Number(item.longitude),
+            title: item.title,
+            iconPath: item.images,
             // 'iconPath': '../../static/image/popu-2.png',
             width: "32",
             height: "32",
             callout: {
-              content: `${i}`,
+              content: item.title,
               fontSize: 12,
               bgColor: "#ff9800",
               color: "#fff",
@@ -96,6 +98,7 @@ export default {
           });
         }
         this.markers = markers;
+        console.log(markers, "markers")
       } catch (error) {
         console.log(error);
       }

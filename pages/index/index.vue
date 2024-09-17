@@ -48,11 +48,31 @@ export default {
   created() {
 	  this.statusBarHeight = uni.getStorageSync('statusBarHeight')
   },
-  onShow() {
-	this.$refs.map.getUserLocation()
-	this.$refs.HomeWaterfalls.getList()
+  async onShow() {
+	await this.getHomeList()
+	await this.getUserLocation()
   },
   methods: {
+		getUserLocation() {
+			return new Promise(async(resolve, reject) => {
+				try {
+					await this.$refs.map.getUserLocation()
+					resolve()
+				} catch (err) {
+					reject(err)
+				}
+			})
+		},
+		getHomeList() {
+			return new Promise(async(resolve, reject) => {
+				try {
+					await this.$refs.HomeWaterfalls.getList()
+					resolve()
+				} catch (err) {
+					reject(err)
+				}
+			})
+		},
 	  doAction() {
 		  
 	  },

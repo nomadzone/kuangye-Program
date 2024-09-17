@@ -122,3 +122,23 @@ export const getUserProfile = async() => {
 		})
 	})
 }
+
+export const formatDateText = (dateString) => {
+	const date = new Date(dateString);
+  
+	// 获取月份和日期
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+  
+	// 获取星期几
+	const daysOfWeek = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+	const dayOfWeek = daysOfWeek[date.getDay()];
+  
+	// 获取小时和分钟
+	const hours = String(date.getHours()).padStart(2, '0');
+	const minutes = String(date.getMinutes()).padStart(2, '0');
+  
+	// 返回格式化后的字符串
+	return `${month}-${day}(${dayOfWeek}) ${hours}:${minutes}`;
+  }
+  
