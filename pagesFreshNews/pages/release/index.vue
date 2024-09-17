@@ -63,8 +63,6 @@
 	const handleSelectLocation = () => {
 		uni.chooseLocation({
 			success: function(res) {
-				
-				console.log('res======', res)
 				location.value = {
 					address: res.address + res.name,
 					longitude: res.longitude,
@@ -86,9 +84,6 @@
 			type: 2,
 			images: imgList.value.join(','),
 		}
-
-
-		console.log(params)
 
 		FreshNewsService.add(params).then(res => {
 			if(res && res.code === '200') {

@@ -11,10 +11,10 @@
 		</view>
 		<view class="popup-content" :class="[visible ? 'fade-enter' : 'fade-leave']" v-show="visible">
 		<view class="popup-body" @click.stop>
-			<view class="popup-top" @click="doPath('/pagesToggle/pages/public/public')">
-				<view class="popup-title">一起野</view>
+			<view class="popup-top" >
+				<view class="popup-title" @click="doPath('/pagesToggle/pages/public/public')">一起野</view>
 				<view class="popup-desc">我是活动主理人，发起付费活动</view>
-				<view class="popup-tag">未认证</view>
+				<view class="popup-tag" @tap="handleGoIdentify()">未认证</view>
 				<image src="../../static/images/popu-1.png" mode=""></image>
 			</view>
 			<view class="popup-bottom">
@@ -53,6 +53,7 @@
 </template>
 
 <script>
+	import http from '../../utils/http'
 	export default {
 		data() {
 			return {
@@ -87,6 +88,23 @@
 			},
 			handleOverlayClick() {
 				this.visible = false
+			},
+			// 跳转认证
+			handleGoIdentify(){
+				http.getIdentifyUrl().then(res => {
+					if(res.code === '200') {
+						uni.setStorage({
+							key:'identifyObj',
+							data:res.data,
+							success:() => {
+								uni.navigateTo({
+									url: '/pagesIdentify/pages/webview/index'
+								})
+							}
+						})
+					}
+					console.log(res)
+				})
 			}
 		},
 		mounted() {

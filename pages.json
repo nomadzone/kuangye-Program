@@ -167,6 +167,10 @@
 				{
 					"path": "pages/result/index",
 					"navigationBarTitleText": null
+				},
+				{
+					"path": "pages/webview/index",
+					"navigationBarTitleText": null
 				}
 			]
 		},
