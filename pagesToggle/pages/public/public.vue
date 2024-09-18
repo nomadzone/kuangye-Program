@@ -16,7 +16,7 @@
       ></image>
       <view class="module">
         <view>
-          <Upload :limit="9" @upload="doUpload"></Upload>
+          <Upload :limit="9" @upload="doUpload" :images="activity.images || []"></Upload>
         </view>
         <view class="input-title">
           <input
@@ -147,7 +147,7 @@
       <view class="module contact">
         <view class="title"> 联系方式</view>
         <view>
-          <Upload :title="'添加联系微信二维码'"  :limit="1" @upload="doUploadContact"></Upload>
+          <Upload :title="'添加联系微信二维码'"  :limit="1" @upload="doUploadContact" :images="activity.contactphoto || []"></Upload>
         </view>
         <view class="echat">
           <image
@@ -268,6 +268,7 @@ import PoupWrap from "@/components/Popup/Wrap.vue";
 import PublicSuccess from "@/components/Popup/PublicSuccess.vue";
 import Toast from "@/components/Toast/Toast.vue";
 import http from "@/utils/http.js";
+	import { formatDateText } from '@/utils/index.js'
 import { getDayHours, getDayMin, getDatesAndWeeks, formatDateString } from "@/utils/index.js";
 
 export default {
@@ -324,6 +325,10 @@ export default {
       timeList: [getDatesAndWeeks(true), getDayHours(), getDayMin()],
     };
   },
+  onLoad(options) {
+    this.id = options.id
+    this.getDetails()
+  },
   created() {
     this.StatusBar = uni.getStorageSync("statusBarHeight");
     this.navHeight = uni.getStorageSync("navBarHeight");
@@ -336,11 +341,34 @@ export default {
     }
   },
   methods: {
+			async getDetails() {
+        if (!this.id) return;
+				let location = uni.getStorageSync('location')
+				let res = await http.selectWildTogether({
+					id: this.id,
+					longitude: location?.longitude || null,
+					latitude: location?.latitude || null,
+				});
+				if (res?.code == '200') {
+					if (res?.data.activityVo?.images) {
+						res.data.activityVo.images = res?.data?.activityVo?.images?.split(',')
+					} else {
+						res.data.activityVo.images = []
+					}
+          res.data.activityVo.contactphoto = [res?.data.activityVo?.contactphoto]
+          this.activity = res.data.activityVo
+				} else {
+					uni.showToast({
+						title: res?.msg,
+						icon: 'none'
+					})
+				}
+			},
     doUpload(imgs) {
-      this.activity.images = imgs.join(",");
+      this.activity.images = imgs;
     },
     doUploadContact(imgs) {
-      this.activity.contactphoto = imgs.join(",");
+      this.activity.contactphoto = imgs;
     },
     openMap() {
       let that = this
@@ -495,11 +523,15 @@ export default {
           minpeople: Number(this.activity.minpeople),
           maxpeople:  Number(this.activity.maxpeople),
           price: Number(this.activity.price),
-          contactphoto: this.activity.contactphoto,
+          contactphoto: this.activity.contactphoto instanceof Array ? this.activity.contactphoto.join(',') : this.activity.contactphoto,
           wxnumber: this.activity.wxnumber,
-          images: this.activity.images,
+          images: this.activity.images instanceof Array ? this.activity.images.join(',') : this.activity.images,
           type: 1,
         }
+        if (this.id){
+          params.id = this.id
+        }
+        console.log(params, 1111)
         let tip = ''
         if (!params.images) {
           tip = '请上传活动图片'
@@ -509,11 +541,11 @@ export default {
           tip = '请输入活动描述'
         } else if (!params.label) {
           tip = '请输入活动标签'
-        } else if (new Date(params.signUpEndDate) <= currentTime) {
+        } else if (!this.id && new Date(params.signUpEndDate) <= currentTime) {
           tip = '活动报名结束时间必须大于当前时间';
-        } else if (new Date(params.startdate) <= currentTime) {
+        } else if (!this.id && new Date(params.startdate) <= currentTime) {
           tip = '活动开始时间必须大于当前时间';
-        } else if (new Date(params.enddate) <= currentTime) {
+        } else if (!this.id && new Date(params.enddate) <= currentTime) {
           tip = '活动结束时间必须大于当前时间';
         } else if (new Date(params.signUpEndDate) >= new Date(params.startdate)) {
           tip = '活动报名结束时间必须早于活动开始时间';

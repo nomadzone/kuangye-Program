@@ -16,7 +16,10 @@ const http = {
 	upUserDown: (data)=> get(`/up/userDown`, data),
 	getIdentifyUrl:(data) => get('/auth/getAuthUrl', data),
 	userUp:(data) => post('/up/userUp', data),
-	userDown:(data) => post('/up/userDown', data)
+	userDown:(data) => post('/up/userDown', data),
+	activityDown:(data) => get('/activity/down', data), // 本人下架活动
+	activityDel:(data) => get('/activity/del', data), // 本人删除活动
+	orderPay:(data) => get('/order/pay', data), // 用户报名成功 发起支付
 	}
 
 

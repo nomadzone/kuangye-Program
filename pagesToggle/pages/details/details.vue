@@ -133,7 +133,7 @@
 					<text>取消报名</text>
 				</button>
 				<!-- 自己查看详情 -->
-				<button class="outline" hover-class="button-hover" v-if="info.userLaunchStatus == 1 && (
+				<button @click='toastShowDown = true' class="outline" hover-class="button-hover" v-if="info.userLaunchStatus == 1 && (
 					activityVo.status == 100 ||
 					activityVo.status == 101
 				)">
@@ -142,14 +142,22 @@
 				<button class="outline outline-gray" hover-class="button-hover" v-if="info.userLaunchStatus == 1 && (
 					activityVo.status == 102 ||
 					activityVo.status == 103 ||
-					activityVo.status == 104 ||
-					activityVo.status == 105 ||
-					activityVo.status == 106 ||
-					activityVo.status == 107
+					activityVo.status == 104
 				)">
 					<text>下架</text>
 				</button>
-				<button class="fill" hover-class="button-hover" v-if="info.userLaunchStatus == 1">
+				<button class="outline outline-gray" hover-class="button-hover" v-if="info.userLaunchStatus == 1 && (
+					activityVo.status == 106
+				)">
+					<text>已删除</text>
+				</button>
+				<button @click='toastShowDel = true' style="color: #1b1b1b;" class="outline outline-gray" hover-class="button-hover" v-if="info.userLaunchStatus == 1 && (
+					activityVo.status == 105 ||
+					activityVo.status == 107
+				)">
+					<text>删除</text>
+				</button>
+				<button class="fill" @click='edit' hover-class="button-hover" v-if="info.userLaunchStatus == 1">
 					<text>编辑</text>
 				</button>
 			</view>
@@ -239,8 +247,10 @@
 				</template>
 			</view>
 		</PoupWrap>
-		<!-- 取消返回 toast -->
-		<Toast :show='toastShow' @cancel='toastShow = false' @confirm='toastShow = false' title='确定下架活动吗？'  confirmText='确定下架' cancelText='再等等' />
+		<!-- 确定下架 toast -->
+		<Toast :show='toastShowDown' @cancel='toastShowDown = false' @confirm='doDown' title='确定下架活动吗？'  confirmText='确定下架' cancelText='再等等' />
+		<!-- 确定删除 toast -->
+		<Toast :show='toastShowDel' @cancel='toastShowDel = false' @confirm='doDelete' title='确定删除活动吗？'  confirmText='确定删除' cancelText='再等等' />
 		<!-- 报名成功 -->
 		<ApplySuccess :show='publicSuccessShow' @close='publicSuccessShow = false' @view='publicSuccessShow = false'/>
 	
@@ -376,7 +386,8 @@
 					endTimeShow: '',
 					refund: '',
 				},
-				toastShow: false,
+				toastShowDel: false,
+				toastShowDown: false,
 				publicSuccessShow: false,
 				StatusBar: 0,
 				navHeight: 0,
@@ -460,6 +471,59 @@
 			doApplyPopup() {
 				this.applyPopup = false
 			},
+			async doDown() {
+				uni.showLoading({
+					title: '下架中...'
+				})
+				let res = await http.activityDown({
+					id: this.id
+				})
+				this.toastShowDown = false
+				uni.hideLoading()
+				if (res?.code == '200') {
+					uni.showToast({
+						title: '下架成功',
+						icon: 'none'
+					})
+					setTimeout(() => {
+						this.getDetails()
+					}, 1500)
+				} else {
+					uni.showToast({
+						title: res?.msg,
+						icon: 'none'
+					})
+				}
+			},
+			async doDelete() {
+				uni.showLoading({
+					title: '删除中...'
+				})
+				let res = await http.activityDel({
+					id: this.id
+				})
+				uni.hideLoading()
+				this.toastShowDel = false
+				if (res?.code == '200') {
+					uni.showToast({
+						title: '删除成功',
+						icon: 'none'
+					})
+					setTimeout(() => {
+						uni.navigateBack()
+					}, 1500)
+				} else {
+					uni.showToast({
+						title: res?.msg,
+						icon: 'none'
+					})
+				}
+			},
+			edit() {
+				uni.navigateTo({
+					url: '/pagesToggle/pages/public/public?id=' + this.id
+				})
+			}
 		}
 	}
 </script>

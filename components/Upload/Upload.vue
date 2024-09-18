@@ -34,11 +34,20 @@ export default {
       type: Number,
       default: 1,
     },
+    images: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
       fileList: [],
     };
+  },
+  watch: {
+    images(newVal) {
+      this.fileList = newVal
+    }
   },
   methods: {
     remove(index) {
