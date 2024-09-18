@@ -36,14 +36,50 @@
 
 <script setup lang="ts">
 	import {
-		ref
+		ref,
+		defineProps,
+		watchEffect
 	} from 'vue'
+	import freshNewsService from '../../service/service';
+	
+	const props = defineProps({
+		dataId:{
+			type: String,
+			default:''
+		}
+	})
+	
+	const pageSize = ref(20)
+	
+	// 查询评论列表
+	const fetchCommentList = ({page, id}) => {
+		let params = {
+			id:id,
+			pageNum: page,
+			pageSize: pageSize.value
+		}
+		
+		freshNewsService.commentList(params).then(res => {
+			if(res && res.code === '200') {
+				console.log('评论----', res.data)
+			}
+		})
+	}
 
+	
 	const commentList = ref([
 		{ id: 0, author: 'Make zhao', avatar: null, content: '最近大好的阳光下更加出片啦…再配上新品抹茶柚子蒙布朗冰淇淋芭菲🍵', liked: true, likeNum: 28, autherTag: false, commentTime: '09:28', children: [{ author: 'Make zhao', avatar: null, content: '最近大好的阳光下更加出片啦…再配上新品抹茶柚子蒙布朗冰淇淋芭菲🍵', liked: true, likeNum: 28, autherTag: false, commentTime: '09:28' }] },
 		{ id: 1, author: 'Make zhao', avatar: null, content: '最近大好的阳光下更加出片啦…再配上新品抹茶柚子蒙布朗冰淇淋芭菲🍵', liked: false, likeNum: 28, autherTag: false, commentTime: '09:28', children: [] },
 		{ id: 2, author: 'Make zhao', avatar: null, content: '最近大好的阳光下更加出片啦…再配上新品抹茶柚子蒙布朗冰淇淋芭菲🍵', liked: true, likeNum: 28, autherTag: false, commentTime: '09:28', children: [] }
 	])
+	
+	watchEffect(
+		() => {
+			if(props.dataId && props.dataId != '') {
+				fetchCommentList({id:props.dataId, page: 1})
+			}
+		}
+	)
 </script>
 
 <style lang="scss" scoped>

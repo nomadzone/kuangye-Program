@@ -19,17 +19,18 @@
 
 		<view class="info-box">
 			<view class="title-text">{{detailInfo.title}}</view>
-			<view class="content-text">{{detailInfo.content}}</view>
+			<view class="content-text">{{detailInfo.describe}}</view>
 			<view class="time-text">{{detailInfo.createTime}}</view>
 		</view>
 		<view class="comment-num-row">
 			评论 <text class="comment-num-text">{{detailInfo.commentNum}}</text>
 		</view>
-		<Comments />
+		<Comments :dataId="initId" />
 		<view class="bottom-comment-box">
 			<view class="input-box">
 				<image src="../../static/images/comment-prev-icon.svg" class="prev-icon"></image>
-				<input class="uni-input"  placeholder="说点什么" />
+				<input class="uni-input" @input="commentInput" v-model="commentInputValue" @confirm="submitComment()"
+					placeholder="说点什么" />
 			</view>
 			<view class="actions">
 				<view class="action-item">
@@ -46,16 +47,25 @@
 </template>
 
 <script setup>
+	import {
+		ref,
+		onMounted
+	} from 'vue'
 	import DetailTopNav from '../../components/detailTopNav/index.vue'
 	import Comments from '../../components/comments/index.vue'
+	import freshNewsService from '../../service/service';
 	import {
-		ref
-	} from 'vue'
+		debounce
+	} from '../../../utils';
 
 	const indicatorDots = ref(true)
 	const autoplay = ref(true)
 	const interval = ref(3000)
 	const duration = ref(1000)
+
+	const initId = ref('21856658-93ba-4743-b191-428f713aad4a')
+
+	let rebackId = ref(null) // 评论回复id
 
 
 	const detailInfo = ref({
@@ -65,8 +75,47 @@
 		commentNum: 100,
 		likeNum: 198
 	})
-	
-	
+
+	// 查询新鲜事详情
+	const getDetailInfo = () => {
+		let params = {
+			id: initId.value
+		}
+		freshNewsService.detailInfo(params).then(res => {
+			console.log('res====', res)
+			if (res && res.code === '200') {
+				detailInfo.value = res.data
+			}
+		})
+
+	}
+	onMounted(() => {
+		getDetailInfo()
+	})
+
+	// 输入评论
+	let commentInputValue = ref('')
+	const commentInput = (e) => {
+		commentInputValue.value = e.target.value
+	}
+
+	// 提交评论
+	const submitComment = debounce(() => {
+		let params = {
+			activityId: initId.value,
+			content: commentInputValue.value,
+			topId: rebackId.value
+		}
+
+		console.log('params=====', params)
+
+		freshNewsService.commentAdd(params).then(res => {
+			if (res && res.code === '200') {
+				console.log(res)
+			}
+		})
+
+	}, 1500)
 </script>
 
 <style lang="scss" scoped>
@@ -129,7 +178,8 @@
 
 			}
 		}
-		.comment-num-row{
+
+		.comment-num-row {
 			box-sizing: border-box;
 			display: flex;
 			flex-direction: row;
@@ -141,47 +191,53 @@
 			font-size: 24rpx;
 			font-weight: 400;
 			text-align: left;
+
 			.comment-num-text {
 				padding-left: 6rpx;
 			}
 		}
+
 		.bottom-comment-box {
 			display: flex;
 			flex-direction: row;
-			align-items:flex-start;
+			align-items: flex-start;
 			position: fixed;
 			left: 0;
-			right:0;
+			right: 0;
 			bottom: 0;
 			background-color: #ffffff;
 			height: 188rpx;
-			padding: 0rpx 32rpx ;
+			padding: 0rpx 32rpx;
 			padding-top: 24rpx;
 			border-top: 1rpx solid $Color-B-5;
 			box-sizing: border-box;
-			
+
 			.actions {
-				width:240rpx;
+				width: 240rpx;
 				display: flex;
 				padding-left: 24rpx;
 				justify-content: space-between;
 				align-items: center;
+
 				.action-item {
 					display: flex;
 					flex-direction: row;
 					justify-content: flex-start;
 					align-items: center;
+
 					.item-icon {
 						width: 48rpx;
 						height: 48rpx;
 						margin-right: 3rpx;
 					}
+
 					.item-num {
-						font-size:30rpx;
-						color:$Color-B-1
+						font-size: 30rpx;
+						color: $Color-B-1
 					}
 				}
 			}
+
 			.input-box {
 				width: calc(100% - 240rpx);
 				display: flex;
@@ -191,6 +247,7 @@
 				height: 72rpx;
 				padding: 0rpx 32rpx;
 				align-items: center;
+
 				.prev-icon {
 					width: 32rpx;
 					height: 32rpx;
