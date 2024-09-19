@@ -7,7 +7,7 @@
 		<view class="sticky">
 			<view class="line"></view>
 			<HomeSort @action='doSort'></HomeSort>
-			<HomeCate></HomeCate>
+			<!-- <HomeCate></HomeCate> -->
 		</view>
 		<view  class="water-view">
 			<HomeWaterfalls ref="HomeWaterfalls" isAd></HomeWaterfalls>

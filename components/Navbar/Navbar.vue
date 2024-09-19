@@ -23,6 +23,10 @@ export default {
 		type: String,
 		default: '9'
 	},
+	delta: {
+		type: Number,
+		default: 1
+	}
   },
   data() {
 	  return {
@@ -37,7 +41,9 @@ export default {
   },
   methods: {
     doBack() {
-		uni.navigateBack()
+      uni.navigateBack({
+        delta: this.delta
+      })
     }
   }
 }

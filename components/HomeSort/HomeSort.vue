@@ -30,7 +30,7 @@
 		},
 		methods: {
 			doSort(index) {
-				this.sortIndex = index;
+				this.sortIndex = index ===  null ? 0 : index;
 				this.$emit('action', index)
 			},
 			doSearch() {

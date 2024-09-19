@@ -38,7 +38,7 @@
           <view class="tag-add" @click="activeOpen">
             <image src="/static/images/chat-thread-fill.png" mode=""></image>
             <text>{{ activity.label ? activity.label : "添加活动标签" }}</text>
-            <image src="/static/images/arrow-right-s-line.png"></image>
+            <image src="/static/images/arrow-right-s-line_gray.png"></image>
           </view>
         </view>
         <view class="input-opt">
@@ -154,12 +154,12 @@
             src="/static/images/tdesign_logo-wechat-stroke.png"
             mode=""
           ></image>
-          <input type="text" placeholder="输入微信号（选填）" v-model="activity.wxnumber" />
+          <input type="text" placeholder="输入微信号（选填）" v-model="activity.number" />
         </view>
       </view>
       <view :style="{ height: navHeight / 2 + 152 + 64 + 'rpx' }"></view>
       <view class="submit" :style="{ height: navHeight / 2 + 152 + 'rpx' }">
-        <button hover-class="button-hover" @click="doPulish">发布</button>
+        <button hover-class="button-hover" @click="doPulish">{{ id ? '编辑发布' : '发布' }}</button>
         <!-- class="gray" -->
       </view>
     </view>
@@ -254,7 +254,7 @@
     <!-- 发布成功 -->
     <PublicSuccess
       :show="publicSuccessShow"
-      @close="publicSuccessShow = false"
+      @close="publicSuccessClose"
       @view="doView"
     ></PublicSuccess>
   </view>
@@ -298,7 +298,7 @@ export default {
         maxpeople: '',
         price: '',
         contactphoto: "",
-        wxnumber: "",
+        number: "",
         images: "",
         refund: "",
       },
@@ -356,6 +356,10 @@ export default {
 						res.data.activityVo.images = []
 					}
           res.data.activityVo.contactphoto = [res?.data.activityVo?.contactphoto]
+          // 退款政策 暂无数据
+          res.data.activityVo.refund = this.zcList[0].title
+          this.zcIndex = 0
+          
           this.activity = res.data.activityVo
 				} else {
 					uni.showToast({
@@ -495,6 +499,10 @@ export default {
         value[1]
       }${value[2]}`;
     },
+    publicSuccessClose() {
+      this.publicSuccessShow = false
+      uni.navigateBack()
+    },
     timeEndSignConfirm(e) {
       let value = e.value;
       let date = this.getDatesAndWeeksYear.filter(
@@ -524,7 +532,7 @@ export default {
           maxpeople:  Number(this.activity.maxpeople),
           price: Number(this.activity.price),
           contactphoto: this.activity.contactphoto instanceof Array ? this.activity.contactphoto.join(',') : this.activity.contactphoto,
-          wxnumber: this.activity.wxnumber,
+          number: this.activity.number,
           images: this.activity.images instanceof Array ? this.activity.images.join(',') : this.activity.images,
           type: 1,
         }
@@ -567,7 +575,7 @@ export default {
           tip = '最多人数不能小于1'
         } else if (!params.contactphoto) {
           tip = '请上传联系微信二维码'
-        } else if (!params.wxnumber) {
+        } else if (!params.number) {
           tip = '请输入微信号'
         }
         if (tip) {
@@ -594,10 +602,14 @@ export default {
       } catch (error) {}
     },
     doView() {
-      uni.redirectTo({
-        url: `/pagesToggle/pages/details/details?id=${this.id}&type=self`
+      if (this.id) {
+        uni.navigateBack()
+        return;
+      }
+      uni.navigateTo({
+        url: `/pagesToggle/pages/details/details?id=${this.id}&type=self&delta=2`
       })
-      publicSuccessShow = false
+      this.publicSuccessShow = false
     }
   },
 };

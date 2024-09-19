@@ -1,10 +1,10 @@
 <template>
 	<view class="page details">
-		<Navbar>
+	<Navbar :delta="delta">
 			<view class="navbar">
-				<image v-if="activityVo.initiatorUrl" :src="activityVo.initiatorUrl" mode=""></image>
-				<text  v-if="activityVo.initiatorName">{{ activityVo.initiatorName }}</text>
-				<view class="fllow" v-if="info.userLaunchStatus == 1">
+				<image :src="activityVo.initiatorUrl" mode=""></image>
+				<text>{{ activityVo.initiatorName }}</text>
+				<view @click="doFllow" class="fllow" v-if="info.userLaunchStatus == 1">
 					<text>+ 关注</text>
 				</view>
 			</view>
@@ -48,8 +48,11 @@
 					</view>
 					<view class="location">
 						<image src="/static/images/map-pin-line.png" mode=""></image>
-						<text>
-							{{ activityVo.distanceMeters / 1000 }} | {{ activityVo.address }}
+						<text v-if="activityVo.distanceMeters || activityVo.distanceMeters === 0">
+							{{ activityVo.distanceMeters + 'km' }} | {{ activityVo.address }}
+						</text>
+						<text v-else>
+							{{ activityVo.address }}
 						</text>
 					</view>
 				</view>
@@ -65,8 +68,12 @@
 						<text class="big">报名人数</text>
 						<text>({{info.alreadyNumber}}/{{info.total}})</text>
 					</view>
-					<view class="more" :class="[details.applyStatus == '0' ? 'gray' : '']">
+					<view class="more" v-if="activityVo.status == 101 || activityVo.status == 102" 
+					@click="viewPopupLook">
 						仅剩{{info.surplusNumber}}个名额 >
+					</view>
+					<view class="more gray" v-else>
+						{{yiqiyuan[activityVo.status]}}
 					</view>
 				</view>
 				<view class="apply-content" v-if="userActivityUpVo.length > 0">
@@ -111,7 +118,7 @@
 					<image src="/static/images/wechat-fill-black.png" mode=""></image>
 					<text>联系发起人</text>
 				</button>
-				<button class="fill" hover-class="button-hover" v-if="info.userLaunchStatus != 1">
+				<button class="fill" hover-class="button-hover" @click="doPay" v-if="info.userLaunchStatus != 1">
 					<text style="margin-right: 32rpx;">¥29/人</text>
 					<text>报名</text>
 				</button>
@@ -164,13 +171,13 @@
 		</view>
 		
 		<!-- 查看报名人数 -->
-		<PoupWrap :show='viewPopup' @close='viewPopup = false' :title='`仅剩${details.maxApplay - details.apply.length}个名额`' rightText='' @save='doApplyPopup'>
+		<PoupWrap :show='viewPopup' @close='viewPopup = false' :title='`仅剩${info.surplusNumber}个名额`' rightText='' @save='doApplyPopup'>
 			<view class="view-apply-people">
-				<view v-for="(item, index) in details.apply" :key="index">
-					<image class="avator" :src="item.avator" mode=""></image>
+				<view v-for="(item, index) in userActivityUpVo" :key="index">
+					<image class="avator" :src="item.images" mode=""></image>
 					<text>{{ item.name }}</text>
-					<image class="sex" v-if='item.sex == 0' src="/static/images/male.png"></image>
-					<image class="sex" v-if='item.sex == 1' src="/static/images/female.png" mode=""></image>
+					<image class="sex" v-if='item.gender == 0' src="/static/images/male.png"></image>
+					<image class="sex" v-if='item.gender == 1' src="/static/images/female.png" mode=""></image>
 				</view>
 			</view>
 		</PoupWrap>
@@ -180,21 +187,21 @@
 			<view  class="apply-popup">
 				<view class="apply-popup-content" :class="[popupTypeApply == '0' ? 'confirm' : '']">
 					<view class="image">
-						<image :src="details.swiper[0]" mode=""></image>
+						<image :src="activityVo.images[0]" mode=""></image>
 					</view>
 					<view class="details-content">
 						<view class="title">
-							{{ details.title }}
+							{{ activityVo.title }}
 						</view>
 						<view class="location">
 							<image src="/static/images/map-pin-line.png" mode=""></image>
 							<text>
-								{{ details.gap }} | {{ details.location }}
+								{{ activityVo.distanceMeters + 'km' }} | {{ activityVo.address }}
 							</text>
 						</view>
 						<view class="date">
 							<image src="/static/images/date-time.png" mode=""></image>
-							<text>{{ details.date }} | {{ details.time }}</text>
+							<text>{{ activityVo.startdate }}</text>
 						</view>
 					</view>
 				</view>
@@ -266,6 +273,7 @@
 	import Toast from '@/components/Toast/Toast.vue';
 	import http from '@/utils/http.js';
 	import { formatDateText } from '@/utils/index.js'
+	import constant from '@/utils/constant.js'
 	import {
 		getDayHours,
 		getDayMin,
@@ -282,6 +290,7 @@
 		},
 		data() {
 			return {
+				yiqiyuan: constant.yiqiyuan,
 				id: '',
 				showApply: false,
 				activityVo: {
@@ -324,68 +333,6 @@
 					"surplusNumber": 11,
 					"userStatus": 0
 				},
-				details: {
-					avator: 'https://ww1.sinaimg.cn/mw690/6910b6f2gy1hrkg6qz6ejj20n00n0ac9.jpg',
-					name: '行吗姓名姓名',
-					swiper: [
-						'https://preview.qiantucdn.com/agency/dp/dp_thumbs/4177001/93648168/staff_1024.jpg%21kuan320',
-						'https://preview.qiantucdn.com/agency/dp/dp_thumbs/4177001/93648168/staff_1024.jpg%21kuan320'
-					],
-					title: '大雁塔飞盘挑战赛',
-					date: '周三07.03',
-					time: '21:00 - 23:00',
-					location: '雁塔区辉腾体育室外场',
-					gap: '4.8km',
-					longitude: 11,
-					latitude: 22,
-					maxApplay: 20,
-					applyStatus: '1',
-					apply: [
-						{
-							avator: 'https://ww1.sinaimg.cn/mw690/6910b6f2gy1hrkg6qz6ejj20n00n0ac9.jpg',
-							name: '行吗姓名姓名',
-							sex: '0',
-						},
-						{
-							avator: 'https://ww1.sinaimg.cn/mw690/6910b6f2gy1hrkg6qz6ejj20n00n0ac9.jpg',
-							name: '行吗姓名姓名',
-							sex: '0',
-						},
-						{
-							avator: 'https://ww1.sinaimg.cn/mw690/6910b6f2gy1hrkg6qz6ejj20n00n0ac9.jpg',
-							name: '行吗姓名姓名',
-							sex: '1',
-						},
-						{
-							avator: 'https://ww1.sinaimg.cn/mw690/6910b6f2gy1hrkg6qz6ejj20n00n0ac9.jpg',
-							name: '行吗姓名姓名',
-							sex: '1',
-						},
-						{
-							avator: 'https://ww1.sinaimg.cn/mw690/6910b6f2gy1hrkg6qz6ejj20n00n0ac9.jpg',
-							name: '行吗姓名姓名',
-							sex: '1',
-						},
-						{
-							avator: 'https://ww1.sinaimg.cn/mw690/6910b6f2gy1hrkg6qz6ejj20n00n0ac9.jpg',
-							name: '行吗姓名姓名',
-							sex: '1',
-						},
-						{
-							avator: 'https://ww1.sinaimg.cn/mw690/6910b6f2gy1hrkg6qz6ejj20n00n0ac9.jpg',
-							name: '行吗姓名姓名',
-							sex: '1',
-						}
-					]
-				},
-				info: {
-					tag: '',
-					startTime: '',
-					endTime: '',
-					startTimeShow: '',
-					endTimeShow: '',
-					refund: '',
-				},
 				toastShowDel: false,
 				toastShowDown: false,
 				publicSuccessShow: false,
@@ -395,15 +342,23 @@
 				popupTypeApply: '0', // 0是报名  1是取消
 				viewPopup: false,
 				applyPopup: false,
+				delta: 1
 			}
 		},
 		onLoad(options) {
 			this.id = options.id
-			this.getDetails()
+			if (options.delta) {
+				this.delta = Number(options.delta)
+			}
 		},
 		created() {
 			this.StatusBar = uni.getStorageSync('statusBarHeight')
 			this.navHeight = uni.getStorageSync('navBarHeight')
+		},
+		onShow() {
+			if (this.id) {
+				this.getDetails()
+			}
 		},
 		methods: {
 			goMap() {
@@ -426,6 +381,29 @@
 						icon: 'none'
 					})
 					return
+				}
+			},
+			viewPopupLook() {
+				if (this.info.total === this.info.surplusNumber){
+					return;
+				}
+				this.viewPopup = true
+			},
+			async doFllow() {
+				let res = await http.fansUpdate({
+					userId: this.info.userId
+				})
+				if (res?.code == '200') {
+					// 1关注成功2取关成功
+					uni.showToast({
+						title: res?.data == 1 ? '关注成功' : '取关成功',
+						icon: 'none'
+					})
+				} else {
+					uni.showToast({
+						title: res?.msg,
+						icon: 'none'
+					})
 				}
 			},
 			async getDetails() {
@@ -523,6 +501,41 @@
 				uni.navigateTo({
 					url: '/pagesToggle/pages/public/public?id=' + this.id
 				})
+			},
+			async doPay() {
+				let res = await http.orderPay({
+					id: this.id
+				})
+				if (res.code === '200' && res.data) {
+					const payParams = res.data;
+					uni.requestPayment({
+						provider: 'wxpay',
+						timeStamp: payParams.timeStamp,
+						nonceStr: payParams.nonceStr,
+						package: payParams.package,
+						signType: payParams.signType,
+						paySign: payParams.paySign,
+						success: function (res) {
+							console.log('支付成功', res);
+							uni.showToast({
+								title: '支付成功',
+								icon: 'success'
+							});
+						},
+						fail: function (err) {
+							console.log('支付失败', err);
+							uni.showToast({
+								title: '支付失败',
+								icon: 'none'
+							});
+						}
+					});
+				} else {
+					uni.showToast({
+						title: res.msg || '支付失败',
+						icon: 'none'
+					});
+				}
 			}
 		}
 	}
@@ -1023,7 +1036,7 @@
 			color: #646464;
 			z-index: 9;
 			.big {
-				color: #FF8F50;
+				color: #FF8F50!important;
 				font-size: 32rpx;
 				line-height: 44rpx;
 				font-weight: 600;

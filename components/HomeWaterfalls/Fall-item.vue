@@ -23,7 +23,7 @@
 				</view>
 			</view>
 			<view class="desc" v-if="item.type != 2">
-				<view class="gap no-wrap">{{ item.distanceMeters / 1000 }}km</view>
+				<view class="gap no-wrap" v-if="item.distanceMeters || item.distanceMeters === 0">{{ item.distanceMeters }}km</view>
 				<view  class="no-wrap">{{ item.startdate }}</view>
 			</view>
 			<view class="remain" v-if="item.type == 1 && item?.userActivityVo?.allImages?.length > 0">

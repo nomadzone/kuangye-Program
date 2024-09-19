@@ -69,11 +69,11 @@
 				for (let i=0;i<list.length;i++) {
 					const item = list[i]
 					item.image = item?.images?.split(',')[0]
-					item.startdate = ''
+					let startdate = ''
 					if (item?.type === 1 && item?.startdate) {
-						item.startdate = formatDateText(item?.startdate)
+						startdate = formatDateText(item?.startdate)
 					} else if (item?.type === 3) {
-						item.startdate = formatDateText(item?.expectdate)
+						startdate = formatDateText(item?.expectdate)
 					}
 					if (list[i]?.userActivityVo) {
 						if (!list[i].userActivityVo?.allImages) {
@@ -83,10 +83,11 @@
 						}
 						
 					}
+					item.startdate = startdate
 					if (i%2 == 1) {
-						right.push(list[i])
+						right.push(item)
 					} else {
-						left.push(list[i])
+						left.push(item)
 					}
 				}
 				this.right = right
@@ -100,17 +101,56 @@
 			  const randomIndex = Math.floor(Math.random() * numbers.length);
 			  return numbers[randomIndex];
 			},
-			doButton(item, index) {
+			async doButton(item, index) {
 				console.log(item, index)
+				// 发起支付
+				let res = await http.orderPay({
+					id: item.id
+				})
+				if (res.code === '200' && res.data) {
+					const payParams = res.data;
+					uni.requestPayment({
+						provider: 'wxpay',
+						timeStamp: payParams.timeStamp,
+						nonceStr: payParams.nonceStr,
+						package: payParams.package,
+						signType: payParams.signType,
+						paySign: payParams.paySign,
+						success: function (res) {
+							console.log('支付成功', res);
+							uni.showToast({
+								title: '支付成功',
+								icon: 'success'
+							});
+						},
+						fail: function (err) {
+							console.log('支付失败', err);
+							uni.showToast({
+								title: '支付失败',
+								icon: 'none'
+							});
+						}
+					});
+				} else {
+					uni.showToast({
+						title: res.msg || '支付失败',
+						icon: 'none'
+					});
+				}
 			},
 			doItem(item, index) {
-				console.log(item, index)
-				uni.navigateTo({
-					url: `/pagesToggle/pages/details/details?id=${item.id}`,
-					success: res => {
-						res.eventChannel.emit('getDetails', item)
-					}
-				})
+				if (item.type === 1) {
+					uni.navigateTo({
+						url: `/pagesToggle/pages/details/details?id=${item.id}`,
+						success: res => {
+							res.eventChannel.emit('getDetails', item)
+						}
+					})
+				} else if (item.type === 2) {
+					// 新鲜事
+				} else if (item.type === 3) {
+					// 找搭子
+				}
 			},
 			async doLike(item, index) {
 				console.log(item, index)

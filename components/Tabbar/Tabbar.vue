@@ -14,7 +14,7 @@
 			<view class="popup-top" >
 				<view class="popup-title" @click="doPath('/pagesToggle/pages/public/public')">一起野</view>
 				<view class="popup-desc">我是活动主理人，发起付费活动</view>
-				<view class="popup-tag" @tap="handleGoIdentify()">未认证</view>
+				<view class="popup-tag" @click="handleGoIdentify()">未认证</view>
 				<image src="../../static/images/popu-1.png" mode=""></image>
 			</view>
 			<view class="popup-bottom">
@@ -103,7 +103,6 @@
 							}
 						})
 					}
-					console.log(res)
 				})
 			}
 		},
