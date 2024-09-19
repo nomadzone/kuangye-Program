@@ -8,10 +8,10 @@
 				<view class="title">探索一起野</view>
 				<view class="nav-row">
 					<view class="nav-item">
-						<image class="nav-img" src="../../static/images/hot-activity.svg"></image>
+						<!-- <image class="nav-img" src="../.../static/images/hot-activity.svg"></image> -->
 					</view>
 					<view class="nav-item">
-						<image class="nav-img" src="../../static/images/owner-principal.svg"></image>
+						<!-- <image class="nav-img" src="../../static/images/owner-principal.svg"></image> -->
 					</view>
 				</view>
 			</view>
