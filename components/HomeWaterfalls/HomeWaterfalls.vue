@@ -29,6 +29,12 @@
 			isAd: {
 				type: Boolean,
 				default: false
+			},
+			listData: {
+				type: Array,
+				default() {
+					return []
+				}
 			}
 		},
 		data() {
@@ -46,23 +52,31 @@
 				this.init = true
 			}, 1000)
 		},
+		watch: {
+			listData(value) {
+				this.handleData(value)
+			}
+		},
 		methods: {
-			async getList(type = null) {
+			async getList(type = null, title = '') {
 				let params = {
 					longitude: '77' || this.longitude,
 					latitude: '38.8833' || this.latitude,
 					type,
 					"pageNum": 1,
-					"pageSize": 10
+					"pageSize": 10,
+					title
 				}
 				let res = await http.homeActivity(params);
-				console.log(res, 1111200)
 				if (res?.code !== '200') {
 					this.right = []
 					this.left = []
 					return
 				}
 				let list = res?.data?.list || []
+				this.handleData(list)
+			},
+			handleData(list) {
 				this.list = list;
 				let right = []
 				let left = []
@@ -93,8 +107,6 @@
 				this.right = right
 				this.left = left
 				this.$forceUpdate()
-				console.log(this.right, 4444)
-				console.log(this.left, 444455)
 			},
 			getRandomNumber() {
 			  const numbers = [1, 2, 3];

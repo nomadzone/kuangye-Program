@@ -36,7 +36,8 @@ export default {
 	HomeSort,
 	HomeCate,
 	HomeWaterfalls,
-	Gradual
+	Gradual,
+	Map
   },
   data() {
 	  return {

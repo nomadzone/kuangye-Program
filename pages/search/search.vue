@@ -3,23 +3,23 @@
 		<view class="input">
 			<view class="input-wrap">
 				<image src="../../static/images/search.png" mode=""></image>
-				<input type="text" placeholder="搜索活动、新鲜事及更多" v-model="value">
+				<input type="text" placeholder="搜索活动、新鲜事及更多" v-model="value" @confirm="doSearch">
 				<image class="close" src="../../static/images/input-close.png" @click="doClose" v-show="value" mode=""></image>
 			</view>
 			<button @click="doSearch">搜索</button>
 		</view>
 		<view style="height: 136rpx;"></view>
-		<view class="history" v-if="searchHistory.length !== 0 && !isSearch">
+		<view class="history" v-if="history.length !== 0 && !isSearch">
 			<view class="history-title">历史搜索</view>
 			<view class="history-list">
-				<view v-for="(item, index) in searchHistory" :key="index">
+				<view v-for="(item, index) in history" :key="index" @click="doHistory(item)">
 					<text>{{item}}</text>
-					<image @click="doDelete(index)" src="../../static/images/delete.png" mode=""></image>
+					<image @click.stop="doDelete(index)" src="../../static/images/delete.png" mode=""></image>
 				</view>
 			</view>
 		</view>
-		<view class="falls" v-if="result.length !== 0 && isSearch">
-			<HomeWaterfalls></HomeWaterfalls>
+		<view class="falls" v-show="isSearch">
+			<HomeWaterfalls ref="HomeWaterfalls"></HomeWaterfalls>
 		</view>
 	</view>
 </template>
@@ -34,34 +34,46 @@ import HomeWaterfalls from '@/components/HomeWaterfalls/HomeWaterfalls.vue'
 			return {
 				value: '',
 				isSearch: false,
-				history: [
-					'历史搜索1',
-					'历史搜索1',
-					'历史搜索1',
-					'历史搜索1',
-					'历史搜索1',
-				],
+				history: [],
 				result: []
 			}
 		},
-		computed: {
-				searchHistory() {
-					if (!this.value) return []
-					return this.history.filter(item=> item.includes(this.value))
-				}
+		onShow() {
+			let searchHistory = uni.getStorageSync('searchHistory') || [];
+			this.history = searchHistory
 		},
 		methods: {
 			doDelete(index) {
-				this.history.splice(index, 1)
+				uni.showModal({
+					title: '提示',
+					content: '确认删除此搜索记录？',
+					success: (res) => {
+						if (res.confirm) {
+							this.history.splice(index, 1);
+							uni.setStorageSync('searchHistory', this.history);
+						}
+					}
+				})
 			},
 			doClose() {
 				this.value = ''
 				this.result = []
 				this.isSearch = false
 			},
-			doSearch() {
+			async doHistory(text) {
+				this.value = text;
 				this.isSearch = true
-				this.result = [1]
+				await this.$refs.HomeWaterfalls.getList(null, text)
+			},
+			async doSearch() {
+				this.isSearch = true
+				let searchHistory = uni.getStorageSync('searchHistory') || [];
+				if (!searchHistory.includes(this.value)) {
+					searchHistory.push(this.value);
+					uni.setStorageSync('searchHistory', searchHistory);
+					this.history.push(this.value)
+				}
+				await this.$refs.HomeWaterfalls.getList(null, this.value)
 			}
 		}
 	}
@@ -147,7 +159,7 @@ import HomeWaterfalls from '@/components/HomeWaterfalls/HomeWaterfalls.vue'
 			}
 		}
 		.falls {
-			padding-bottom: 32rpx;
+			padding:0 32rpx 32px 32rpx;
 		}
 	}
 </style>
