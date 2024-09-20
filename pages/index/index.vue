@@ -10,7 +10,7 @@
 			<!-- <HomeCate></HomeCate> -->
 		</view>
 		<view  class="water-view">
-			<HomeWaterfalls ref="HomeWaterfalls" isAd></HomeWaterfalls>
+			<HomeWaterfalls ref="HomeWaterfalls" isAd :page="'home'"></HomeWaterfalls>
 		</view>
 		
 	</view>

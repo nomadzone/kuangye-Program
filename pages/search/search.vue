@@ -19,7 +19,7 @@
 			</view>
 		</view>
 		<view class="falls" v-show="isSearch">
-			<HomeWaterfalls ref="HomeWaterfalls"></HomeWaterfalls>
+			<HomeWaterfalls :height="height" ref="HomeWaterfalls"></HomeWaterfalls>
 		</view>
 	</view>
 </template>
@@ -32,6 +32,7 @@ import HomeWaterfalls from '@/components/HomeWaterfalls/HomeWaterfalls.vue'
 		},
 		data() {
 			return {
+				height: 'calc(100vh - 160rpx)',
 				value: '',
 				isSearch: false,
 				history: [],
