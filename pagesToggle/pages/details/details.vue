@@ -512,7 +512,7 @@
 						provider: 'wxpay',
 						timeStamp: payParams.timeStamp,
 						nonceStr: payParams.nonceStr,
-						package: payParams.package,
+						package: payParams.packageVal,
 						signType: payParams.signType,
 						paySign: payParams.paySign,
 						success: function (res) {
