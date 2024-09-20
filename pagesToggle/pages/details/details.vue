@@ -4,8 +4,9 @@
 			<view class="navbar">
 				<image :src="activityVo.initiatorUrl" mode=""></image>
 				<text>{{ activityVo.initiatorName }}</text>
-				<view @click="doFllow" class="fllow" v-if="info.userLaunchStatus == 1">
-					<text>+ 关注</text>
+				<view @click="doFllow" class="fllow" v-if="info.userLaunchStatus == 2">
+					<text v-if="info.userFollowStatus == 1">已关注</text>
+					<text v-else>+ 关注</text>
 				</view>
 			</view>
 		</Navbar>

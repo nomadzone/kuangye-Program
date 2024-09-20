@@ -10,11 +10,12 @@
       :markers="markers"
       enable-zoom
       enable-rotate
-      @markertap="markertap"
-      @bindcallouttap="onBindcallouttap"
+      @bindmarkertap="markertap"
+      @bindcallouttap="onCalloutTap"
       @regionchange="regionchange"
     >
     </map>
+
     <div class="positon" @click="resetLocation" v-if="isPositon">
       <image src="/static/images/location_m.png" mode=""></image>
     </div>
@@ -37,18 +38,30 @@ export default {
       initialLongitude: 113.32452, // 初始经度
       initialLatitude: 23.099994, // 初始纬度
       markers: [],
+      mapList: [],
     };
   },
   created() {
     // this.getUserLocation();
   },
   methods: {
+    onCalloutTap(e) {
+      console.log(e);
+      this.goPath(e)
+    },
     markertap(e) {
       console.log(e);
+      this.goPath(e)
     },
-    // 点击了气泡
-    onBindcallouttap(e) { 
-      console.log("onBindcallouttap", e);
+    goPath(e) {
+      const markerId = e.detail.markerId; // 获取点击的 markerId
+      const marker = this.markers.find(item => item.id === markerId); // 根据 markerId 找到相应的 marker 数据
+      if (marker) {
+        // 跳转到详情页面
+        uni.navigateTo({
+          url: `/pagesToggle/pages/details/details?id=${marker.id}&latitude=${marker.latitude}&longitude=${marker.longitude}`,
+        });
+      }
     },
     regionchange(e) {
       console.log("regionchange", e);
@@ -62,38 +75,49 @@ export default {
     },
     async getDataList() {
       try {
+        let location = uni.getStorageSync('location')
         let res = await http.homeActivityMap({
-          longitude:  77.027719,
-          latitude: 38.869968,
+          longitude:  this.longitude || location.longitude,
+          latitude: this.latitude || location.longitude,
         });	
         let data = res.data
         let markers = [];
-        for (let i = 0; i < data.length; i++) {
+        let mapList = [];
+        let color = {
+          0: {
+            bg: '#E1FFF8',
+            line: '#00C4EF'
+          },
+          1: {
+            bg: '#E3F7FF',
+            line: '#62e6c8'
+          },
+          2: {
+            bg: '#FFF7E2',
+            line: '#ecd28d'
+          },
+        }
+        for (let i = 2; i < data.length; i++) {
           let item = data[i]
-          // var randomNumber1 =
-          //   this.latitude + Math.random() * (0.02 - 0.005) + 0.005;
-          // var randomNumber2 =
-          //   this.longitude + Math.random() * (0.02 - 0.005) + 0.005;
+          mapList.push(item)
           markers.push({
             id: i,
             latitude: Number(item.latitude),
             longitude: Number(item.longitude),
-            title: item.title,
-            iconPath: item.images,
-            // 'iconPath': '../../static/image/popu-2.png',
-            width: "32",
-            height: "32",
+            // iconPath: `../../static/images/${iconPath[i]}`,
+            width: '24',
+            height: '24',
             callout: {
-              content: item.title,
+              content: item.title.length > 9 ? `${item.title.substring(0, 9)}...` : item.title,
               fontSize: 12,
-              bgColor: "#ff9800",
-              color: "#fff",
-              borderWidth: 1,
-              borderColor: "#ff9800",
-              borderRadius: 16,
+              bgColor: color[i % 3].bg,
+              color: "#000",
+              borderWidth: 2,
+              borderColor: color[i % 3].line,
+              borderRadius: 10,
               padding: 6,
               display: "ALWAYS",
-              textAlign: "center",
+              textAlign: "center"
             },
           });
         }
