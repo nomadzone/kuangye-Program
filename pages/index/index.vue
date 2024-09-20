@@ -73,7 +73,9 @@ export default {
 			})
 			this.sortIndex = type;
 			try {
-				await this.$refs.HomeWaterfalls.getList(type)
+				await this.$refs.HomeWaterfalls.getList({
+					type
+				})
 				uni.hideLoading()
 			} catch (err) {
 				uni.hideLoading()
@@ -83,7 +85,9 @@ export default {
 			const _this = this;
 			return new Promise(async(resolve, reject) => {
 				try {
-					await _this.$refs?.HomeWaterfalls?.getList(type)
+					await _this.$refs?.HomeWaterfalls?.getList({
+						type
+					})
 					resolve()
 				} catch (err) {
 					reject(err)

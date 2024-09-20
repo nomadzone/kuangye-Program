@@ -58,13 +58,18 @@
 			}
 		},
 		methods: {
-			async getList(type = null, title = '') {
+			async getList({
+				type = null, 
+				title = '',
+				pageNum = 1,
+				pageSize = 10
+			}) {
 				let params = {
 					longitude: '77' || this.longitude,
 					latitude: '38.8833' || this.latitude,
 					type,
-					"pageNum": 1,
-					"pageSize": 10,
+					pageNum,
+					pageSize,
 					title
 				}
 				let res = await http.homeActivity(params);

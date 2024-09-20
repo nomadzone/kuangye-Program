@@ -63,7 +63,11 @@ import HomeWaterfalls from '@/components/HomeWaterfalls/HomeWaterfalls.vue'
 			async doHistory(text) {
 				this.value = text;
 				this.isSearch = true
-				await this.$refs.HomeWaterfalls.getList(null, text)
+				await this.$refs.HomeWaterfalls.getList({
+					type: null,
+					title: text,
+					pageSize: 9999999
+				})
 			},
 			async doSearch() {
 				this.isSearch = true
@@ -73,7 +77,11 @@ import HomeWaterfalls from '@/components/HomeWaterfalls/HomeWaterfalls.vue'
 					uni.setStorageSync('searchHistory', searchHistory);
 					this.history.push(this.value)
 				}
-				await this.$refs.HomeWaterfalls.getList(null, this.value)
+				await this.$refs.HomeWaterfalls.getList({
+					type: null, 
+					title: this.value,
+					pageSize: 9999999
+				})
 			}
 		}
 	}
