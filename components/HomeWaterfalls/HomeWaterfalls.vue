@@ -245,8 +245,11 @@
 					})
 				} else if (item.type === 2) {
 					// 新鲜事
+					uni.navigateTo({
+						url:`/pagesFreshNews/pages/detail/index?id=${item.id}`,
+					})
 				} else if (item.type === 3) {
-					// 找搭子
+				
 				}
 			},
 			async doLike(item, index) {

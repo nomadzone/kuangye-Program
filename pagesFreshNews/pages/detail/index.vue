@@ -49,21 +49,29 @@
 <script setup>
 	import {
 		ref,
-		onMounted
+		onMounted,
 	} from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 	import DetailTopNav from '../../components/detailTopNav/index.vue'
 	import Comments from '../../components/comments/index.vue'
 	import freshNewsService from '../../service/service';
 	import {
 		debounce
 	} from '../../../utils';
-
+	onMounted(() => {
+	})
+	
+	const initId = ref('')
+	onLoad((options)=>{
+		console.log('options======', options)
+		initId.value = options.id
+		getDetailInfo()
+	})
 	const indicatorDots = ref(true)
 	const autoplay = ref(true)
 	const interval = ref(3000)
 	const duration = ref(1000)
 
-	const initId = ref('21856658-93ba-4743-b191-428f713aad4a')
 
 	let rebackId = ref(null) // 评论回复id
 
@@ -87,11 +95,7 @@
 				detailInfo.value = res.data
 			}
 		})
-
 	}
-	onMounted(() => {
-		getDetailInfo()
-	})
 
 	// 输入评论
 	let commentInputValue = ref('')
