@@ -3,28 +3,28 @@
 	<view class="comment-group">
 		<view class="comment-item" v-for="commentItem in commentList" :key="commentItem.id">
 			<view class="left">
-				<image class="avatar-img" v-if="commentItem.avatar" :src="commentItem.avatar"></image>
+				<image class="avatar-img" v-if="commentItem.url" :src="commentItem.url"></image>
 				<image class="avatar-img" v-else src="../../static/images/comment-default-avatar.svg"></image>
 			</view>
 			<view class="right">
 				<view class="body">
 					<view class="content">
 						<view class="comment-author">
-							<view class="author-name">{{commentItem.author}}</view>
+							<view class="author-name">{{commentItem.nickname}}</view>
 							<view class="author-tag" v-if="commentItem.autherTag">作者</view>
 						</view>
 						<view class="content-text">{{commentItem.content}}</view>
 						<view class="comment-time">
-							<text class="time-text">{{commentItem.commentTime}}</text>
+							<text class="time-text">{{commentItem.createTime}}</text>
 							<view class="relpay">回复</view>
 						</view>
 
 					</view>
 					<view class="like-action">
-						<image class="like-icon" v-if="commentItem.liked" src="../../static/images/comment-liked.svg">
+						<image @tap="handleChangeCommentLikeStatus(commentItem)" class="like-icon" v-if="commentItem.userUpStatus === 1" src="../../static/images/comment-liked.svg">
 						</image>
-						<image class="like-icon" v-else src="../../static/images/comment-like.svg"></image>
-						<text class="like-num">{{commentItem.likeNum}}</text>
+						<image @tap="handleChangeCommentLikeStatus(commentItem)" class="like-icon" v-else src="../../static/images/comment-like.svg"></image>
+						<text class="like-num">{{commentItem.upnumber}}</text>
 					</view>
 				</view>
 
@@ -34,7 +34,7 @@
 	</view>
 </template>
 
-<script setup lang="ts">
+<script setup >
 	import {
 		ref,
 		defineProps,
@@ -62,6 +62,8 @@
 		freshNewsService.commentList(params).then(res => {
 			if(res && res.code === '200') {
 				console.log('评论----', res.data)
+				commentList.value = res.data.list
+					
 			}
 		})
 	}
@@ -80,6 +82,44 @@
 			}
 		}
 	)
+	
+	// 修改评论点赞状态
+	const handleChangeCommentLikeStatus = (row) => {
+		
+		let params ={
+			commentId: row.id,
+			type: 2
+		}
+		
+		if(row.userUpStatus === 1) {
+			freshNewsService.cancelLike(params).then(res => {
+				if(res && res.code === '200') {
+					let newItem = {
+						...row,
+						userUpStatus: row.userUpStatus === 1 ? 0 :1,
+						upnumber: row.upnumber - 1 
+					}
+					let index = commentList.value.findIndex(item => item.id === row.id)
+					commentList.value.splice(index, 1, newItem)
+				}
+			})
+		} else  {
+			freshNewsService.addLike(params).then(res => {
+				if(res && res.code === '200') {
+					let newItem = {
+						...row,
+						userUpStatus: row.userUpStatus === 1 ? 0 :1,
+						upnumber: row.upnumber + 1
+					}
+					let index = commentList.value.findIndex(item => item.id === row.id)
+					commentList.value.splice(index, 1, newItem)
+				}
+			})
+		}
+		
+		
+		
+	}
 </script>
 
 <style lang="scss" scoped>
@@ -173,7 +213,7 @@
 						display: flex;
 						flex-direction: column;
 						justify-content: flex-start;
-						align-items: flex-end;
+						align-items: center;
 
 						.like-icon {
 							width: 28rpx;
