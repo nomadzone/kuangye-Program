@@ -20,6 +20,9 @@ const http = {
 		activityDown:(data) => get('/activity/down', data), // 本人下架活动
 		activityDel:(data) => get('/activity/del', data), // 本人删除活动
 		orderPay:(data) => get('/order/pay', data), // 用户报名成功 发起支付
+		orderWallet:(data) => get('/order/wallet', data), // 个人票夹
+		activityRefund:(data) => get('/order/refund', data), // 个人取消活动
+		activityAdd:(data) => get('/userActivity/add', data), // 用户报名添加票夹
 	}
 
 

@@ -31,7 +31,7 @@ const httpRequest = (url, method = 'GET', data = null, headers = {}) => {
                 if (res.statusCode === 200) {
                     resolve(res.data);
                 } else {
-                    if (res.data.msg.indexOf('重新登录') > -1) {
+                    if (res?.data?.msg?.indexOf('重新登录') > -1) {
                         uni.navigateTo({
                             url: '/pages/login/index'
                         })

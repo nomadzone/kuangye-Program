@@ -505,7 +505,8 @@
 			},
 			async doPay() {
 				let res = await http.orderPay({
-					id: this.id
+					id: this.id,
+					type: 1
 				})
 				if (res.code === '200' && res.data) {
 					const payParams = res.data;
@@ -516,12 +517,14 @@
 						package: payParams.packageVal,
 						signType: payParams.signType,
 						paySign: payParams.paySign,
-						success: function (res) {
+						success: async (res)=> {
 							console.log('支付成功', res);
 							uni.showToast({
 								title: '支付成功',
 								icon: 'success'
 							});
+							return;
+							await http.activityAdd({ activityId: this.id })
 						},
 						fail: function (err) {
 							console.log('支付失败', err);
