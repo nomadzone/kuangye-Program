@@ -10,13 +10,14 @@
 			<!-- <HomeCate></HomeCate> -->
 		</view>
 		<view  class="water-view">
-			<HomeWaterfalls ref="HomeWaterfalls" isAd :page="'home'"></HomeWaterfalls>
+			<HomeWaterfalls ref="HomeWaterfalls" isAd :page="'home'" @partnerModalShow="handleShowPartnerModal"></HomeWaterfalls>
 		</view>
 		
 	</view>
 	<view style="height: 200rpx;"></view>
     <!-- 页面内容 -->
     <CustomTabbar/>
+	<PartnerModal ref="partnerModalRef"/>
   </view>
 </template>
 
@@ -28,7 +29,7 @@ import HomeSort from '@/components/HomeSort/HomeSort.vue';
 import HomeCate from '@/components/HomeCate/HomeCate.vue';
 import HomeWaterfalls from '@/components/HomeWaterfalls/HomeWaterfalls.vue'
 import Gradual from '@/components/Navbar/Gradual.vue'
-
+import PartnerModal from '@/components/PartnerModal/index.vue'
 export default {
   components: {
     CustomTabbar,
@@ -37,7 +38,8 @@ export default {
 	HomeCate,
 	HomeWaterfalls,
 	Gradual,
-	Map
+	Map,
+	PartnerModal
   },
   data() {
 	  return {
@@ -96,6 +98,12 @@ export default {
 		},
 	  doAction() {
 		  
+	  },
+	  // 找搭子弹出层
+	  handleShowPartnerModal(row) {
+		  let _this = this
+		  console.log('找搭子弹出层---', row)
+		  _this.$refs.partnerModalRef.show(row)
 	  }
   }
 }

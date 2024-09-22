@@ -39,7 +39,7 @@
 	export default {
 		components: {
 			HomeActive,
-			FallItem
+			FallItem,
 		},
 		props: {
 			isAd: {
@@ -266,6 +266,7 @@
 				}
 			},
 			doItem(item, index) {
+				let _this = this
 				if (item.type === 1) {
 					uni.navigateTo({
 						url: `/pagesToggle/pages/details/details?id=${item.id}`,
@@ -279,7 +280,10 @@
 						url:`/pagesFreshNews/pages/detail/index?id=${item.id}`,
 					})
 				} else if (item.type === 3) {
-				
+					// this.$refs.partnerModalRef.handleShow()
+						
+						console.log('item---------', item)
+					_this.$emit('partnerModalShow', item)
 				}
 			},
 			async doLike(item, index) {
