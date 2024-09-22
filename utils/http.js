@@ -23,6 +23,8 @@ const http = {
 		orderWallet:(data) => get('/order/wallet', data), // 个人票夹
 		activityRefund:(data) => get('/order/refund', data), // 个人取消活动
 		activityAdd:(data) => get('/userActivity/add', data), // 用户报名添加票夹
+		balanceInfo: (data) => get('/balance/info', data), // 个人钱包
+		
 	}
 
 

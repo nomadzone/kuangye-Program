@@ -60,6 +60,7 @@
 				"path": "pages/wallet/wallet",
 				"style": {
 					"navigationBarTitleText": "钱包",
+					"enablePullDownRefresh": true,
 					"navigationBarBackgroundColor": "#ffffff",
 					"navigationBarTextStyle": "black"
 				}
@@ -80,6 +81,7 @@
 			}, {
 				"path": "pages/paperclip/index",
 				"style": {
+					"enablePullDownRefresh": true,
 					"navigationStyle": "custom"
 				}
 			}, {

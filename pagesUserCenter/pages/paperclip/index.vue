@@ -267,6 +267,12 @@
 			this.StatusBar = uni.getStorageSync('statusBarHeight')
 			this.navHeight = uni.getStorageSync('navBarHeight')
 		},
+		onReachBottom() {
+   	 // 监听用户上拉触底，加载更多数据
+			this.firstList = []
+			this.lastList = []
+			this.getList()
+		},
 		methods: {
 			doCancel(item) {
 				this.popupTypeApply = '1'
@@ -387,6 +393,7 @@
 					this.firstList = firstList
 					this.lastList = lastList
 					this.lastOpen = (firstList.length === 0 && lastList.length !== 0) ? true : false
+					uni.stopPullDownRefresh();
 				} else {
 					uni.showToast({
 						title: res.msg,

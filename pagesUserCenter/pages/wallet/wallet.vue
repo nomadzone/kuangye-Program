@@ -36,15 +36,15 @@
 				<view class="item" v-for="(item, index) in list" :key="index">
 					<view>
 						<view class="title">
-							<text class="type">提现</text>
+							<text class="type">{{ item.title }}</text>
 							<!-- <text class="status">未到账</text> -->
-							<text class="status ok">未到账</text>
+							<text class="status" :class="[item.status == 0 ? 'ok' : '']">{{ item.status == 0 ? '到账' : '未到账' }}</text>
 						</view>
-						<view class="desc">2023年2月9日 17:38</view>
+						<view class="desc">{{ item.createTime }}</view>
 					</view>
 					<view>
-						<view class="price plus">-¥2189.99</view>
-						<view class="desc">余额 ¥2999.00</view>
+						<view class="price" :class="[item.status == 0 ? 'plus' : '']">¥{{ item.amout || 0 }}</view>
+						<view class="desc">余额 ¥{{ item.balance || 0 }}</view>
 					</view>
 				</view>
 			</view>
@@ -73,8 +73,9 @@
 </template>
 
 <script>
-	import Toast from '@/components/Toast/Toast.vue'
+	import Toast from '@/components/Toast/Toast.vue';
 	import Empty from '@/components/Empty/index.vue'
+	import http from '@/utils/http.js';
 	export default {
 		components: {
 				Toast,
@@ -82,13 +83,38 @@
 		},
 		data() {
 			return {
+				balance: 0,
 				toastShow: false,
 				deleteShow: false,
 				list: [1,2,2,3],
 				isBank: false,
 			}
 		},
+		onLoad() {
+			this.getWalletList()
+		},
+		onReachBottom() {
+			this.getWalletList()
+		},
 		methods: {
+			async getWalletList() {
+				let res = await http.balanceInfo({})
+				uni.stopPullDownRefresh();
+				if (res.code != '200') {
+					unisuni.showToast({
+						title: res.msg,
+						duration: 2000
+					});
+				}
+				this.balance = res.data?.balance || 0
+				if (res.data?.userConsumptionList) {
+					res.data?.userConsumptionList.map(item=> {
+						item.createTime = item.createTime.split(':')[0] + ':' + item.createTime.split(':')[1]
+					})
+				}
+				this.list = res.data?.userConsumptionList
+				console.log(res, 'list')
+			},
 			doBank() {
 				uni.navigateTo({
 					url: '/pagesUserCenter/pages/bindBank/index'
