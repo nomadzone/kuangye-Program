@@ -1,22 +1,18 @@
 <template>
 	<view class="fresh-news-detail-page">
-		<DetailTopNav></DetailTopNav>
+		<DetailTopNav :info="detailInfo" @refreshFollowStatus="handleRefreshFollowStatus"></DetailTopNav>
 		<view class="top-swipper-box">
 			<swiper class="swiper" circular :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval"
 				:duration="duration" indicator-color="rgba(221, 221, 221, 1)"
 				indicator-active-color="rgba(111, 223, 176, 1)">
-				<swiper-item class="swiper-item-box">
-					<view class="swiper-item uni-bg-red">A</view>
+				<swiper-item class="swiper-item-box" v-for="(item, index) in swiperImgs" :key="index">
+					<view class="swiper-item">
+						<image :src="item" mode="widthFix" class="swiper-item-img"></image>
+					</view>
 				</swiper-item>
-				<swiper-item>
-					<view class="swiper-item uni-bg-green">B</view>
-				</swiper-item>
-				<swiper-item>
-					<view class="swiper-item uni-bg-blue">C</view>
-				</swiper-item>
+
 			</swiper>
 		</view>
-
 		<view class="info-box">
 			<view class="title-text">{{detailInfo.title}}</view>
 			<view class="content-text">{{detailInfo.describe}}</view>
@@ -34,12 +30,13 @@
 			</view>
 			<view class="actions">
 				<view class="action-item">
-					<image class="item-icon" src="../../static/images/like-icon.svg"></image>
-					<text class="item-num">{{detailInfo.likeNum}}</text>
+					<image v-if="detailInfo.upUserStatus === 0" class="item-icon" src="../../static/images/like-icon.svg" @tap="handleChangeLike()"></image>
+					<image v-else class="item-icon" src="../../static/images/liked.svg" @tap="handleChangeLike()"></image>
+					<text class="item-num">{{detailInfo.upnumber || 0}}</text>
 				</view>
 				<view class="action-item">
 					<image class="item-icon" src="../../static/images/comment-icon.svg"></image>
-					<text class="item-num">{{detailInfo.commentNum}}</text>
+					<text class="item-num">{{detailInfo.commentNumber}}</text>
 				</view>
 			</view>
 		</view>
@@ -49,34 +46,40 @@
 <script setup>
 	import {
 		ref,
-		onMounted
+		onMounted,
 	} from 'vue'
+	import {
+		onLoad
+	} from '@dcloudio/uni-app'
 	import DetailTopNav from '../../components/detailTopNav/index.vue'
 	import Comments from '../../components/comments/index.vue'
 	import freshNewsService from '../../service/service';
 	import {
 		debounce
 	} from '../../../utils';
+	onMounted(() => {})
 
+	const initId = ref('')
+	onLoad((options) => {
+
+		initId.value = options.id
+		getDetailInfo()
+	})
 	const indicatorDots = ref(true)
 	const autoplay = ref(true)
 	const interval = ref(3000)
 	const duration = ref(1000)
 
-	const initId = ref('21856658-93ba-4743-b191-428f713aad4a')
 
 	let rebackId = ref(null) // 评论回复id
 
 
 	const detailInfo = ref({
-		title: '距离进入宫崎骏的世界只差一杯冰淇淋芭菲🍃',
-		content: '一切的惬意组合在一起大概就像是穿越进了动画中…这一切在愚园路ConnieHe就能实现…愚园路店限定樱花皮肤已上线…🌸在最近大好的阳光下更加出片啦…再配上新品“抹茶柚子蒙布朗冰淇淋芭菲”🍵微风拂面、竟有一点初夏的感觉了🌞',
-		createTime: '5天前发布',
-		commentNum: 100,
-		likeNum: 198
+
 	})
 
 	// 查询新鲜事详情
+	const swiperImgs = ref([])
 	const getDetailInfo = () => {
 		let params = {
 			id: initId.value
@@ -85,13 +88,10 @@
 			console.log('res====', res)
 			if (res && res.code === '200') {
 				detailInfo.value = res.data
+				swiperImgs.value = res.data.images.split(',') || []
 			}
 		})
-
 	}
-	onMounted(() => {
-		getDetailInfo()
-	})
 
 	// 输入评论
 	let commentInputValue = ref('')
@@ -116,6 +116,49 @@
 		})
 
 	}, 1500)
+	
+	// 更新关注状态
+	const handleRefreshFollowStatus = () => {
+		detailInfo.value = {
+			...detailInfo.value,
+			userStatus: !detailInfo.value.userStatus
+		}
+	}
+	
+	//  修改点赞状态
+	const handleChangeLike  = () => {
+		let params = {
+			type: 1,
+			commentId: initId.value
+		}
+		
+		if(detailInfo.value.upUserStatus === 0) {
+			freshNewsService.addLike(params).then(res => {
+				if(res && res.code === '200') {
+					detailInfo.value = {
+						...detailInfo.value,
+						upUserStatus: detailInfo.value.upUserStatus === 0 ? 1: 0,
+						upnumber: detailInfo.value.upnumber + 1
+					}
+					
+					console.log('detailInfo.value====', detailInfo.value)
+				}
+			})
+		} else {
+			freshNewsService.cancelLike(params).then(res => {
+				if(res && res.code === '200') {
+					detailInfo.value = {
+						...detailInfo.value,
+						upUserStatus: detailInfo.value.upUserStatus === 0 ? 1: 0,
+						upnumber: detailInfo.value.upnumber - 1
+					}
+					
+					console.log('detailInfo.value====', detailInfo.value)
+				}
+			})
+		}
+		
+	}
 </script>
 
 <style lang="scss" scoped>
@@ -139,6 +182,16 @@
 
 				.swiper-item-box {
 					height: 100%;
+
+					.swiper-item {
+						width: 100%;
+						height: 100%;
+
+						.swiper-item-img {
+							width: 100%;
+						}
+					}
+
 				}
 			}
 		}
@@ -218,6 +271,8 @@
 				padding-left: 24rpx;
 				justify-content: space-between;
 				align-items: center;
+				height: 72rpx;
+				padding: 0rpx 32rpx;
 
 				.action-item {
 					display: flex;
