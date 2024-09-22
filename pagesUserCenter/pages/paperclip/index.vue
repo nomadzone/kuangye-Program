@@ -367,10 +367,10 @@
 					let firstList = []
 					let lastList = []
 					list.map(item=> {
-						item.status = item.wallet_status
+						// item.status = item.wallet_status
 						// 待支付
 						if (item.status === 1) {
-							this.initCountdown(item.id, item.payEndTime)
+							this.initCountdown(item.id, item.endTime)
 						}
 						item.images = item.images.split(',')
 						let timer = this.formatDateTime(item.startdate)
@@ -440,7 +440,9 @@
 					title: res.code == '200' ? '取消成功' : res.msg,
 					icon: 'none'
 				})
-				this.getList()
+				setTimeout(()=>{
+					this.getList()
+				}, 2000)
 			},
 			openMap() {
 				wx.getLocation({
@@ -479,11 +481,11 @@
 					mask: true          // 是否显示透明蒙层，防止触摸穿透
 				});
 				let res = await http.orderPay({
-					id: item?.id || _this.details.id,
-					type: 2
+					id: item?.id || _this.details.id
 				})
 				if (res.code === '200' && res.data) {
-					const payParams = res.data;
+					const payParams = res.data?.jsapi;
+					const orderId = res.data?.orderId;
 					uni.requestPayment({
 						provider: 'wxpay',
 						timeStamp: payParams.timeStamp,
@@ -497,9 +499,12 @@
 								title: '支付成功',
 								icon: 'success'
 							});
-							_this.getList()
-							return;
-							await http.activityAdd({ activityId: item?.id || _this.details.id })
+							if (type === 3) {
+								_this.applyPopup = false;
+							}
+							setTimeout(()=> {
+								_this.getList()
+							}, 2000)
 						},
 						fail: function (err) {
 							console.log('支付失败', err);
@@ -507,6 +512,7 @@
 								title: '支付失败',
 								icon: 'none'
 							});
+							_this.cancelPay(orderId)
 						}
 					});
 				} else {
@@ -514,6 +520,16 @@
 						title: res.msg || '支付失败',
 						icon: 'none'
 					});
+				}
+			},
+			async cancelPay(id) {
+				let res = await http.orderCancellation({ id })
+				if (res.code !== '200') {
+					uni.showToast({
+						title: res?.msg,
+						icon: 'none'
+					});
+					return;
 				}
 			},
 		}

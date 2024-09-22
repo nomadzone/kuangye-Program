@@ -199,13 +199,31 @@
 			  return numbers[randomIndex];
 			},
 			async doButton(item, index) {
+				const _this = this;
+				// 添加票夹
+				let resPiao = await http.activityAdd({ activityId: item.id })
+				if (resPiao.code !== '200') {
+					uni.showToast({
+						title: resPiao?.msg,
+						icon: 'none'
+					});
+					return;
+				}
+				const piaoId = resPiao?.data
+				if (!piaoId) {
+					uni.showToast({
+						title: '订单id生成失败',
+						icon: 'none'
+					});
+					return;
+				}
 				// 发起支付
 				let res = await http.orderPay({
-					id: item.id,
-					type: 1,
+					id: piaoId
 				})
 				if (res.code === '200' && res.data) {
-					const payParams = res.data;
+					const payParams = res.data?.jsapi;
+					const orderId = res.data?.orderId;
 					uni.requestPayment({
 						provider: 'wxpay',
 						timeStamp: payParams.timeStamp,
@@ -220,7 +238,6 @@
 								icon: 'success'
 							});
 							return;
-							await http.activityAdd({ activityId: item.id })
 						},
 						fail: function (err) {
 							console.log('支付失败', err);
@@ -228,6 +245,7 @@
 								title: '支付失败',
 								icon: 'none'
 							});
+							_this.cancelPay(orderId)
 						}
 					});
 				} else {
@@ -235,6 +253,16 @@
 						title: res.msg || '支付失败',
 						icon: 'none'
 					});
+				}
+			},
+			async cancelPay(id) {
+				let res = await http.orderCancellation({ id })
+				if (res.code !== '200') {
+					uni.showToast({
+						title: res?.msg,
+						icon: 'none'
+					});
+					return;
 				}
 			},
 			doItem(item, index) {
