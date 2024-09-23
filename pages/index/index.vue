@@ -93,11 +93,11 @@ export default {
 				try {
 					let location = uni.getStorageSync('location')
 					if (!location) return
-					let res = await http.getCity({
+					let res = await http.getAddress({
 						longitude: location.longitude,
 						latitude: location.latitude,
 					})
-					this.userInfo = { ...userInfo, address: res.code != '200' ? '' : res.data.city }
+					this.userInfo = { ...userInfo, address: res.code != '200' ? '' : res.data }
 					resolve()
 				} catch(error) {
 					this.userInfo = { ...userInfo, address: '' }
