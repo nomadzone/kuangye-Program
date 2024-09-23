@@ -38,7 +38,7 @@
 						<view class="title">
 							<text class="type">{{ item.title }}</text>
 							<!-- <text class="status">未到账</text> -->
-							<text class="status" :class="[item.status == 0 ? 'ok' : '']">{{ item.status == 0 ? '到账' : '未到账' }}</text>
+							<!-- <text class="status" :class="[item.status == 0 ? 'ok' : '']">{{ item.status == 0 ? '到账' : '未到账' }}</text> -->
 						</view>
 						<view class="desc">{{ item.createTime }}</view>
 					</view>

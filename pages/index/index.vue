@@ -1,6 +1,6 @@
 <template>
   <view>
-	<HomeNavbar @action='doAction' :title="schooolTitle"/>
+	<HomeNavbar :userInfo="userInfo" @action='doAction' :title="schooolTitle"/>
 	<Gradual></Gradual>
 	<Map ref="map" class="map"></Map>
 	<view class="container">
@@ -30,6 +30,7 @@ import HomeCate from '@/components/HomeCate/HomeCate.vue';
 import HomeWaterfalls from '@/components/HomeWaterfalls/HomeWaterfalls.vue'
 import Gradual from '@/components/Navbar/Gradual.vue'
 import PartnerModal from '@/components/PartnerModal/index.vue'
+import http from "@/utils/http.js";
 export default {
   components: {
     CustomTabbar,
@@ -46,6 +47,10 @@ export default {
 		  statusBarHeight: 0,
 		  sortIndex: 0,
 		  schooolTitle: '西安交通大学博学楼1',
+		  userInfo: {
+			avatarUrl: '',
+			address: '',
+		  },
 	  }
   },
   async created() {
@@ -54,6 +59,7 @@ export default {
   async onShow() {
 	await this.getHomeList()
 	await this.getUserLocation()
+	await this.getUserInfo()
   },
   methods: {
 		getUserLocation(fn) {
@@ -80,6 +86,23 @@ export default {
 			} catch (err) {
 				uni.hideLoading()
 			}
+		},
+		async getUserInfo() {
+			return new Promise(async(resolve, reject) => {
+				let userInfo = uni.getStorageSync('userInfo')
+				try {
+					let location = uni.getStorageSync('location')
+					if (!location) return
+					let res = await http.getCity({
+						longitude: location.longitude,
+						latitude: location.latitude,
+					})
+					this.userInfo = { ...userInfo, address: res.code != '200' ? '' : res.data.city }
+					resolve()
+				} catch(error) {
+					this.userInfo = { ...userInfo, address: '' }
+				}
+			})
 		},
 		getHomeList(type) {
 			const _this = this;

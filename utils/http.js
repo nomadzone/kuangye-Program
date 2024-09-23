@@ -26,6 +26,7 @@ const http = {
 		activityRefund:(data) => get('/order/refund', data), // 个人取消活动
 		activityAdd:(data) => get('/userActivity/add', data), // 用户报名添加票夹
 		balanceInfo: (data) => get('/balance/info', data), // 个人钱包
+		getCity: (data) => get('/activity/getCity', data), // 个人钱包
 		
 	}
 
