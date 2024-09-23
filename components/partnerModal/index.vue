@@ -2,7 +2,7 @@
 	<view class="partner-modal-comp">
 		<uni-popup ref="popup" type="bottom" border-radius="10px 10px 0 0" :safe-area="false">
 			<view class="body">
-				<image class="close-icon"  src="../../static/images/partnerModalCloseIcon.svg"></image>
+				<image class="close-icon"  src="../../static/images/partnerModalCloseIcon.svg" @tap="handleClose"></image>
 				<image class="top-icon" src="../../static/images/partnerTopIcon.svg"></image>
 				
 				<InfoBox v-if="infoType === 1" :info="infoData"></InfoBox>
@@ -39,6 +39,8 @@
 		methods:{
 			show(info) {
 				this.infoData = info
+				
+				console.log('infoData====', info)
 				this.$refs.popup.open()
 			},
 			// 
@@ -49,6 +51,9 @@
 					this.infoType = 1
 				}
 				
+			},
+			handleClose() {
+				this.$refs.popup.close()
 			}
 		}
 	}
@@ -75,6 +80,7 @@
 			position: relative;
 			padding-top: 152rpx;
 			box-sizing: border-box;
+			padding-bottom: 100rpx;
 			.close-icon {
 				width:56rpx;
 				height: 56rpx;
