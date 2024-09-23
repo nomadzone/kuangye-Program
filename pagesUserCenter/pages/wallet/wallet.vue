@@ -86,7 +86,7 @@
 				balance: 0,
 				toastShow: false,
 				deleteShow: false,
-				list: [1,2,2,3],
+				list: [],
 				isBank: false,
 				addTotalAmount: 0,
 				jianTotalAmount: 0,
