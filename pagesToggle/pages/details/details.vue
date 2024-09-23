@@ -541,6 +541,7 @@
 								title: '支付成功',
 								icon: 'success'
 							});
+							_this.orderSuccess(orderId)
 						},
 						fail: function (err) {
 							console.log('支付失败', err);
@@ -556,6 +557,16 @@
 						title: res.msg || '支付失败',
 						icon: 'none'
 					});
+				}
+			},
+			async orderSuccess(id) {
+				let res = await http.orderSuccess({ id })
+				if (res.code !== '200') {
+					uni.showToast({
+						title: res?.msg,
+						icon: 'none'
+					});
+					return;
 				}
 			},
 			async cancelPay(id) {

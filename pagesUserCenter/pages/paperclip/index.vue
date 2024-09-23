@@ -118,7 +118,6 @@
 					</view>
 				</view>
 			</view>
-			
 			<view v-if="firstList.length == 0 && lastList.length == 0 && !isInit">
 				<Empty></Empty>
 			</view>
@@ -392,6 +391,7 @@
 					})
 					this.firstList = firstList
 					this.lastList = lastList
+					this.isInit = false;
 					this.lastOpen = (firstList.length === 0 && lastList.length !== 0) ? true : false
 					uni.stopPullDownRefresh();
 				} else {
@@ -502,6 +502,7 @@
 							if (type === 3) {
 								_this.applyPopup = false;
 							}
+							_this.orderSuccess(orderId)
 							setTimeout(()=> {
 								_this.getList()
 							}, 2000)
@@ -520,6 +521,16 @@
 						title: res.msg || '支付失败',
 						icon: 'none'
 					});
+				}
+			},
+			async orderSuccess(id) {
+				let res = await http.orderSuccess({ id })
+				if (res.code !== '200') {
+					uni.showToast({
+						title: res?.msg,
+						icon: 'none'
+					});
+					return;
 				}
 			},
 			async cancelPay(id) {
