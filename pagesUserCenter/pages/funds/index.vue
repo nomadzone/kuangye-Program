@@ -1,12 +1,15 @@
 <template>
 	<view class="page">
-		<view class="title">
+		<view class="wxtitle">
+			体现到微信钱包
+		</view>
+		<!-- <view class="title">
 			<view class="desc">到账银行卡</view>
 			<view>
 				<view>中国银行（63333）</view>
 				<view style="padding-top: 16rpx;" class="desc">到账银行卡</view>
 			</view>
-		</view>
+		</view> -->
 		<view class="card">
 			<view class="card-title"> 提现金额</view>
 			<view class="price">
@@ -14,13 +17,13 @@
 				<input type="number">
 			</view>
 			<view class="card-tip">
-				<text>当前余额 124.4元，</text>
+				<text>当前余额 {{amount}}元，</text>
 				<text class="blue">全部提醒</text>
 			</view>
 		</view>
 		<view style="height: calc(100vh - 224rpx - 350rpx);background-color: #fff;"></view>
 		<view class="footer" :style="{ paddingBottom: StatusBar + 32 + 'rpx' }">
-			<button hover-class="hover" @click="doSumbit">绑定银行卡</button>
+			<button hover-class="hover" @click="doSumbit">确认提现</button>
 		</view>
 	</view>
 </template>
@@ -29,11 +32,13 @@
 	export default {
 		data() {
 			return {
-				StatusBar: 0
+				StatusBar: 0,
+				amount: 0
 			}
 		},
-		onLoad() {
+		onLoad(options) {
 			this.StatusBar = uni.getStorageSync('statusBarHeight')
+			this.amount = options.amount
 		},
 		methods: {
 			doSumbit() {
@@ -66,6 +71,17 @@
 		display: flex;
 		flex-direction: row;
 		font-size: 28rpx;
+		color: #222;
+		font-weight: 600;
+		box-sizing: border-box;
+		justify-content: space-between;
+	}
+	.wxtitle {
+		width: 100%;
+		padding: 64rpx 32rpx;
+		display: flex;
+		flex-direction: row;
+		font-size: 36rpx;
 		color: #222;
 		font-weight: 600;
 		box-sizing: border-box;

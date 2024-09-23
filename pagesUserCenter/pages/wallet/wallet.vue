@@ -6,10 +6,10 @@
 			<view>
 				<view>余额</view>
 				<view class="price">
-					<text>¥0.00</text>
+					<text>¥{{balance}}</text>
 				</view>
 			</view>
-			<view class="tip" @click="doBank" v-if="!isBank">
+			<!-- <view class="tip" @click="doBank" v-if="!isBank">
 				<image src="../../static/images/wellat.png" mode=""></image>
 				<text>未绑卡，无法提现</text>
 			</view>
@@ -22,14 +22,14 @@
 					<text>解绑</text>
 					<image src="../../static/images/arrow-right.png" mode=""></image>
 				</view>
-			</view>
+			</view> -->
 		</view>
 		<view class="list">
 			<view class="list-title">
 				<view>收支明细</view>
 				<view>
-					<text>收入 ¥0.00</text>
-					<text>支出 ¥0.00</text>
+					<text>收入 ¥{{ addTotalAmount }}</text>
+					<text>支出 ¥{{ jianTotalAmount }}</text>
 				</view>
 			</view>
 			<view class="items" v-if="list.length != 0">
@@ -38,13 +38,13 @@
 						<view class="title">
 							<text class="type">{{ item.title }}</text>
 							<!-- <text class="status">未到账</text> -->
-							<text class="status" :class="[item.status == 0 ? 'ok' : '']">{{ item.status == 0 ? '到账' : '未到账' }}</text>
+							<!-- <text class="status" :class="[item.status == 0 ? 'ok' : '']">{{ item.status == 0 ? '到账' : '未到账' }}</text> -->
 						</view>
 						<view class="desc">{{ item.createTime }}</view>
 					</view>
 					<view>
-						<view class="price" :class="[item.status == 0 ? 'plus' : '']">¥{{ item.amout || 0 }}</view>
-						<view class="desc">余额 ¥{{ item.balance || 0 }}</view>
+						<view class="price" :class="[item.status == 0 ? 'plus' : '']">{{ item.payType == 1 ? '+' : '-' }}¥{{ item.amout || 0 }}</view>
+						<!-- <view class="desc">余额 ¥{{ item.balance || 0 }}</view> -->
 					</view>
 				</view>
 			</view>
@@ -86,8 +86,10 @@
 				balance: 0,
 				toastShow: false,
 				deleteShow: false,
-				list: [1,2,2,3],
+				list: [],
 				isBank: false,
+				addTotalAmount: 0,
+				jianTotalAmount: 0,
 			}
 		},
 		onLoad() {
@@ -106,13 +108,22 @@
 						duration: 2000
 					});
 				}
-				this.balance = res.data?.balance || 0
+				let addTotalAmount = 0;
+				let jianTotalAmount = 0;
+				this.balance = res.data?.balance?.toFixed(2) * 1 || 0
 				if (res.data?.userConsumptionList) {
 					res.data?.userConsumptionList.map(item=> {
+						if (item.payType == 1) {
+							addTotalAmount += item.amout
+						} else if (item.payType == 2) {
+							jianTotalAmount += item.amout
+						}
 						item.createTime = item.createTime.split(':')[0] + ':' + item.createTime.split(':')[1]
 					})
 				}
 				this.list = res.data?.userConsumptionList
+				this.addTotalAmount = addTotalAmount.toFixed(2) * 1
+				this.jianTotalAmount = jianTotalAmount.toFixed(2) * 1 
 				console.log(res, 'list')
 			},
 			doBank() {
@@ -126,7 +137,7 @@
 			},
 			doFunds() {
 				uni.navigateTo({
-					url: '/pagesUserCenter/pages/funds/index'
+					url: '/pagesUserCenter/pages/funds/index?amount=' + this.balance
 				})
 			}
 		}

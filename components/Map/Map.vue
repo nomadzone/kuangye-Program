@@ -10,8 +10,8 @@
       :markers="markers"
       enable-zoom
       enable-rotate
-      @bindmarkertap="markertap"
-      @bindcallouttap="onCalloutTap"
+      @markertap="markertap"
+      @callouttap="onCalloutTap"
       @regionchange="regionchange"
     >
     </map>
@@ -54,8 +54,9 @@ export default {
       this.goPath(e)
     },
     goPath(e) {
+      console.log(e)
       const markerId = e.detail.markerId; // 获取点击的 markerId
-      const marker = this.markers.find(item => item.id === markerId); // 根据 markerId 找到相应的 marker 数据
+      const marker = this.mapList[markerId]; // 根据 markerId 找到相应的 marker 数据
       if (marker) {
         // 跳转到详情页面
         uni.navigateTo({
@@ -82,7 +83,7 @@ export default {
         });	
         let data = res.data
         let markers = [];
-        let mapList = [];
+        this.mapList = res.data;
         let color = {
           0: {
             bg: '#E1FFF8',
@@ -97,16 +98,15 @@ export default {
             line: '#ecd28d'
           },
         }
-        for (let i = 2; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
           let item = data[i]
-          mapList.push(item)
           markers.push({
             id: i,
             latitude: Number(item.latitude),
             longitude: Number(item.longitude),
             // iconPath: `../../static/images/${iconPath[i]}`,
-            width: '24',
-            height: '24',
+            width: 0,
+            height: 0,
             callout: {
               content: item.title.length > 9 ? `${item.title.substring(0, 9)}...` : item.title,
               fontSize: 12,

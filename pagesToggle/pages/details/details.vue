@@ -504,12 +504,30 @@
 				})
 			},
 			async doPay() {
+				const _this = this;
+				// 添加票夹
+				let resPiao = await http.activityAdd({ activityId: _this.id })
+				if (resPiao.code !== '200') {
+					uni.showToast({
+						title: resPiao?.msg,
+						icon: 'none'
+					});
+					return;
+				}
+				const piaoId = resPiao?.data
+				if (!piaoId) {
+					uni.showToast({
+						title: '订单id生成失败',
+						icon: 'none'
+					});
+					return;
+				}
 				let res = await http.orderPay({
-					id: this.id,
-					type: 1
+					id: piaoId
 				})
 				if (res.code === '200' && res.data) {
-					const payParams = res.data;
+					const payParams = res.data?.jsapi;
+					const orderId = res.data?.orderId;
 					uni.requestPayment({
 						provider: 'wxpay',
 						timeStamp: payParams.timeStamp,
@@ -523,8 +541,7 @@
 								title: '支付成功',
 								icon: 'success'
 							});
-							return;
-							await http.activityAdd({ activityId: this.id })
+							_this.orderSuccess(orderId)
 						},
 						fail: function (err) {
 							console.log('支付失败', err);
@@ -532,6 +549,7 @@
 								title: '支付失败',
 								icon: 'none'
 							});
+							_this.cancelPay(orderId)
 						}
 					});
 				} else {
@@ -540,7 +558,27 @@
 						icon: 'none'
 					});
 				}
-			}
+			},
+			async orderSuccess(id) {
+				let res = await http.orderSuccess({ id })
+				if (res.code !== '200') {
+					uni.showToast({
+						title: res?.msg,
+						icon: 'none'
+					});
+					return;
+				}
+			},
+			async cancelPay(id) {
+				let res = await http.orderCancellation({ id })
+				if (res.code !== '200') {
+					uni.showToast({
+						title: res?.msg,
+						icon: 'none'
+					});
+					return;
+				}
+			},
 		}
 	}
 </script>
