@@ -3,8 +3,8 @@
 		<view class="top-content" v-if="info.images">{{info.describe}}</view>
 		<view class="partner-modal-info-box">
 			<view class="body-content" v-if="!info.images">{{info.describe}}</view>
-			<view :class="item.images ? 'address-row address-row-light': 'address-row' "></view>
-			<view :class="item.images ? 'date-row date-row-light' : 'date-row'"></view>
+			<view :class="item?.images ? 'address-row address-row-light': 'address-row' "></view>
+			<view :class="item?.images ? 'date-row date-row-light' : 'date-row'"></view>
 			
 		</view>
 	</view>
@@ -18,7 +18,9 @@
 			info: {
 				type: Object,
 				default: () => {
-					return {}
+					return {
+						images: '',
+					}
 				}
 			}
 		}

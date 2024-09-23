@@ -125,8 +125,10 @@
 				pageType = 'init'
 			}) {
 				let params = {
-					longitude: '77' || this.longitude,
-					latitude: '38.8833' || this.latitude,
+					// longitude: '77',
+					// latitude: '38.8833',
+					longitude: this.longitude,
+					latitude: this.latitude,
 					type,
 					pageNum,
 					pageSize,
