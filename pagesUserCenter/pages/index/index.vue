@@ -52,7 +52,7 @@
 	import SelfNav from '@/pagesUserCenter/components/selfNav/index.vue'
 	import OtherPageActions from '@/pagesUserCenter/components/otherPageActions/index.vue'
 	import UserCenterTab from '@/pagesUserCenter/components/tab/index.vue'
-	let pageViewType = ref(2) // 页面视角 1 自己 0 他人
+	let pageViewType = ref(1) // 页面视角 1 自己 0 他人
 	let userInfo = {
 		gender: 1,
 		name: '荔枝涮黑豆黑豆黑豆黑豆黑豆',

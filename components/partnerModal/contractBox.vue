@@ -37,7 +37,6 @@
 
 <style lang="scss" scoped>
 	@import "@/static/config.scss"; // 注意相对路径
-
 	.partner-modal-contract-box {
 		padding: 48rpx 0rpx 32rpx 0rpx;
 		border-radius: 24rpx;
