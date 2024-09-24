@@ -157,7 +157,7 @@
 							<text class="big">¥{{ details.price }}</text>
 						</view>
 						<view class="gray">
-							活动开始12小时前取消，可全额退款
+							活动开始24小时前取消，可全额退款
 						</view>
 					</view>
 					<view class="submit">
@@ -177,8 +177,8 @@
 							🔐 退改须知
 						</view>
 						<view class="desc">
-							活动开始12小时前申请，退款100%
-							活动开始前12小时～开始前申请，退款50%
+							活动开始24小时前申请，退款100%
+							活动开始前24小时～开始前申请，退款50%
 							活动开始后，不支持退款，特殊原因协商
 						</view>
 					</view>
@@ -266,7 +266,8 @@
 			this.StatusBar = uni.getStorageSync('statusBarHeight')
 			this.navHeight = uni.getStorageSync('navBarHeight')
 		},
-		onReachBottom() {
+		onPullDownRefresh() {
+			this.isInit = true;
    	 // 监听用户上拉触底，加载更多数据
 			this.firstList = []
 			this.lastList = []

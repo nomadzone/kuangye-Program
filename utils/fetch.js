@@ -1,8 +1,8 @@
 import env from './env.js';
 
 const BASE_URL = {
-    develop: 'https://www.kuangyeonline.com:8081/api',
-    trial: 'https://www.kuangyeonline.com:8081/api',
+    develop: 'https://www.kuangyeonline.com/api',
+    trial: 'https://www.kuangyeonline.com/api',
     release: '',
 }[env]; // 可以将基本URL单独管理
 

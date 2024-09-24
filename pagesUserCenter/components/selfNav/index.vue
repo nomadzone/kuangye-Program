@@ -1,15 +1,15 @@
 <!-- 自己视角导航栏 -->
 <template>
 	<view class="nav-box">
-		<view class="nav-item">
+		<view class="nav-item"  @click="doPath('/pagesUserCenter/pages/order/index')">
 			<image class="nav-icon" src="../../static/icons/selfNav/order-nav-icon.svg"></image>
 			<text class="nav-text">订单</text>
 		</view>
-		<view class="nav-item">
+		<view class="nav-item"  @click="doPath('/pagesUserCenter/pages/paperclip/index')">
 			<image class="nav-icon" src="../../static/icons/selfNav/ticket-nav-icon.svg"></image>
 			<text class="nav-text">票夹</text>
 		</view>
-		<view class="nav-item">
+		<view class="nav-item" @click="doPath('/pagesUserCenter/pages/wallet/wallet')">
 			<image class="nav-icon" src="../../static/icons/selfNav/wallet-nav-icon.svg"></image>
 			<text class="nav-text">钱包</text>
 		</view>
@@ -29,6 +29,11 @@
 			default: 'user'
 		}
 	})
+	const doPath = (url)=> {
+		uni.navigateTo({
+			 url
+		});
+	}
 </script>
 
 <style lang="scss" scoped>

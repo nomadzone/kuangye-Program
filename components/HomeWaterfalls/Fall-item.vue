@@ -7,9 +7,9 @@
 			<text>{{yiqiyuan[item.status]}}</text>
 		</view>
 		<view class="item-body">
-			<view class="title">
+			<view class="title" :class="[item.type == 3 ? 'title-da' : '']">
 				<text class="da-tag" v-if="item.type == 3">找搭子</text>
-				<text :class="item.type == 3 ? 'ellipsis-2' : 'ellipsis'">{{ item.title }}</text>
+				<text :class="item.type == 3 ? 'ellipsis-2' : 'ellipsis'">{{ item.type == 3 ? item.describe : item.title }}</text>
 			</view>
 			<view class="creater">
 				<view v-if="item.type != 3">
@@ -153,12 +153,18 @@ export default {
 			  -webkit-line-clamp: 2;
 			  line-clamp: 2;
 		}
+		.title-da {
+			display: flex;
+			flex-wrap: wrap;
+
+		} 
 		.da-tag {
-			position: relative;
-			top: -4rpx;
 			margin-right: 4rpx;
-			padding: 4rpx 12rpx;
+			padding: 0rpx 12rpx;
 			border-radius: 24rpx;
+			display: inline-block;
+			line-height: 20px;
+			height: 40rpx;
 			background-color: #00C4EF;
 			z-index: 2;
 			font-size: 24rpx;

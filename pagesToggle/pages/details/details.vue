@@ -214,7 +214,7 @@
 							<text class="big">¥158.0</text>
 						</view>
 						<view class="gray">
-							活动开始12小时前取消，可全额退款
+							活动开始24小时前取消，可全额退款
 						</view>
 					</view>
 					<view class="submit">
@@ -234,8 +234,8 @@
 							🔐 退改须知
 						</view>
 						<view class="desc">
-							活动开始12小时前申请，退款100%
-							活动开始前12小时～开始前申请，退款50%
+							活动开始24小时前申请，退款100%
+							活动开始前24小时～开始前申请，退款50%
 							活动开始后，不支持退款，特殊原因协商
 						</view>
 					</view>
@@ -506,7 +506,7 @@
 			async doPay() {
 				const _this = this;
 				// 添加票夹
-				let resPiao = await http.activityAdd({ activityId: _this.id })
+				let resPiao = await http.userActivity({ activityId: _this.id })
 				if (resPiao.code !== '200') {
 					uni.showToast({
 						title: resPiao?.msg,

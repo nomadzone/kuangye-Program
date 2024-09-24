@@ -156,3 +156,27 @@ export const formatDateText = (dateString) => {
 		  }, delay)
 	  }
   }
+
+  export const formatDateWeek = (dateStr)=> {
+	// 创建一个新的Date对象
+	const date = new Date(dateStr);
+  
+	// 获取月份、日期、小时、分钟
+	const month = date.getMonth() + 1; // getMonth()返回的月份是从0开始的，所以需要+1
+	const day = date.getDate();
+	const hours = date.getHours();
+	const minutes = date.getMinutes();
+  
+	// 获取星期，星期使用getDay()方法，返回的也是从0开始的，0代表周日
+	const days = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+	const weekDay = days[date.getDay()];
+  
+	// 将月份和日期格式化为两位数
+	const formattedMonth = month < 10 ? `0${month}` : month;
+	const formattedDay = day < 10 ? `0${day}` : day;
+	const formattedHours = hours < 10 ? `0${hours}` : hours;
+	const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+  
+	// 拼接成最终的字符串
+	return `${formattedMonth}-${formattedDay}(${weekDay}) ${formattedHours}:${formattedMinutes}`;
+  }

@@ -1,4 +1,4 @@
-import { get, post, put, del } from './fetch.js'
+import { get, post, put, del } from './fetch.js';
 
 
 const http = {
@@ -24,7 +24,7 @@ const http = {
 		orderCancellation:(data) => get('/order/cancellation', data), // 用户报名成功 发起支付
 		orderWallet:(data) => get('/order/wallet', data), // 个人票夹
 		activityRefund:(data) => get('/order/refund', data), // 个人取消活动
-		activityAdd:(data) => get('/userActivity/add', data), // 用户报名添加票夹
+		userActivity:(data) => get('/userActivity/add', data), // 用户报名添加票夹
 		balanceInfo: (data) => get('/balance/info', data), // 个人钱包
 		getAddress: (data) => get('/activity/getAddress', data), // 个人钱包
 		

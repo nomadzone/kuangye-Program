@@ -42,7 +42,6 @@ export default {
     };
   },
   created() {
-    // this.getUserLocation();
   },
   methods: {
     onCalloutTap(e) {
@@ -73,13 +72,18 @@ export default {
         longitude: this.initialLongitude,
         latitude: this.initialLatitude,
       });
+      uni.setStorageSync('location', {
+        longitude: this.initialLongitude,
+        latitude: this.initialLatitude,
+      })
+      uni.removeStorageSync('selectLocation');
     },
-    async getDataList() {
+    async getDataList(options) {
       try {
         let location = uni.getStorageSync('location')
         let res = await http.homeActivityMap({
-          longitude:  this.longitude || location.longitude,
-          latitude: this.latitude || location.longitude,
+          longitude:  options?.longitude || this.longitude || location.longitude,
+          latitude: options?.latitude || this.latitude || location.longitude,
         });	
         let data = res.data
         let markers = [];
@@ -108,7 +112,7 @@ export default {
             width: 0,
             height: 0,
             callout: {
-              content: item.title.length > 9 ? `${item.title.substring(0, 9)}...` : item.title,
+              content: item?.title?.length > 9 ? `${item.title.substring(0, 9)}...` : item.title,
               fontSize: 12,
               bgColor: color[i % 3].bg,
               color: "#000",
@@ -127,12 +131,12 @@ export default {
         console.log(error);
       }
     },
-    getUserLocation() {
+    getUserLocation(fn) {
       const _this = this;
       uni.authorize({
         scope: "scope.userLocation",
         success: () => {
-          _this.getLocation();
+          _this.getLocation(fn);
         },
         fail: () => {
           uni.showModal({
@@ -144,7 +148,7 @@ export default {
                 wx.openSetting({
                   success: (settingData) => {
                     if (settingData.authSetting["scope.userLocation"]) {
-                      _this.getLocation();
+                      _this.getLocation(fn);
                     }
                   },
                 });
@@ -154,7 +158,7 @@ export default {
         },
       });
     },
-    getLocation() {
+    getLocation(fn) {
       const _this = this;
       uni.getLocation({
         type: "gcj02", // 返回可以用于 wx.openLocation 的坐标
@@ -169,6 +173,7 @@ export default {
             latitude: res.latitude,
           })
           _this.getDataList();
+          fn && fn()
         },
         fail: (res) => {
           console.log(res, "fail");

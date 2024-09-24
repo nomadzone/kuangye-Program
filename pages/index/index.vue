@@ -1,6 +1,6 @@
 <template>
   <view>
-	<HomeNavbar :userInfo="userInfo" @action='doAction' :title="schooolTitle"/>
+	<HomeNavbar  :userInfo="userInfo" @selectLoaction='doAction' :title="schooolTitle"/>
 	<Gradual></Gradual>
 	<Map ref="map" class="map"></Map>
 	<view class="container">
@@ -10,13 +10,13 @@
 			<!-- <HomeCate></HomeCate> -->
 		</view>
 		<view  class="water-view">
-			<HomeWaterfalls ref="HomeWaterfalls" isAd :page="'home'" @partnerModalShow="handleShowPartnerModal"></HomeWaterfalls>
+			<HomeWaterfalls ref="HomeWaterfalls" :isAd="isAd" :page="'home'" @partnerModalShow="handleShowPartnerModal"></HomeWaterfalls>
 		</view>
 		
 	</view>
 	<view style="height: 200rpx;"></view>
     <!-- 页面内容 -->
-    <CustomTabbar/>
+    <CustomTabbar :status='userInfo.stauts'/>
 	<PartnerModal ref="partnerModalRef"/>
   </view>
 </template>
@@ -50,7 +50,9 @@ export default {
 		  userInfo: {
 			avatarUrl: '',
 			address: '',
+			stauts: 0
 		  },
+		  isAd: true,
 	  }
   },
   async created() {
@@ -59,13 +61,20 @@ export default {
   async onShow() {
 	await this.getHomeList()
 	await this.getUserLocation()
-	await this.getUserInfo()
   },
   methods: {
-		getUserLocation(fn) {
+		getUserLocation() {
 			return new Promise(async(resolve, reject) => {
 				try {
-					await this.$refs.map.getUserLocation()
+					await this.$refs.map.getUserLocation(async()=> {
+						let location = uni.getStorageSync('location')
+						if (!location) return
+						let res = await http.getAddress({
+							longitude: location.longitude,
+							latitude: location.latitude,
+						})
+						this.userInfo = { ...this.userInfo, address: res.data }
+					})
 					resolve()
 				} catch (err) {
 					reject(err)
@@ -78,6 +87,7 @@ export default {
 				mask: true
 			})
 			this.sortIndex = type;
+			this.isAd = type !== null && type === 0
 			try {
 				await this.$refs.HomeWaterfalls.getList({
 					type
@@ -87,23 +97,6 @@ export default {
 				uni.hideLoading()
 			}
 		},
-		async getUserInfo() {
-			return new Promise(async(resolve, reject) => {
-				let userInfo = uni.getStorageSync('userInfo')
-				try {
-					let location = uni.getStorageSync('location')
-					if (!location) return
-					let res = await http.getAddress({
-						longitude: location.longitude,
-						latitude: location.latitude,
-					})
-					this.userInfo = { ...userInfo, address: res.code != '200' ? '' : res.data }
-					resolve()
-				} catch(error) {
-					this.userInfo = { ...userInfo, address: '' }
-				}
-			})
-		},
 		getHomeList(type) {
 			const _this = this;
 			return new Promise(async(resolve, reject) => {
@@ -111,14 +104,22 @@ export default {
 					await _this.$refs?.HomeWaterfalls?.getList({
 						type
 					})
+					let userInfo = uni.getStorageSync('userInfo')
+					this.userInfo = { ...this.userInfo, ...userInfo }
 					resolve()
 				} catch (err) {
 					reject(err)
 				}
 			})
 		},
-	  doAction() {
-		  
+		async selectLoaction() {
+			// let selectLocation = uni.getStorageSync('selectLocation')
+			let selectLocation = uni.getStorageSync('location')
+			this.userInfo = { ...userInfo, address: selectLocation.address }
+			await this.$refs.map.getDataList({
+				longitude: selectLocation.longitude,
+				latitude: selectLocation.latitude,
+			})
 	  },
 	  // 找搭子弹出层
 	  handleShowPartnerModal(row) {

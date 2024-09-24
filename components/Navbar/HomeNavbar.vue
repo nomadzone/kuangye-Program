@@ -47,17 +47,28 @@ export default {
   computed: {
   },
   methods: {
-    handleRightAction() {
-      // 处理右侧按钮点击事件
-      console.log('Right button clicked');
-	  this.$emit('action')
-      // 你可以在这里执行其他操作
+    handleGoUserCenter() {
+      uni.navigateTo({
+        url: '/pagesUserCenter/pages/index/index'
+      })
     },
-	handleGoUserCenter() {
-		uni.navigateTo({
-			url: '/pagesUserCenter/pages/index/index'
-		})
-	}
+    handleRightAction() {
+      let that = this
+      wx.chooseLocation({
+        success: function (res) {
+          console.log(res);
+          const address = res.address
+          const latitude = res.latitude
+          const longitude = res.longitude
+          // uni.setStorageSync('selectLocation', res)
+          uni.setStorageSync('location', res)
+          that.$emit('selectLoaction')
+        },
+        fail: function (err) {
+          console.log(err, '用户未选择地址');
+        }
+      });
+    },
   }
 }
 </script>

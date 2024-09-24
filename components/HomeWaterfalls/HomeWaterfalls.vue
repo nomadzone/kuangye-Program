@@ -79,9 +79,6 @@
 		onShow() {
 		},
 		created() {
-			setTimeout(() => {
-				this.init = true
-			}, 1000)
 		},
 		watch: {
 			listData(value) {
@@ -201,9 +198,10 @@
 			  return numbers[randomIndex];
 			},
 			async doButton(item, index) {
+				return;
 				const _this = this;
 				// 添加票夹
-				let resPiao = await http.activityAdd({ activityId: item.id })
+				let resPiao = await http.userActivity({ activityId: item.id })
 				if (resPiao.code !== '200') {
 					uni.showToast({
 						title: resPiao?.msg,

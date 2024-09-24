@@ -60,7 +60,7 @@
               <image src="/static/images/time-line.png" mode=""></image>
               <text v-if="!activity.startdate">活动开始时间</text>
               <view class="time" v-else
-                >活动开始: {{ activity.startdate }}</view
+                >活动开始: {{ activity.startdateShow }}</view
               >
               <image
                 src="/static/images/arrow-right-s-line_gray.png"
@@ -72,7 +72,7 @@
             <view>
               <image src="/static/images/time-line.png" mode=""></image>
               <text v-if="!activity.enddate ">活动结束时间</text>
-              <view class="time" v-else>活动结束: {{ activity.enddate  }}</view>
+              <view class="time" v-else>活动结束: {{ activity.enddateShow  }}</view>
               <image
                 src="/static/images/arrow-right-s-line_gray.png"
                 mode=""
@@ -85,7 +85,7 @@
               <image src="/static/images/time-line.png" mode=""></image>
               <text v-if="!activity.signUpStartDate">报名开始时间</text>
               <view class="time" v-else
-                >报名开始: {{ activity.signUpStartDate }}</view
+                >报名开始: {{ activity.signUpStartDateShow }}</view
               >
               <image
                 src="/static/images/arrow-right-s-line_gray.png"
@@ -97,7 +97,7 @@
             <view>
               <image src="/static/images/time-line.png" mode=""></image>
               <text v-if="!activity.signUpEndDate ">报名截止时间</text>
-              <view class="time" v-else>报名截止: {{ activity.signUpEndDate  }}</view>
+              <view class="time" v-else>报名截止: {{ activity.signUpEndDateShow  }}</view>
               <image
                 src="/static/images/arrow-right-s-line_gray.png"
                 mode=""
@@ -134,8 +134,9 @@
         </view>
         <view class="line">
           <view>价格（每人）</view>
-          <view class="line-input">
+          <view class="line-input" @tap="doPrice">
             <input
+              :disabled="id"
               type="text"
               placeholder="请输入价格"
               v-model="activity.price"
@@ -269,7 +270,7 @@ import PublicSuccess from "@/components/Popup/PublicSuccess.vue";
 import Toast from "@/components/Toast/Toast.vue";
 import http from "@/utils/http.js";
 	import { formatDateText } from '@/utils/index.js'
-import { getDayHours, getDayMin, getDatesAndWeeks, formatDateString } from "@/utils/index.js";
+import { getDayHours, getDayMin, getDatesAndWeeks, formatDateString, formatDateWeek } from "@/utils/index.js";
 
 export default {
   components: {
@@ -292,8 +293,12 @@ export default {
         endTime: "",
         startdate:'',
         enddate:'',
+        startdateShow:'',
+        enddateShow:'',
         signUpStartDate: "",
         signUpEndDate : "",
+        signUpStartDateShow: "",
+        signUpEndDateShow: "",
         minpeople: '',
         maxpeople: '',
         price: '',
@@ -314,15 +319,15 @@ export default {
       zcIndex: -1,
       zcList: [
         {
-          title: "活动开始前12小时全额退",
-          desc: `活动开始12小时前申请，退款100%
-						活动开始前12小时～开始前申请，退款50%
+          title: "活动开始前24小时全额退",
+          desc: `活动开始24小时前申请，退款100%
+						活动开始前24小时～开始前申请，退款50%
 						活动开始后，不支持退款，特殊原因协商`,
         },
       ],
       activeList: [["飞盘", "羽毛球", "游泳", "酒吧", "篮球", "高尔夫"]],
       getDatesAndWeeksYear: getDatesAndWeeks(true),
-      timeList: [getDatesAndWeeks(true), getDayHours(), getDayMin()],
+      timeList: [getDatesAndWeeks(false), getDayHours(), getDayMin()],
     };
   },
   onLoad(options) {
@@ -356,6 +361,10 @@ export default {
 						res.data.activityVo.images = []
 					}
           res.data.activityVo.contactphoto = [res?.data.activityVo?.contactphoto]
+          res.data.activityVo.startdateShow = formatDateWeek(res.data.activityVo?.startdate)
+          res.data.activityVo.enddateShow = formatDateWeek(res.data.activityVo?.enddate)
+          res.data.activityVo.signUpEndDateShow = formatDateWeek(res.data.activityVo?.signUpEndDate)
+          res.data.activityVo.signUpStartDateShow = formatDateWeek(res.data.activityVo?.signUpStartDate)
           // 退款政策 暂无数据
           res.data.activityVo.refund = this.zcList[0].title
           this.zcIndex = 0
@@ -387,18 +396,14 @@ export default {
           console.log(err, '用户未选择地址');
         }
       });
-      // wx.getLocation({
-      //   type: "gcj02", //返回可以用于wx.openLocation的经纬度
-      //   success(res) {
-      //     const latitude = res.latitude;
-      //     const longitude = res.longitude;
-      //     wx.openLocation({
-      //       latitude,
-      //       longitude,
-      //       scale: 18,
-      //     });
-      //   },
-      // });
+    },
+    doPrice() {
+      if (this.id) {
+        uni.showToast({
+          icon: 'none',
+          title: '价格不能编辑'
+        })
+      }
     },
     doReFund() {
       if (this.zcIndex === -1 && this.activity.refund) {
@@ -471,33 +476,30 @@ export default {
       let date = this.getDatesAndWeeksYear.filter(
         (item) => item.indexOf(value[0]) !== -1
       )[0];
-      let day = date.split(" ")[0];
-      let week = date.split(" ")[1];
-      this.activity.startdate = `${value[0].split(" ")[0]}(${week}) ${
-        value[1]
-      }${value[2]}`;
+      let dateTime = date.split(" ")[0];
+      let dateString = (`${dateTime} ${value[1]}${value[2]}`).replace(/时/g, ':').replace(/分/g, '') + ':59';
+      this.activity.startdate = dateString
+      this.activity.startdateShow = formatDateWeek(dateString)
     },
     timeEndConfirm(e) {
       let value = e.value;
       let date = this.getDatesAndWeeksYear.filter(
         (item) => item.indexOf(value[0]) !== -1
       )[0];
-      let day = date.split(" ")[0];
-      let week = date.split(" ")[1];
-      this.activity.enddate  = `${value[0].split(" ")[0]}(${week}) ${value[1]}${
-        value[2]
-      }`;
+      let dateTime = date.split(" ")[0];
+      let dateString = (`${dateTime} ${value[1]}${value[2]}`).replace(/时/g, ':').replace(/分/g, '') + ':00';
+      this.activity.enddate = dateString
+      this.activity.enddateShow = formatDateWeek(dateString)
     },
     timeStartSignConfirm(e) {
       let value = e.value;
       let date = this.getDatesAndWeeksYear.filter(
         (item) => item.indexOf(value[0]) !== -1
       )[0];
-      let day = date.split(" ")[0];
-      let week = date.split(" ")[1];
-      this.activity.signUpStartDate = `${value[0].split(" ")[0]}(${week}) ${
-        value[1]
-      }${value[2]}`;
+      let dateTime = date.split(" ")[0];
+      let dateString = (`${dateTime} ${value[1]}${value[2]}`).replace(/时/g, ':').replace(/分/g, '') + ':59';
+      this.activity.signUpStartDate = dateString
+      this.activity.signUpStartDateShow = formatDateWeek(dateString)
     },
     publicSuccessClose() {
       this.publicSuccessShow = false
@@ -508,11 +510,10 @@ export default {
       let date = this.getDatesAndWeeksYear.filter(
         (item) => item.indexOf(value[0]) !== -1
       )[0];
-      let day = date.split(" ")[0];
-      let week = date.split(" ")[1];
-      this.activity.signUpEndDate  = `${value[0].split(" ")[0]}(${week}) ${value[1]}${
-        value[2]
-      }`;
+      let dateTime = date.split(" ")[0];
+      let dateString = (`${dateTime} ${value[1]}${value[2]}`).replace(/时/g, ':').replace(/分/g, '') + ':00';
+      this.activity.signUpEndDate = dateString
+      this.activity.signUpEndDateShow = formatDateWeek(dateString)
     },
     async doPulish() {
       try {
