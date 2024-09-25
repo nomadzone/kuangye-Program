@@ -58,9 +58,12 @@
           <view class="opt" @click="timeStartOpen">
             <view>
               <image src="/static/images/time-line.png" mode=""></image>
-              <text v-if="!activity.startdate">活动开始时间</text>
-              <view class="time" v-else
-                >活动开始: {{ activity.startdateShow }}</view
+              <text v-if="!activity.startdateShow || !activity.enddateShow">活动时间</text>
+              <view class="time" v-if="activity.dateShow && activity.startdate  && activity.enddate "
+                >活动时间: {{ activity.dateShow }}</view
+              >
+              <view class="time" v-if="!activity.dateShow && activity.startdate  && activity.enddate"
+                >活动时间: {{ activity.startdateShow }} - {{ activity.enddateShow  }}</view
               >
               <image
                 src="/static/images/arrow-right-s-line_gray.png"
@@ -68,7 +71,7 @@
               ></image>
             </view>
           </view>
-          <view class="opt" @click="timeEndOpen">
+          <!-- <view class="opt" @click="timeEndOpen">
             <view>
               <image src="/static/images/time-line.png" mode=""></image>
               <text v-if="!activity.enddate ">活动结束时间</text>
@@ -78,14 +81,17 @@
                 mode=""
               ></image>
             </view>
-          </view>
+          </view> -->
 
           <view class="opt" @click="timeStartSignOpen">
             <view>
               <image src="/static/images/time-line.png" mode=""></image>
-              <text v-if="!activity.signUpStartDate">报名开始时间</text>
-              <view class="time" v-else
-                >报名开始: {{ activity.signUpStartDateShow }}</view
+              <text v-if="!activity.signUpStartDate || !activity.signUpEndDateShow">报名时间</text>
+              <view class="time" v-if="activity.signDateShow && activity.signUpStartDate && activity.signUpEndDateShow"
+                >报名时间: {{ activity.signDateShow  }}</view
+              >
+              <view class="time" v-if="!activity.signDateShow && activity.signUpStartDate && activity.signUpEndDateShow"
+                >报名时间: {{ activity.signUpStartDateShow }} - {{ activity.signUpEndDateShow  }}</view
               >
               <image
                 src="/static/images/arrow-right-s-line_gray.png"
@@ -93,7 +99,7 @@
               ></image>
             </view>
           </view>
-          <view class="opt" @click="timeEndSignOpen">
+          <!-- <view class="opt" @click="timeEndSignOpen">
             <view>
               <image src="/static/images/time-line.png" mode=""></image>
               <text v-if="!activity.signUpEndDate ">报名截止时间</text>
@@ -103,7 +109,7 @@
                 mode=""
               ></image>
             </view>
-          </view>
+          </view> -->
         </view>
       </view>
       <view class="module" style="padding-top: 0; padding-bottom: 0">
@@ -184,6 +190,7 @@
       confirmText="保存"
       ref="pickerEnd"
       :columns="timeList"
+      :closeOnClickConfirm="false"
       @confirm="timeEndConfirm"
     ></uv-picker>
     
@@ -199,6 +206,7 @@
       confirmText="保存"
       ref="pickerEndSign"
       :columns="timeList"
+      :closeOnClickConfirm="false"
       @confirm="timeEndSignConfirm"
     ></uv-picker>
     <!-- 退改政策 -->
@@ -295,10 +303,12 @@ export default {
         enddate:'',
         startdateShow:'',
         enddateShow:'',
+        dateShow: '',
         signUpStartDate: "",
         signUpEndDate : "",
         signUpStartDateShow: "",
         signUpEndDateShow: "",
+        signDateShow: '',
         minpeople: '',
         maxpeople: '',
         price: '',
@@ -308,6 +318,7 @@ export default {
         refund: "",
       },
       id: '',
+      publicId: '', // 发布成功后的id
       toastShow: false,
       publicSuccessShow: false,
       minpeople: "",
@@ -365,6 +376,18 @@ export default {
           res.data.activityVo.enddateShow = formatDateWeek(res.data.activityVo?.enddate)
           res.data.activityVo.signUpEndDateShow = formatDateWeek(res.data.activityVo?.signUpEndDate)
           res.data.activityVo.signUpStartDateShow = formatDateWeek(res.data.activityVo?.signUpStartDate)
+
+
+          if (this.activity.startdate.split(' ')[0] === this.activity.startdate.split(' ')[0]) {
+            this.activity.dateShow = this.activity.startdate.split(' ')[0] + ' ' + this.activity.startdate.split(' ')[1] + '-' +this.activity.enddate.split(' ')[1]
+          } else {
+            this.activity.dateShow = ''
+          }
+          if (this.activity.signUpStartDate.split(' ')[0] === this.activity.signUpEndDate.split(' ')[0]) {
+            this.activity.signDateShow = this.activity.signUpStartDate.split(' ')[0] + ' ' + this.activity.signUpStartDate.split(' ')[1] + '-' +this.activity.signUpEndDate.split(' ')[1]
+          } else {
+            this.activity.signDateShow = ''
+          }
           // 退款政策 暂无数据
           res.data.activityVo.refund = this.zcList[0].title
           this.zcIndex = 0
@@ -480,6 +503,7 @@ export default {
       let dateString = (`${dateTime} ${value[1]}${value[2]}`).replace(/时/g, ':').replace(/分/g, '') + ':59';
       this.activity.startdate = dateString
       this.activity.startdateShow = formatDateWeek(dateString)
+      this.timeEndOpen()
     },
     timeEndConfirm(e) {
       let value = e.value;
@@ -488,8 +512,18 @@ export default {
       )[0];
       let dateTime = date.split(" ")[0];
       let dateString = (`${dateTime} ${value[1]}${value[2]}`).replace(/时/g, ':').replace(/分/g, '') + ':00';
+      if (new Date(this.activity.startdate).getTime() >= new Date(dateString).getTime()) {
+        uni.showToast({ title: '结束时间必须大于开始时间', icon: 'none' })
+        return;
+      }
       this.activity.enddate = dateString
       this.activity.enddateShow = formatDateWeek(dateString)
+      if (this.activity.startdateShow.split(' ')[0] === this.activity.enddateShow.split(' ')[0]) {
+        this.activity.dateShow = this.activity.enddateShow.split(' ')[0] + ' ' + this.activity.startdateShow.split(' ')[1] + '-' +this.activity.enddateShow.split(' ')[1]
+      } else {
+        this.activity.dateShow = ''
+      }
+      this.$refs.pickerEnd.close();
     },
     timeStartSignConfirm(e) {
       let value = e.value;
@@ -500,6 +534,7 @@ export default {
       let dateString = (`${dateTime} ${value[1]}${value[2]}`).replace(/时/g, ':').replace(/分/g, '') + ':59';
       this.activity.signUpStartDate = dateString
       this.activity.signUpStartDateShow = formatDateWeek(dateString)
+      this.timeEndSignOpen()
     },
     publicSuccessClose() {
       this.publicSuccessShow = false
@@ -512,8 +547,18 @@ export default {
       )[0];
       let dateTime = date.split(" ")[0];
       let dateString = (`${dateTime} ${value[1]}${value[2]}`).replace(/时/g, ':').replace(/分/g, '') + ':00';
+      if (new Date(this.activity.signUpStartDate).getTime() >= new Date(dateString).getTime()) {
+        uni.showToast({ title: '结束时间必须大于开始时间', icon: 'none' })
+        return;
+      }
       this.activity.signUpEndDate = dateString
       this.activity.signUpEndDateShow = formatDateWeek(dateString)
+      if (this.activity.signUpEndDateShow.split(' ')[0] === this.activity.signUpStartDateShow.split(' ')[0]) {
+        this.activity.signDateShow = this.activity.signUpEndDateShow.split(' ')[0] + ' ' + this.activity.signUpStartDateShow.split(' ')[1] + '-' +this.activity.signUpEndDateShow.split(' ')[1]
+      } else {
+        this.activity.signDateShow = ''
+      }
+      this.$refs.pickerEndSign.close();
     },
     async doPulish() {
       try {
@@ -552,9 +597,9 @@ export default {
           tip = '请输入活动标签'
         } else if (!this.id && new Date(params.signUpEndDate) <= currentTime) {
           tip = '活动报名结束时间必须大于当前时间';
-        } else if (!this.id && new Date(params.startdate) <= currentTime) {
+        } else if (new Date(params.startdate) <= currentTime) {
           tip = '活动开始时间必须大于当前时间';
-        } else if (!this.id && new Date(params.enddate) <= currentTime) {
+        } else if (new Date(params.enddate) <= currentTime) {
           tip = '活动结束时间必须大于当前时间';
         } else if (new Date(params.signUpEndDate) >= new Date(params.startdate)) {
           tip = '活动报名结束时间必须早于活动开始时间';
@@ -598,17 +643,17 @@ export default {
           });
           return;
         }
+        if (this.id) {
+          uni.navigateBack()
+          return;
+        }
         this.publicSuccessShow = true;
-        this.id = res.data
+        this.publicId = res.data
       } catch (error) {}
     },
     doView() {
-      if (this.id) {
-        uni.navigateBack()
-        return;
-      }
       uni.navigateTo({
-        url: `/pagesToggle/pages/details/details?id=${this.id}&type=self&delta=2`
+        url: `/pagesToggle/pages/details/details?id=${this.publicId}&type=self&delta=2`
       })
       this.publicSuccessShow = false
     }

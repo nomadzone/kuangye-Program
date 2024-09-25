@@ -190,6 +190,7 @@
 						this.refresherTriggered = false;
 					}, 1000)
 				}
+				this.init = true
 				this.$forceUpdate()
 			},
 			getRandomNumber() {

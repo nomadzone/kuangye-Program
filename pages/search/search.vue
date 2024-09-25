@@ -6,7 +6,7 @@
 				<input type="text" placeholder="搜索活动、新鲜事及更多" v-model="value" @confirm="doSearch">
 				<image class="close" src="../../static/images/input-close.png" @click="doClose" v-show="value" mode=""></image>
 			</view>
-			<button @click="doSearch">搜索</button>
+			<button @tap="doSearch">搜索</button>
 		</view>
 		<view style="height: 136rpx;"></view>
 		<view class="history" v-if="history.length !== 0 && !isSearch">
@@ -78,11 +78,21 @@ import HomeWaterfalls from '@/components/HomeWaterfalls/HomeWaterfalls.vue'
 					uni.setStorageSync('searchHistory', searchHistory);
 					this.history.push(this.value)
 				}
+				uni.showLoading({
+					title: '加载中...',
+					mask: true
+				})
+			try {
 				await this.$refs.HomeWaterfalls.getList({
 					type: null, 
 					title: this.value,
-					pageSize: 9999999
+					pageSize: 9999999,
+					pageType: 'init'
 				})
+				uni.hideLoading()
+			} catch (err) {
+				uni.hideLoading()
+			}
 			}
 		}
 	}

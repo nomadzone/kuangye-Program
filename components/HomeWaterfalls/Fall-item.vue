@@ -35,7 +35,8 @@
 				<view class="num">{{ item.userActivityVo?.surplus }}</view>
 			</view>
 			<view class="btn-group" v-if="item.type == 1">
-				<button hover-class="hover-class" @click.stop="doButton(item, index)">
+				<!-- @click.stop="doButton(item, index)" -->
+				<button hover-class="hover-class">
 					<text>¥{{item.price}}/人</text>
 					<text>报名</text>
 				</button>

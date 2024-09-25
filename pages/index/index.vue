@@ -5,12 +5,14 @@
 	<Map ref="map" class="map"></Map>
 	<view class="container">
 		<view class="sticky">
-			<view class="line"></view>
-			<HomeSort @action='doSort'></HomeSort>
-			<!-- <HomeCate></HomeCate> -->
-		</view>
-		<view  class="water-view">
-			<HomeWaterfalls ref="HomeWaterfalls" :isAd="isAd" :page="'home'" @partnerModalShow="handleShowPartnerModal"></HomeWaterfalls>
+			<view >
+				<view class="line"></view>
+				<HomeSort @action='doSort' :index="sortIndex"></HomeSort>
+				<!-- <HomeCate></HomeCate> -->
+			</view>
+			<view  class="water-view">
+				<HomeWaterfalls ref="HomeWaterfalls" :isAd="isAd" :page="'home'" @partnerModalShow="handleShowPartnerModal"></HomeWaterfalls>
+			</view>
 		</view>
 		
 	</view>
@@ -53,14 +55,19 @@ export default {
 			stauts: 0
 		  },
 		  isAd: true,
+		  sortIndex: 0,
 	  }
   },
   async created() {
 	  this.statusBarHeight = uni.getStorageSync('statusBarHeight')
   },
   async onShow() {
+	this.sortIndex = Number(uni.getStorageSync('sortIndex') || 0)
 	await this.getHomeList()
 	await this.getUserLocation()
+  },
+  onUnload() {
+	uni.removeStorageSync('sortIndex')
   },
   methods: {
 		getUserLocation() {
@@ -97,12 +104,12 @@ export default {
 				uni.hideLoading()
 			}
 		},
-		getHomeList(type) {
+		getHomeList() {
 			const _this = this;
 			return new Promise(async(resolve, reject) => {
 				try {
 					await _this.$refs?.HomeWaterfalls?.getList({
-						type
+						type: this.sortIndex
 					})
 					let userInfo = uni.getStorageSync('userInfo')
 					this.userInfo = { ...this.userInfo, ...userInfo }
@@ -126,7 +133,7 @@ export default {
 		  let _this = this
 		  console.log('找搭子弹出层---', row)
 		  _this.$refs.partnerModalRef.show(row)
-	  }
+	  },
   }
 }
 </script>
@@ -176,6 +183,7 @@ export default {
 	position:sticky;
 	top: 180rpx;
 	z-index: 9;
+	height: calc(100vh - 440rpx);
 	background-color: #fff;
 	padding: 40rpx 16rpx 0 16rpx;
 }

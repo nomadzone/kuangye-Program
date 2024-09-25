@@ -1,7 +1,7 @@
 <template>
 	<view class="sort flex items-center">
 		<view class="sort-item">
-			<view :class="[sortIndex==0?'active':'']" @click="doSort(null)">全部</view>
+			<view :class="[sortIndex==0?'active':'']" @click="doSort(0)">全部</view>
 			<view class="flex" :class="[sortIndex==1?'active':'']" @click="doSort(1)">
 				<image :src="`../../static/images/sort-togger${sortIndex==1?'-seleted':''}.png`" mode=""></image>
 				<text>一起野</text>
@@ -23,14 +23,26 @@
 
 <script>
 	export default {
+		props: {
+			index: {
+				type:Number,
+				default: 0
+			}
+		},
 		data() {
 			return {
 				sortIndex: 0
 			}
 		},
+		watch: {
+			index(val) {
+				this.sortIndex = val
+			}
+		},
 		methods: {
 			doSort(index) {
-				this.sortIndex = index ===  null ? 0 : index;
+				this.sortIndex = 0;
+				uni.setStorageSync('sortIndex', index === null ? 0 : index)
 				this.$emit('action', index)
 			},
 			doSearch() {
@@ -73,6 +85,7 @@
 		justify-content: flex-start;
 		width: calc(100% - 72rpx);
 		overflow-x: auto;
+		padding-left: 10rpx;
 		> view {
 			margin-right: 32rpx;
 			display: flex;

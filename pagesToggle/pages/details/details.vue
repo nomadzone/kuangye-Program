@@ -4,8 +4,9 @@
 			<view class="navbar">
 				<image :src="activityVo.initiatorUrl" mode=""></image>
 				<text>{{ activityVo.initiatorName }}</text>
-				<view @click="doFllow" class="fllow" v-if="info.userLaunchStatus == 2">
-					<text v-if="info.userFollowStatus == 1">已关注</text>
+				<!-- v-if="info.userLaunchStatus == 2" -->
+				<view @click="doFllow" class="fllow">
+					<text v-if="info.userFollowStatus == 1" class="fllow-ok">已关注</text>
 					<text v-else>+ 关注</text>
 				</view>
 			</view>
@@ -392,10 +393,11 @@
 			},
 			async doFllow() {
 				let res = await http.fansUpdate({
-					userId: this.info.userId
+					userId: this.activityVo.userId
 				})
 				if (res?.code == '200') {
 					// 1关注成功2取关成功
+					this.info = { ...this.info, userFollowStatus: res.data }
 					uni.showToast({
 						title: res?.data == 1 ? '关注成功' : '取关成功',
 						icon: 'none'
@@ -589,7 +591,7 @@
 			display: flex;
 			z-index: 99;
 			position: relative;
-			left: -50rpx;
+			left: -60rpx;
 			top: 2px;
 			image {
 				width: 48rpx;
@@ -598,7 +600,7 @@
 				margin-right: 10rpx;
 			}
 			.fllow {
-				margin-left: 30rpx;
+				margin-left: 10rpx;
 				position: relative;
 				top: -4rpx;
 				text {
@@ -613,6 +615,11 @@
 					align-items: center;
 					font-size: 24rpx;
 				}
+			}
+			.fllow-ok {
+					background-color: transparent!important;
+					border: 1px solid #222!important;
+					color: #222!important;
 			}
 		}
 	}

@@ -113,13 +113,13 @@ export default {
             height: 0,
             callout: {
               content: item?.title?.length > 9 ? `${item.title.substring(0, 9)}...` : item.title,
-              fontSize: 12,
+              fontSize: 14,
               bgColor: color[i % 3].bg,
               color: "#000",
-              borderWidth: 2,
+              borderWidth: 1,
               borderColor: color[i % 3].line,
               borderRadius: 10,
-              padding: 6,
+              padding: 8,
               display: "ALWAYS",
               textAlign: "center"
             },

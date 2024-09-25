@@ -76,6 +76,7 @@
 						url = '/pagesIdentify/pages/webview/index'
 					}
 				}
+				this.visible = false;
 				uni.navigateTo({
 					url
 				})

@@ -1,14 +1,16 @@
 <template>
   <view class="navbar" :style="{ top: StatusBar + 'px'}">
-    <view class="left" @tap="handleGoUserCenter()" v-if="userInfo.avatarUrl">
-      <image :src="userInfo.avatarUrl"  class="icon-left" />
+    <view class="left" @tap="handleGoUserCenter" v-if="userInfo.avatarUrl">
+      <!-- <image :src="userInfo.avatarUrl"  class="icon-left" /> -->
+      <image src="/static/images/title-logo.svg" class="icon-logo" style="height: 80rpx;width: 80rpx;" />
     </view>
 	<view class='right'>
-		<view class="top">
-			<image src="/static/images/title-logo.png" class="icon-logo" />
+		<view class="top" @tap="handleGoUserCenter">
+			<!-- <image src="/static/images/title-logo.png" class="icon-logo" /> -->
+		  <text class="title" style="font-size: 28rpx;">{{ userInfo.nickname }}</text>
 		</view>
 		<view class="bottom" @click="handleRightAction" v-if="userInfo.address">
-		  <text class="title">{{ userInfo.address }}</text>
+		  <text class="title" style="font-size: 24rpx;">{{ userInfo.address }}</text>
 		  <image src="/static/images/arrow-right.png" class="icon" />
 		</view>
 	</view>
