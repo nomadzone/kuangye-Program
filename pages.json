@@ -187,6 +187,23 @@
 					"navigationBarTitleText": null
 				}
 			]
+		},
+		{
+			"root":"pagesUserPreferences",
+			"pages": [
+				{
+					"path": "pages/index/index",
+					"style": {
+						"navigationStyle": "custom"
+					}
+				},
+				{
+					"path": "pages/tags/index",
+					"style": {
+						"navigationStyle": "custom"
+					}
+				}
+			]
 		}
 
 
