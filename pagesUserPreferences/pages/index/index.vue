@@ -45,7 +45,7 @@
 			</view>
 		</view>
 		
-		<button class="submit-btn" form-type="submit">Let’s go!</button>
+		<button class="submit-btn" @tap="handleMore()">Let’s go!</button>
 	</view>
 </template>
 
@@ -66,6 +66,12 @@
 		});
 
 	})
+	
+	const handleMore = () => {
+		uni.navigateTo({
+			url: '/pagesUserPreferences/pages/tags/index'
+		})
+	}
 </script>
 
 <style lang="scss" scoped>
