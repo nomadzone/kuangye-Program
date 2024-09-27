@@ -29,7 +29,7 @@
 			</view>
 
 			<view class="release-form-box">
-				<view class="block-title">联系方式</view>
+				<view class="block-title">联系方式 </view>
 
 				<Upload :limit="9" @upload="doUploadContractImgs" />
 
@@ -101,7 +101,7 @@
 		});
 	}
 	let meetingTime = ref(null)
-	let meetingTimeRef = ref(null)
+	let meetingTimeRef = ref()
 
 	let timeList = ref([getDatesAndWeeks(true), getDayHours(), getDayMin()])
 	

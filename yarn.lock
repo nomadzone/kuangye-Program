@@ -2,3 +2,12 @@
 # yarn lockfile v1
 
 
+"@climblee/uv-ui@^1.1.20":
+  version "1.1.20"
+  resolved "https://registry.npmjs.org/@climblee/uv-ui/-/uv-ui-1.1.20.tgz"
+  integrity sha512-jkyesHJsPJkF4Nap9ZmG1/ibKlxXA5M8+ntqKXwwloIsYSYL5SOKb0gyPj17aBOU1PkJpmeiZ8PwnTolhK2/HA==
+
+yarn@^1.22.22:
+  version "1.22.22"
+  resolved "https://registry.npmjs.org/yarn/-/yarn-1.22.22.tgz"
+  integrity sha512-prL3kGtyG7o9Z9Sv8IPfBNrWTDmXB4Qbes8A9rEzt6wkJV8mUvoirjU0Mp3GGAU06Y0XQyA3/2/RQFVuK7MTfg==

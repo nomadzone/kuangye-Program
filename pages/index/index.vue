@@ -2,7 +2,7 @@
   <view>
 	<HomeNavbar  :userInfo="userInfo" @selectLoaction='doAction' :title="schooolTitle"/>
 	<Gradual></Gradual>
-	<Map ref="map" class="map"></Map>
+	<Map ref="map" class="map" @getLocation='getLocation'></Map>
 	<view class="container">
 		<view class="sticky">
 			<view >
@@ -64,30 +64,21 @@ export default {
   async onShow() {
 	this.sortIndex = Number(uni.getStorageSync('sortIndex') || 0)
 	await this.getHomeList()
-	await this.getUserLocation()
   },
   onUnload() {
 	uni.removeStorageSync('sortIndex')
   },
   methods: {
-		getUserLocation() {
-			return new Promise(async(resolve, reject) => {
-				try {
-					await this.$refs.map.getUserLocation(async()=> {
-						let location = uni.getStorageSync('location')
-						if (!location) return
-						let res = await http.getAddress({
-							longitude: location.longitude,
-							latitude: location.latitude,
-						})
-						this.userInfo = { ...this.userInfo, address: res.data }
-					})
-					resolve()
-				} catch (err) {
-					reject(err)
-				}
-			})
-		},
+	async getLocation () {
+		let location = uni.getStorageSync('location')
+		if (!location) return
+		let res = await http.getAddress({
+			longitude: location.longitude,
+			latitude: location.latitude,
+		})
+		this.userInfo = { ...this.userInfo, address: res.data }
+	},
+
 		async doSort(type) {
 			uni.showLoading({
 				title: '加载中...',
@@ -119,10 +110,10 @@ export default {
 				}
 			})
 		},
-		async selectLoaction() {
+		async doAction() {
 			// let selectLocation = uni.getStorageSync('selectLocation')
 			let selectLocation = uni.getStorageSync('location')
-			this.userInfo = { ...userInfo, address: selectLocation.address }
+			this.userInfo = { ...this.userInfo, address: selectLocation.address }
 			await this.$refs.map.getDataList({
 				longitude: selectLocation.longitude,
 				latitude: selectLocation.latitude,

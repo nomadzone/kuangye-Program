@@ -180,3 +180,70 @@ export const formatDateText = (dateString) => {
 	// 拼接成最终的字符串
 	return `${formattedMonth}-${formattedDay}(${weekDay}) ${formattedHours}:${formattedMinutes}`;
   }
+  
+  /**
+   * @description: 判断用户是否开启定位权限
+   * @param isGoSetting
+   */
+  export function isLocationAuth(isGoSetting = false) {
+    return new Promise((resolve) => {
+      uni.getSetting({
+        success: (res) => {
+          if (res.authSetting['scope.userLocation']) {
+            resolve(true)
+          } else if (isGoSetting) {
+            uni.showModal({
+              title: '提示',
+              content: '请先开启定位权限',
+              success: (red) => {
+                if (red.confirm) {
+                  uni.openSetting({
+                    success: (reds) => {
+                      if (reds.authSetting['scope.userLocation']) {
+                        resolve(true)
+                      } else {
+                        resolve(false)
+                      }
+                    }
+                  })
+                } else if (red.cancel) {
+                  resolve(false)
+                }
+              }
+            })
+          }
+        }
+      })
+    })
+  }
+  /**
+   * @description: 获取用户当前位置
+   * @param isGoSetting
+   * @param type
+   */
+  export function getUserLocation(isGoSetting = true, type = 'gcj02') {
+    return new Promise((resolve) => {
+      uni.getLocation({
+        type,
+        success: (res) => {
+          console.log(res)
+          resolve({
+            latitude: res.latitude,
+            longitude: res.longitude
+          })
+        },
+        fail: (err) => {
+          console.log(err)
+          if (!isGoSetting) return
+          // 判断是否开启定位权限
+          isLocationAuth(true).then((red) => {
+            if (!red) {
+              getUserLocation(false).then((reds) => {
+                resolve(reds)
+              })
+            }
+          })
+        }
+      })
+    })
+  }

@@ -21,10 +21,11 @@
 		<!-- 底部加载动画 -->
 		<view v-if="loading" class="loading-wrapper">
 			<view class="loading"></view>
-			<text class="loading-text">加载中...</text>
+		
+		<text class="loading-text">加载中...</text>
 		</view>
 		<view  class="has-more" v-if="!hasMore && list.length !== 0 && init">没有更多数据了</view>
-		<view class="no-data" v-if="list.length === 0 && init">
+		<view class="no-data" v-if="list.length === 0">
 			<image src="/static/images/no-data.png" mode="widthFix"></image>
 			<text>暂无数据</text>
 		</view>
@@ -323,6 +324,9 @@
 </script>
 
 <style scoped lang="scss">
+.scroll-container {
+	padding-bottom:  120rpx;
+}
 	.falls {
 		display: flex;
 		justify-content: flex-start;

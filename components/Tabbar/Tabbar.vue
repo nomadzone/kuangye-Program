@@ -70,12 +70,12 @@
 		methods: {
 			doPath(url, type = 0) {
 				if (!url) return 
-				if (type === 1) {
-					let userInfo = uni.getStorageSync('userInfo')
-					if (userInfo.status !== 1) {
-						url = '/pagesIdentify/pages/webview/index'
-					}
-				}
+				// if (type === 1) {
+				// 	let userInfo = uni.getStorageSync('userInfo')
+				// 	if (userInfo.status !== 1) {
+				// 		url = '/pagesIdentify/pages/webview/index'
+				// 	}
+				// }
 				this.visible = false;
 				uni.navigateTo({
 					url

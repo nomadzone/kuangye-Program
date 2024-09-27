@@ -11,7 +11,7 @@
 			},
 			background: {
 				type: String,
-				default: 'linear-gradient(to bottom, #90f2ff, rgba(130, 240, 255, 0.11))'
+				default: 'linear-gradient(to bottom, #90f2ff, rgba(130, 240, 255, 0.31))'
 			},
 			height: {
 				type: String,

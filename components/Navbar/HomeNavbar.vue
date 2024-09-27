@@ -120,6 +120,10 @@ export default {
 .right {
 	display: flex;
 	flex-direction: column;
+  .title{
+    font-weight: 600;
+    color: #121212;
+  }
 }
 .icon {
 	width: 32rpx;

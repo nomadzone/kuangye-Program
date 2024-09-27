@@ -39,6 +39,10 @@
 			<SelfNav v-if="pageViewType === 1"/>
 			<OtherPageActions v-else />
 			<UserCenterTab :tabs="tabs" :activeTab="activeTab" @changeTab="handleSetActiveTab"></UserCenterTab>
+			<view v-if="pageViewType===1" class="self-nav-box">
+				<view class="self-nav-box-list" :class="{ 'self-nav-box-listact': activeTabKey === 0 }" >已发起</view>
+				<view class="self-nav-box-list">已参加</view>
+			</view>
 		</view>
 	</view>
 
@@ -69,6 +73,7 @@
 		{label: '找搭子',key: 2, defaultIcon: '../../static/icons/tabs/find-friends-normal.svg', activeIcon: '../../static/icons/tabs/find-friends-active.svg'},
 	])
 	let activeTab = ref(0)
+	let activeTabKey = ref(0)
 	
 	// 设置激活tab
 	const handleSetActiveTab = (val) => {
@@ -208,6 +213,33 @@
 		.self-nav-container{
 			padding: 16rpx 32rpx;
 			margin-top: 18rpx;
+			.self-nav-box{
+				width: 100%;
+				height: 98rpx;
+				padding: 0 32rpx;
+				box-sizing: border-box;
+				display: flex;
+				align-items: center;
+				.self-nav-box-list{
+					width: 120rpx;
+					height: 50rpx;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					border-radius: 30rpx;
+					border: 2rpx solid #DDDDDD;
+					font-weight: 600;
+					color: #A3A3A3;
+					font-size: 24rpx;
+					box-sizing: border-box;
+					margin-right: 24rpx;
+				}
+				.self-nav-box-listact{
+					background-color: #222222;
+					color: #FFFFFF;
+					border-color: #222222;
+				}
+			}
 		}
 	}
 </style>
