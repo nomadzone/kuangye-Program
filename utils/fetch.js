@@ -1,12 +1,13 @@
 import env from './env.js';
 
 const BASE_URL = {
-    develop: 'https://www.kuangyeonline.com/api',
-    trial: 'https://www.kuangyeonline.com/api',
+    develop: 'https://www.kuangyeonline.com/api/web',
+    trial: 'https://www.kuangyeonline.com/api/web',
     release: '',
 }[env]; // 可以将基本URL单独管理
 
 export const prefixUrl = BASE_URL
+let timer = null
 
 const httpRequest = (url, method = 'GET', data = null, headers = {}) => {
     if (!BASE_URL) {
@@ -30,11 +31,12 @@ const httpRequest = (url, method = 'GET', data = null, headers = {}) => {
             success: (res) => {
                 if (res.statusCode === 200) {
                     resolve(res.data);
-                } else {
+                } else if (res.statusCode === 401){
+                    showModal()
+                    return
+                } {
                     if (res?.data?.msg?.indexOf('重新登录') > -1) {
-                        uni.navigateTo({
-                            url: '/pages/login/index'
-                        })
+                        showModal()
                         return
                     }
                     reject(res);
@@ -47,6 +49,23 @@ const httpRequest = (url, method = 'GET', data = null, headers = {}) => {
         });
     });
 };
+
+function showModal() {
+    timer && clearTimeout(timer)
+    timer = setTimeout(() => {
+        uni.showModal({
+            title: '提示',
+            content: '请先登录',
+            showCancel: false,
+            success: () => {
+                uni.navigateTo({
+                    url: '/pages/login/index'
+                })
+            }
+            })
+    }, 1500)
+    
+}
 
 // GET 方法封装
 export const get = (url, data, headers = {}) => {

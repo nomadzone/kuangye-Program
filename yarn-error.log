@@ -14,8 +14,7 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: connect ETIMEDOUT 104.16.1.35:443
-      at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1495:16)
+  Error: EPERM: operation not permitted, open 'C:\Users\mayn\AppData\Local\Yarn\Cache\v6\npm-@climblee-uv-ui-1.1.20-integrity\node_modules\@climblee\uv-ui\.yarn-tarball.tgz'
 
 npm manifest: 
   {

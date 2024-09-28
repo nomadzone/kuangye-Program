@@ -47,6 +47,7 @@
 
 <script>
 import constant from '@/utils/constant'
+
 export default {
 	props: {
 		list: {

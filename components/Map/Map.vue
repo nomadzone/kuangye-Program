@@ -19,15 +19,17 @@
           <cover-view  :class="item.type==1?'customCalloutItem_big':'customCalloutItem'"  :marker-id="item.id">
             <cover-view v-if="item.type == 3" class="customCalloutbox_one">
               <cover-view  class="customCallout">
-              <cover-image class="headImg" :src="item.avatarUrl" mode="aspectFill" />  {{ item.title }}
+              <cover-image class="headImg" :src="item.avatarUrl" mode="aspectFill" />
+              <cover-view class="title"> {{ item.title }}</cover-view>
             </cover-view>
               <cover-view class="sanjiao_down"></cover-view>
               <cover-view class="sanjiao_up"></cover-view>
-              <cover-image class="rightImg" src="../../static/images/group_2.png" mode="aspectFill" />
+              <cover-image class="rightImg" src="../../static/images/eyes_icon.png" mode="aspectFill" />
             </cover-view>
             <cover-view v-if="item.type == 2" class="customCalloutbox_two">
               <cover-view  class="customCallout">
-              <cover-image class="headImg" :src="item.avatarUrl" mode="aspectFill" />  {{ item.title }}
+              <cover-image class="headImg" :src="item.avatarUrl" mode="aspectFill" /> 
+              <cover-view class="title"> {{ item.title }}</cover-view>
             </cover-view>
               <cover-view class="sanjiao_down"></cover-view>
               <cover-view class="sanjiao_up"></cover-view>
@@ -155,9 +157,9 @@ console.log(getCurrentInstance())
             id: i,
             latitude: Number(item.latitude),
             longitude: Number(item.longitude),
-            iconPath: `../../static/images/popu-1.png`,
             width: 0,
             height: 0,
+            iconPath: ``,
             joinCluster: true,
             title: data[i].title,
             image: data[i].images,
@@ -336,11 +338,11 @@ export default {
       box-sizing: border-box;
       font-size: 24rpx;
       font-weight: 600;
-      // 加一个下面的箭头
       .headImg{
         width: 100%;
         height: 125rpx;
         border-radius: 16rpx 16rpx 0 0;
+        flex-shrink: 0;
       }
       .title{
         overflow: hidden;
@@ -355,7 +357,7 @@ export default {
     .rightImg{
     position: absolute;
     right: 10rpx;
-    top: -9rpx;
+    top: 4rpx;
     width: 52rpx;
     height: 50rpx;
     background: #ffffff;
@@ -418,6 +420,7 @@ export default {
         height: 32rpx;
         border-radius: 50%;
         margin-right: 16rpx;
+        flex-shrink: 0;
       }
     }
     .rightImg{
@@ -475,6 +478,7 @@ export default {
       overflow: hidden;
       text-overflow:ellipsis;
       white-space: nowrap;
+      flex-shrink: 0;
       .headImg{
         width: 32rpx;
         height: 32rpx;

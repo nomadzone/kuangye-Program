@@ -1,17 +1,19 @@
 <template>
-  <view>
-	<HomeNavbar  :userInfo="userInfo" @selectLoaction='doAction' :title="schooolTitle"/>
+  <view class="index_box">
+	<HomeNavbar :userInfo="userInfo" @selectLoaction='doAction' :title="schooolTitle"/>
 	<Gradual></Gradual>
 	<Map ref="map" class="map" @getLocation='getLocation'></Map>
-	<view class="container">
+	<view class="container" :class="showPointList?'container_big':''"   :style="touchType?`height:calc(${showVh} - ${pointHeight}rpx); top: calc( ${topVh} + ${pointHeight}rpx);`: ''">
 		<view class="sticky">
-			<view >
+			<view class="touch_view" @click.stop="showPointClick()" @touchmove.stop="touchM" @touchend.stop="touchE"></view>
+			<view>
 				<view class="line"></view>
 				<HomeSort @action='doSort' :index="sortIndex"></HomeSort>
 				<!-- <HomeCate></HomeCate> -->
 			</view>
 			<view  class="water-view">
-				<HomeWaterfalls ref="HomeWaterfalls" :isAd="isAd" :page="'home'" @partnerModalShow="handleShowPartnerModal"></HomeWaterfalls>
+				<!-- <HomeWaterfalls ref="HomeWaterfalls" :isAd="isAd" :page="'home'" @partnerModalShow="handleShowPartnerModal"></HomeWaterfalls> -->
+				 <WaterFalls ref="WaterfallsRef" :sortIndex="sortIndex"></WaterFalls>
 			</view>
 		</view>
 		
@@ -30,6 +32,7 @@ import Map from '@/components/Map/Map.vue';
 import HomeSort from '@/components/HomeSort/HomeSort.vue';
 import HomeCate from '@/components/HomeCate/HomeCate.vue';
 import HomeWaterfalls from '@/components/HomeWaterfalls/HomeWaterfalls.vue'
+import WaterFalls from '@/components/HomeWaterfalls/waterfalls.vue'
 import Gradual from '@/components/Navbar/Gradual.vue'
 import PartnerModal from '@/components/PartnerModal/index.vue'
 import http from "@/utils/http.js";
@@ -42,13 +45,21 @@ export default {
 	HomeWaterfalls,
 	Gradual,
 	Map,
-	PartnerModal
+	PartnerModal,
+	WaterFalls
   },
   data() {
 	  return {
 		  statusBarHeight: 0,
 		  sortIndex: 0,
 		  schooolTitle: '西安交通大学博学楼1',
+		  touchType: false,
+		  pointHeight: 0,
+		  showPointList: false,
+		  timers: null,
+		  clientY: 0,
+		  showVh: '50vh',
+		  topVh: '50vh',
 		  userInfo: {
 			avatarUrl: '',
 			address: '',
@@ -69,6 +80,41 @@ export default {
 	uni.removeStorageSync('sortIndex')
   },
   methods: {
+	showPointClick() {
+            if (this.showPointList) {
+                setTimeout(() => {
+                    this.showPointMap = !this.showPointMap
+                }, 300)
+            } else {
+                this.showPointMap = !this.showPointMap
+            }
+			console.log('222222222222')
+            this.showPointList=!this.showPointList
+
+        },
+	touchM(e) {
+            this.touchType = true
+            this.pointHeight = (e.changedTouches[0].clientY-this.clientY)
+			if(this.showPointList) {
+					this.showVh = '70vh'
+						this.topVh = '30vh'
+					} else {
+						this.showVh = '50vh'
+						this.topVh = '50vh'
+					}
+           
+            if (!this.clientY) {
+                this.clientY = e.changedTouches[0].clientY
+            }
+        },
+        touchE(e) {
+            this.touchType = false
+            this.clientY = 0
+			// 负数转整数
+			if(Math.abs(this.pointHeight)>30) {
+                this.showPointList = !this.showPointList
+            }
+        },
 	async getLocation () {
 		let location = uni.getStorageSync('location')
 		if (!location) return
@@ -80,20 +126,22 @@ export default {
 	},
 
 		async doSort(type) {
-			uni.showLoading({
-				title: '加载中...',
-				mask: true
-			})
+			// uni.showLoading({
+			// 	title: '加载中...',
+			// 	mask: true
+			// })
 			this.sortIndex = type;
 			this.isAd = type !== null && type === 0
-			try {
-				await this.$refs.HomeWaterfalls.getList({
-					type
-				})
-				uni.hideLoading()
-			} catch (err) {
-				uni.hideLoading()
-			}
+			console.log(this.$refs.WaterfallsRef)
+			this.$refs.WaterfallsRef.toRold()
+			// try {
+			// 	await this.$refs.HomeWaterfalls.getList({
+			// 		type
+			// 	})
+			// 	uni.hideLoading()
+			// } catch (err) {
+			// 	uni.hideLoading()
+			// }
 		},
 		getHomeList() {
 			const _this = this;
@@ -139,14 +187,24 @@ export default {
 	height: 50vh;
 	z-index: 2;
 }
+.index_box{
+	width: 100%;
+	height: 100vh;
+	overflow: hidden;
+}
 .container {
-	margin-top: calc(50vh - 100rpx);
-	min-height: calc(50vh + 100rpx - 50rpx);
+	height:  50vh;
 	position: relative;
+	top:  50vh;
 	padding: 0;
 	border-top-right-radius: 16rpx;
 	border-top-left-radius: 16rpx;
 	z-index: 4;
+	// transition: all 0.3s;
+}
+.container_big{
+	height: 70vh;
+	top: 30vh;
 }
 .line {
 	position: relative;
@@ -164,7 +222,7 @@ export default {
 	}
 }
 .water-view {
-	height: calc(100vh - 400rpx);
+		height: 100%;
 	    overflow-y: auto;
 	    padding: 0 16rpx 0 16rpx;
 	    background-color: #fff;
@@ -174,8 +232,16 @@ export default {
 	position:sticky;
 	top: 180rpx;
 	z-index: 9;
-	height: calc(100vh - 440rpx);
+	height: 100%;
 	background-color: #fff;
 	padding: 40rpx 16rpx 0 16rpx;
+	.touch_view{
+		width: 100%;
+		height: 80rpx;
+		background: transparent;
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
 }
 </style>

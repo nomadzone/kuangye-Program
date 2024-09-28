@@ -27,7 +27,11 @@ const http = {
 		userActivity:(data) => get('/userActivity/add', data), // 用户报名添加票夹
 		balanceInfo: (data) => get('/balance/info', data), // 个人钱包
 		getAddress: (data) => get('/activity/getAddress', data), // 个人钱包
-		
+		useActivity: (data) => post('/activity/useActivity', data), // 个人参加的活动
+		selectUserInfoActivity: (data) => post('/activity/selectUserInfoActivity', data), // 个人发起的活动
+		// /user/update
+		updateUserInfo: (data) => post('/user/update', data), // 修改个人信息
+
 	}
 
 

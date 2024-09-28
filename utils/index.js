@@ -124,6 +124,9 @@ export const getUserProfile = async() => {
 }
 
 export const formatDateText = (dateString) => {
+	if (!dateString) return ''
+	dateString = dateString.replace(/-/g, '/');
+
 	const date = new Date(dateString);
   
 	// 获取月份和日期

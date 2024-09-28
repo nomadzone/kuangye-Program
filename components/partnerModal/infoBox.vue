@@ -7,7 +7,7 @@
 				<view class=" address-row-light" v-if="info.images">
 					<view class="address-info">
 						<image class="address-icon" src="../../static/images/partner-modal-img-address.png"></image>
-						<view class="distance-text">4.8km</view>
+						<view class="distance-text">{{info?.distanceMeters}}km</view>
 						<view class="split-line"></view>
 						<view class="address-text">{{info.address}}</view>
 					</view>
@@ -19,7 +19,7 @@
 				<view class="address-row-light address-row" v-else>
 					<view class="address-info">
 						<image class="address-icon" src="../../static/images/partner-modal-noimg-address.png"></image>
-						<view class="distance-text">4.8km</view>
+						<view class="distance-text">{{info?.distanceMeters}}km</view>
 						<view class="split-line"></view>
 						<view class="address-text">{{info.address}}</view>
 					</view>
@@ -83,6 +83,8 @@
 	@import "@/static/config.scss"; // 注意相对路径
 
 	.info-container {
+		position: relative;
+		z-index: 1000;
 		.top-content {
 			font-family: PingFang SC;
 			font-size: 40rpx;
