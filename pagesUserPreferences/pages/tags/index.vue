@@ -116,7 +116,7 @@ function handleSubmit() {
     userId: uni.getStorageSync("userInfo")?.id,
     userPreferences: choosenCharacter.value,
   };
-  http.saveUserHomeLabel(choosenCharacter.value).then((res) => {
+  http.preferenceAdd(data).then((res) => {
     if (res.code === "200") {
       uni.showToast({
         title: "保存成功",
