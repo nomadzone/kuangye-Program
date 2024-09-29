@@ -31,7 +31,7 @@ const httpRequest = (url, method = 'GET', data = null, headers = {}) => {
             success: (res) => {
                 if (res.statusCode === 200) {
                     resolve(res.data);
-                } else if (res.statusCode === 401){
+                } else if (res.statusCode == 401){
                     showModal()
                     return
                 } {
@@ -51,12 +51,13 @@ const httpRequest = (url, method = 'GET', data = null, headers = {}) => {
 };
 
 function showModal() {
+    // showCancel: false,
+
     timer && clearTimeout(timer)
     timer = setTimeout(() => {
         uni.showModal({
             title: '提示',
             content: '请先登录',
-            showCancel: false,
             success: () => {
                 uni.navigateTo({
                     url: '/pages/login/index'

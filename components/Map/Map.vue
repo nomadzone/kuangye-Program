@@ -59,6 +59,7 @@ import { onMounted, ref, getCurrentInstance, nextTick  } from "vue";
 import { getUserLocation } from "@/utils/index";
 import http from '@/utils/http.js'
 import { image } from "@climblee/uv-ui/libs/function/test";
+import { onShow } from "@dcloudio/uni-app";
 const { ctx } = getCurrentInstance()
 const emit = defineEmits("getLocation")
 console.log(getCurrentInstance())
@@ -75,6 +76,9 @@ console.log(getCurrentInstance())
     const markers = ref([])
     const mapList = ref([])
     onMounted(() => {
+      
+    })
+    onShow(() => {
       nextTick(() => {
         resetLocation()
       })
@@ -157,9 +161,9 @@ console.log(getCurrentInstance())
             id: i,
             latitude: Number(item.latitude),
             longitude: Number(item.longitude),
-            width: 0,
-            height: 0,
-            iconPath: ``,
+            width: 1,
+            height: 1,
+            iconPath: '../../static/images/smass_yell_jt.png',
             joinCluster: true,
             title: data[i].title,
             image: data[i].images,

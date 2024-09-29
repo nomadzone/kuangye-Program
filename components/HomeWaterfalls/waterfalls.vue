@@ -287,7 +287,7 @@ import constant from "@/utils/constant";
 import { formatDateText } from "@/utils/index.js";
 import emptyImg from "@/static/images/empty-my.png";
 import PartnerModals from '../../components/PartnerModal/index.vue'
-
+import { onShow } from "@dcloudio/uni-app";
 import { ref } from "vue";
 const paging = ref(null);
 const list = ref([]);
@@ -300,6 +300,13 @@ const props = defineProps({
     default: 0,
   },
 });
+
+onShow(() => {
+  if(paging.value) {
+    paging.value.reload();
+  }
+})
+
 async function queryList(current, size) {
   let location = uni.getStorageSync("location");
   let params = {
@@ -346,7 +353,6 @@ async function queryList(current, size) {
 function toRold() {
   paging.value.reload();
 }
-
 async function doLike(item, index) {
   let title = "";
   if (item?.userUpStatus == 0) {

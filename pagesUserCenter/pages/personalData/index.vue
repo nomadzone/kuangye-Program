@@ -59,7 +59,7 @@
 			</view>
 		</view>
 
-		<view class="block-info">
+		<view class="block-info" @click="toSettingTag">
 			<view class="block-info-item">
 				<view class="item-label">推荐偏好</view>
 				<view class="item-control">
@@ -198,7 +198,6 @@ function onTimeChange(e) {
 	});
 }
 function showXb() {
-	console.log(1);
 	pickerActive.value.open();
 }
 
@@ -309,6 +308,12 @@ function handleSure() {
 			popup.value.close();
 			getUserInfo();
 		}
+	});
+}
+// 设置偏好
+function toSettingTag() {
+	uni.navigateTo({
+		url: "/pagesUserPreferences/pages/tags/index?data=" + 'true'
 	});
 }
 </script>

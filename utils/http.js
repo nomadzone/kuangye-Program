@@ -29,9 +29,11 @@ const http = {
 		getAddress: (data) => get('/activity/getAddress', data), // 个人钱包
 		useActivity: (data) => post('/activity/useActivity', data), // 个人参加的活动
 		selectUserInfoActivity: (data) => post('/activity/selectUserInfoActivity', data), // 个人发起的活动
-		// /user/update
 		updateUserInfo: (data) => post('/user/update', data), // 修改个人信息
-
+		userHomeLabel: (data) => get('/sysDictType/userHomeLabel', data), // 首页标签
+		preferenceAdd: (data) => post('/preference/add', data), // 添加偏好
+		fansFollow: (data) => get('/fans/follow', data), // 关注列表
+		fansFans: (data) => get('/fans/fans', data), // 粉丝列表
 	}
 
 

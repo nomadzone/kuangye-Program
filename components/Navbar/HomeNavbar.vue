@@ -1,8 +1,8 @@
 <template>
   <view class="navbar" :style="{ top: StatusBar + 'px'}">
     <view class="left" @tap="handleGoUserCenter" v-if="userInfo.avatarUrl">
-      <!-- <image :src="userInfo.avatarUrl"  class="icon-left" /> -->
-      <image src="/static/images/title-logo.svg" class="icon-logo" style="height: 80rpx;width: 80rpx;" />
+      <image :src="userInfo.avatarUrl" v-if="userInfo.avatarUrl" mode="aspectFill"  class="icon-left" />
+      <image v-else src="/static/images/title-logo.svg" class="icon-logo" style="height: 80rpx;width: 80rpx;" />
     </view>
 	<view class='right'>
 		<view class="top" @tap="handleGoUserCenter">

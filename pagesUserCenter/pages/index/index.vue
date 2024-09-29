@@ -49,11 +49,11 @@
               <text class="item-num">{{ userInfo?.likesNumber || 0 }}</text>
               <text class="item-label">点赞</text>
             </view>
-            <view class="data-item">
+            <view class="data-item" @click="toGz(0)">
               <text class="item-num">{{ userInfo?.followNumber || 0 }}</text>
               <text class="item-label">关注</text>
             </view>
-            <view class="data-item">
+            <view class="data-item" @click="toGz(1)">
               <text class="item-num">{{ userInfo?.fansNumber || 0 }}</text>
               <text class="item-label">粉丝</text>
             </view>
@@ -284,6 +284,14 @@ onShow(() => {
     
   }
 });
+
+// 跳转关注
+function toGz(type) {
+  uni.navigateTo({
+    url: "/pagesUserCenter/pages/followAndFans/index?type=" + type,
+  });
+}
+
 function getUserInfo() {
       http.getUserInfo().then((res) => {
         userInfo.value = res.data;
