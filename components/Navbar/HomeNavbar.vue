@@ -58,7 +58,6 @@ export default {
       let that = this
       wx.chooseLocation({
         success: function (res) {
-          console.log(res);
           const address = res.address
           const latitude = res.latitude
           const longitude = res.longitude
@@ -87,7 +86,7 @@ export default {
   padding: 0 32rpx;
   height: 80rpx;
   box-sizing: border-box;
-  z-index: 4;
+  z-index: 100;
 }
 
 .icon-left {

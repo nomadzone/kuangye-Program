@@ -13,7 +13,7 @@
 			</view>
 			<view  class="water-view">
 				<!-- <HomeWaterfalls ref="HomeWaterfalls" :isAd="isAd" :page="'home'" @partnerModalShow="handleShowPartnerModal"></HomeWaterfalls> -->
-				 <WaterFalls ref="WaterfallsRef" :sortIndex="sortIndex"></WaterFalls>
+				 <WaterFalls ref="WaterfallsRef" :sortIndex="sortIndex"  @partnerModalShow="handleShowPartnerModal"></WaterFalls>
 			</view>
 		</view>
 		
@@ -199,7 +199,7 @@ export default {
 	padding: 0;
 	border-top-right-radius: 16rpx;
 	border-top-left-radius: 16rpx;
-	z-index: 4;
+	z-index: 2;
 	// transition: all 0.3s;
 }
 .container_big{

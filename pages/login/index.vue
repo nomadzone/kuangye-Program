@@ -98,7 +98,12 @@ const handleGetUserProfile = async() => {
 	let res = await http.userLogin(params)
 	uni.hideLoading()
 	if (res.code === '200') {
-		uni.setStorageSync('token', res.data)
+		uni.setStorageSync('token', res.data.token)
+    if (res.data.status!=1) {
+      uni.navigateTo({
+        url: "/pagesUserPreferences/pages/tags/index"
+      });
+    }
 		uni.navigateBack()
 	} else {
 		uni.showToast({
@@ -123,10 +128,15 @@ const handleWxLogin = async({ target }) => {
 	let res = await http.userLogin(params)
 	uni.hideLoading()
 	if (res.code === '200') {
-		uni.setStorageSync('token', res.data)
+		uni.setStorageSync('token', res.data.token)
     let userRes = await http.getUserInfo()
     if (userRes.code === '200') {
       uni.setStorageSync('userInfo', userRes.data)
+      if (res.data.status!=1) {
+      uni.navigateTo({
+        url: "/pagesUserPreferences/pages/tags/index"
+      });
+    }
       uni.navigateBack()
     } else {
       uni.showToast({

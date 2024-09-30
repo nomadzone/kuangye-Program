@@ -89,7 +89,7 @@
                   >
                 </view>
                 <view class="btn-group">
-                  <view class="hover-class" @click="doButton(item, index)">
+                  <view class="hover-class" >
                     <text class="price">¥{{ item?.price }}/人</text>
                     <view class="line"></view>
                     <text class="btn-label">报名</text>
@@ -102,7 +102,7 @@
               <view class="item_two_content">
                 <view class="content_top">
                   <image
-                    :src="item.images?.split(',')[0]"
+                    :src="item?.images?.split(',')[0]"
                     mode="aspectFill"
                   ></image>
                 </view>
@@ -119,7 +119,6 @@
                       </view>
                       <view
                         class="right_info"
-                        @click.stop="doLike(item, index)"
                       >
                         <image
                           src="@/static/images/Vector.png"
@@ -198,7 +197,7 @@
                 <view class="num">剩{{ item?.userActivityVo?.surplus }}位</view>
               </view>
               <view class="btn-group">
-                <view class="hover-class" @click="doButton(item, index)">
+                <view class="hover-class" >
                   <text class="price">¥{{ item?.price }}/人</text>
                   <view class="line"></view>
                   <text class="btn-label">报名</text>
@@ -230,7 +229,7 @@
                     <image :src="item?.initiatorUrl" mode="aspectFill"></image>
                     <view class="left_name">{{ item?.initiatorName }}</view>
                   </view>
-                  <view class="right_info" @click.stop="doLike(item, index)">
+                  <view class="right_info">
                     <image src="@/static/images/Vector.png"></image>
                     <image
                       src="@/static/images/like-s.png"
@@ -277,7 +276,7 @@
         </custom-waterfalls-flow>
       </block>
     </z-paging>
-    <PartnerModals ref="partnerModalRef"/>
+    
   </view>
 </template>
 <script setup>
@@ -286,7 +285,7 @@ import useZPaging from "@/uni_modules/z-paging/components/z-paging/js/hooks/useZ
 import constant from "@/utils/constant";
 import { formatDateText } from "@/utils/index.js";
 import emptyImg from "@/static/images/empty-my.png";
-import PartnerModals from '../../components/PartnerModal/index.vue'
+
 import { onShow } from "@dcloudio/uni-app";
 import { ref } from "vue";
 const paging = ref(null);
@@ -294,6 +293,7 @@ const list = ref([]);
 const images = ref([]);
 const partnerModalRef = ref(null);
 
+const emit = defineEmits(['partnerModalShow'])
 const props = defineProps({
   sortIndex: {
     type: Number,
@@ -347,7 +347,7 @@ async function queryList(current, size) {
       hide: 1,
     };
   });
-  paging.value.complete(res.data.list);
+  paging.value.complete(res.data.list || []);
   paging.value?.endRefresh();
 }
 function toRold() {
@@ -464,7 +464,7 @@ function doItem(item, index) {
       url: `/pagesFreshNews/pages/detail/index?id=${item.id}`,
     });
   } else if (item.type === 3) {
-    partnerModalRef.value.show(item)
+    emit('partnerModalShow', item)
   } else if (item.type === 4) {
     uni.navigateTo({
       url: "/pages/webview/index?url=" + item.url,

@@ -67,12 +67,13 @@
 	
 	// 修改关注状态
 	const handleChangeFollowStatus = () => {
-		
+		uni. showLoading({
+			title: '加载中'
+			})
 		let params ={
 			userId: props.info.activityUserId
 		}
 		freshNewsService.changeFollowStatus(params).then(res =>  {
-			console.log('res====', res)
 			if(res && res.code === '200') {
 				uni.showToast({
 					icon: 'none',
@@ -82,6 +83,9 @@
 				
 			}
 		})
+		.finally(() => {
+			uni.hideLoading()
+			})
 	}
 
 	function onBack() {

@@ -234,6 +234,7 @@ function handleSubmit() {
           border: 0rpx;
           background-color: #007aff;
           color: #ffffff;
+          border: 2rpx solid #007aff;
         }
       }
     }

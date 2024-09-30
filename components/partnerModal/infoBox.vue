@@ -4,7 +4,7 @@
 		<view class="partner-modal-info-box">
 			<view class="info-top">
 				<view class="body-content" v-if="!info.images">{{info.describe}}</view>
-				<view class=" address-row-light" v-if="info.images">
+				<view class="address-row-light" v-if="info.images">
 					<view class="address-info">
 						<image class="address-icon" src="../../static/images/partner-modal-img-address.png"></image>
 						<view class="distance-text">{{info?.distanceMeters}}km</view>
@@ -51,7 +51,7 @@
 			</view>
 			<view class="info-bottom">
 				<view class="avatar-box">
-					<image class="avatar-img" :src="info.initiatorUrl"></image>
+					<image class="avatar-img" :src="info.initiatorUrl"></image>11
 				</view>
 				<view class="author-info">
 					<view class="name-sex">
@@ -157,7 +157,7 @@
 						flex-direction: row;
 						justify-content: flex-end;
 						align-items: center;
-
+						flex-shrink: 0;
 						.guide-icon {
 							width: 32rpx;
 							height: 32rpx

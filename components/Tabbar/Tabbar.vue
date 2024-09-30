@@ -42,9 +42,9 @@
 				<img src="/static/images/add.png" alt="" />
 			</div>
 		</div>
-
+		<!-- goTo('/pages/explore/explore') -->
 		<div class="tab-item" :class="[currentPage === '/pages/explore/explore' ? 'tab-item_selected' : '']"
-			@click="goTo('/pages/explore/explore')">
+			@click="tuEnd">
 			<img
 				:src="currentPage === '/pages/explore/explore' ? '/static/images/explore_selected.png' : '/static/images/explore.png'" />
 			<span>探索</span>
@@ -79,6 +79,12 @@
 				this.visible = false;
 				uni.navigateTo({
 					url
+				})
+			},
+			tuEnd() {
+				uni.showtoast({
+					title: '功能开发中， 敬请期待                               ',
+					icon: 'none'
 				})
 			},
 			goTo(pagePath) {
@@ -144,7 +150,7 @@
 		position: fixed;
 		bottom: 84rpx;
 		background-color: #fff;
-		z-index: 9;
+		z-index: 4;
 		box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
 		border-radius: 40rpx;
 	}

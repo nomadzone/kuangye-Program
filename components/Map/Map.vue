@@ -76,11 +76,19 @@ console.log(getCurrentInstance())
     const markers = ref([])
     const mapList = ref([])
     onMounted(() => {
-      
+      nextTick(() => {
+        resetLocation()
+      })
     })
     onShow(() => {
       nextTick(() => {
-        resetLocation()
+        const location = uni.getStorageSync('location')
+        console.log(location, "location")
+        if(!location) {
+          resetLocation()
+        } else {
+          getDataList()
+        }
       })
     })
 
@@ -166,13 +174,14 @@ console.log(getCurrentInstance())
             iconPath: '../../static/images/smass_yell_jt.png',
             joinCluster: true,
             title: data[i].title,
-            image: data[i].images,
+            image: data[i].images?.split(",")[0] || '',
             avatarUrl: data[i].avatarUrl,
             type: data[i].type,
             customCallout: callout
 
           });
         }
+        console.log(markerData, "markerData")
         markers.value = markerData;
         console.log(markerData, "markerData")
       } catch (error) {

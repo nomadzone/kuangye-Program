@@ -366,6 +366,7 @@ export default {
 					latitude: location?.latitude || null,
 				});
 				if (res?.code == '200') {
+          console.log('',res.data)
 					if (res?.data.activityVo?.images) {
 						res.data.activityVo.images = res?.data?.activityVo?.images?.split(',')
 					} else {
@@ -585,7 +586,6 @@ export default {
         if (this.id){
           params.id = this.id
         }
-        console.log(params, 1111)
         let tip = ''
         if (!params.images) {
           tip = '请上传活动图片'
@@ -613,17 +613,18 @@ export default {
           tip = '请输入最少活动人数'
         } else if (!params.maxpeople) {
           tip = '请输入最多活动人数'
-        } else if (params.minpeople > params.maxpeople) {
-          tip = '最少人数不能大于最多人数'
         } else if (params.minpeople < 1) {
           tip = '最少人数不能小于1'
         } else if (params.maxpeople < 1) {
           tip = '最多人数不能小于1'
+        }  else if (params.minpeople > params.maxpeople) {
+          tip = '最少人数不能大于最多人数'
         } else if (!params.contactphoto) {
           tip = '请上传联系微信二维码'
-        } else if (!params.number) {
-          tip = '请输入微信号'
         }
+        // else if (!params.number) {
+        //   tip = '请输入微信号'
+        // }
         if (tip) {
           uni.showToast({
             title: tip,

@@ -21,12 +21,12 @@
 		<view class="comment-num-row">
 			评论 <text class="comment-num-text">{{detailInfo.commentNum}}</text>
 		</view>
-		<Comments :dataId="initId" />
+		<Comments :dataId="initId" @replyComment="replyComment" />
 		<view class="bottom-comment-box">
 			<view class="input-box">
 				<image src="../../static/images/comment-prev-icon.svg" class="prev-icon"></image>
 				<input class="uni-input" @input="commentInput" v-model="commentInputValue" @confirm="submitComment()"
-					placeholder="说点什么" />
+					:placeholder="rebackDetail? '回复' + rebackDetail.nickname + ':' : '说点什么'" />
 			</view>
 			<view class="actions">
 				<view class="action-item">
@@ -60,6 +60,8 @@
 	onMounted(() => {})
 
 	const initId = ref('')
+	const rebackDetail = ref(null) // 评论回复id
+
 	onLoad((options) => {
 
 		initId.value = options.id
@@ -98,22 +100,38 @@
 	const commentInput = (e) => {
 		commentInputValue.value = e.target.value
 	}
-
+	function replyComment(item) {
+		console.log('item====', item)
+		rebackDetail.value = item
+	}
 	// 提交评论
 	const submitComment = debounce(() => {
+		uni.showLoading({
+			title: '评论中...'
+			})
 		let params = {
 			activityId: initId.value,
 			content: commentInputValue.value,
-			topId: rebackId.value
+			topId: rebackDetail.value.id
 		}
-
-		console.log('params=====', params)
 
 		freshNewsService.commentAdd(params).then(res => {
 			if (res && res.code === '200') {
-				console.log(res)
+				uni.showToast({
+						title: '评论成功',
+						icon: 'success',
+						duration: 2000
+						})
+				getDetailInfo()
+				commentInputValue.value = ''
+				rebackId.value = null
 			}
 		})
+		. catch(err => {
+			})
+			.finally(() => {
+				uni.hideLoading()
+			})
 
 	}, 1500)
 	
@@ -186,7 +204,8 @@
 					.swiper-item {
 						width: 100%;
 						height: 100%;
-
+						display: flex;
+						align-items: center;
 						.swiper-item-img {
 							width: 100%;
 						}

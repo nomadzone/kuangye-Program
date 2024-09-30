@@ -11,22 +11,23 @@
 			<image class="qing" src="/static/images/smell.png" mode=""></image>
 			<view class="body">
 				<Gradual :styles="{position: 'absolute', width: '100%', zIndex: -1, borderRadius: '12px'}" :background="'linear-gradient(to bottom, #fde279, #fefbdb)'" :height="'686rpx'" :zIndex="'98'"/>
-				<image class="avator" src="https://ww1.sinaimg.cn/mw690/6910b6f2gy1hrkg6qz6ejj20n00n0ac9.jpg" mode=""></image>
+				<image class="avator" :src="activityVo?.initiatorUrl" mode="aspectFill"></image>
 				<view class="name">
-					<text>维多利亚喜欢洗车</text>
-					<image src="/static/images/male.png" mode=""></image>
-					<image src="/static/images/badge.png" mode=""></image>
+					<text>{{activityVo?.initiatorName }}</text>
+					<image v-if="activityVo?.gender == 0" src="/static/images/man-icon.png" mode=""></image>
+					<image v-if="activityVo?.gender == 1" src="/static/images/woman-icon.png" mode=""></image>
+					<image v-if="activityVo?.isUserStatus == 1" src="/static/images/badge.png" mode=""></image>
 					<!-- <image src="/static/images/female.png" mode=""></image> -->
 				</view>
 				<view class="chart">
 					<view>
 						<image class="wechat" src="/static/images/wechat-fill-black.png" mode=""></image>
-						<text>Wade_Warren</text>
+						<text>{{activityVo?.number}}</text>
 						<image @click="doCopy" class="copy" src="/static/images/copy-gray.png" mode=""></image>
 					</view>
 				</view>
 				<view class="qcode">
-					<image src="/static/images/wechat-fill-black.png" mode=""></image>
+					<image :src="activityVo?.contactphoto" mode="aspectFill"></image>
 				</view>
 			</view>
 			<view class="view">
@@ -38,6 +39,7 @@
 
 <script>
 	import Gradual from '@/components/Navbar/Gradual.vue'
+	
 	export default {
 		components: {
 			Gradual,
@@ -50,6 +52,10 @@
 			show: {
 				type: Boolean,
 				default: false
+			},
+			activityVo: {
+				type: Object,
+				default: {}
 			}
 		},
 		data() {
@@ -69,7 +75,7 @@
 		methods: {
 			doCopy() {
 				wx.setClipboardData({
-				  data: '复制成功',
+				  data: this.activityVo?.number,
 				  success: function() {
 					wx.showToast({
 					  title: '复制成功',
@@ -83,12 +89,28 @@
 				this.$emit('close')
 			},
 			doView() {
-				wx.showToast({
-				  title: '保存成功',
-				  icon: 'success',
-				  duration: 2000
-				});
-				this.$emit('view')
+				uni.downloadFile({
+					url: this.activityVo?.contactphoto, 
+					success: (res) => {
+						uni.saveImageToPhotosAlbum({
+							filePath: res.tempFilePath,
+							success: (res) => {
+								wx.showToast({
+									title: '保存成功',
+									icon: 'success',
+									duration: 2000
+									});
+									this.$emit('view')
+									}
+								})
+								uni.openDocument({
+                                    filePath: res.savedFilePath,
+                                    success(res) { },
+                                    fail(err) { }
+                                })
+					}
+				})
+				
 			} 
 		}
 	}

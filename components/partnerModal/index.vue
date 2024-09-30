@@ -13,7 +13,7 @@
 					</view>
 					<view class="info-btn" v-else-if="infoType === 2">
 						<view class="detail-btn">查看详情</view>
-						<view class="save-pic-btn">保存到相册</view>
+						<view class="save-pic-btn" @click="doView">保存到相册</view>
 					</view>
 				</view>
 			</view>
@@ -39,8 +39,7 @@
 		methods:{
 			show(info) {
 				this.infoData = info
-				
-				console.log('infoData====', info)
+				this.infoType = 1
 				this.$refs.popup.open()
 			},
 			// 
@@ -54,7 +53,30 @@
 			},
 			handleClose() {
 				this.$refs.popup.close()
-			}
+			},
+			doView() {
+				uni.downloadFile({
+					url: this.infoData?.contactphoto, 
+					success: (res) => {
+						uni.saveImageToPhotosAlbum({
+							filePath: res.tempFilePath,
+							success: (res) => {
+								wx.showToast({
+									title: '保存成功',
+									icon: 'success',
+									duration: 2000
+									});
+									}
+								})
+								uni.openDocument({
+                                    filePath: res.savedFilePath,
+                                    success(res) { },
+                                    fail(err) { }
+                                })
+					}
+				})
+				
+			} 
 		}
 	}
 	
@@ -65,7 +87,7 @@
 	@import "@/static/config.scss"; // 注意相对路径
 	.partner-modal-comp {
 		position: fixed;
-		height: 20px;
+		height: 1;
 		right:0;
 		top:100vh;
 		z-index: 9999;

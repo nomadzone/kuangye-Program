@@ -13,7 +13,9 @@
 			<view class="wx-name">Wade_Warren</view>
 			<image class="wx-copy" src="../../static/images/partner-modal-wx-copy.png"></image>
 		</view>
-		<view class="wx-qrcode"></view>
+		<view class="wx-qrcode">
+			<image :src="info.contactphoto" mode="initiatorUrl"></image>
+		</view>
 	</view>
 </template>
 
@@ -121,6 +123,10 @@
 			background-color: #ffffff;
 			margin-top: 32rpx;
 			z-index:999;
+			image{
+				width: 100%;
+				height: 100%;
+			}
 		}
 
 	}

@@ -1,233 +1,308 @@
 <!-- 发布新鲜事-评论列表组件 -->
 <template>
-	<view class="comment-group">
-		<view class="comment-item" v-for="commentItem in commentList" :key="commentItem.id">
-			<view class="left">
-				<image class="avatar-img" v-if="commentItem.url" :src="commentItem.url"></image>
-				<image class="avatar-img" v-else src="../../static/images/comment-default-avatar.svg"></image>
-			</view>
-			<view class="right">
-				<view class="body">
-					<view class="content">
-						<view class="comment-author">
-							<view class="author-name">{{commentItem.nickname}}</view>
-							<view class="author-tag" v-if="commentItem.autherTag">作者</view>
-						</view>
-						<view class="content-text">{{commentItem.content}}</view>
-						<view class="comment-time">
-							<text class="time-text">{{commentItem.createTime}}</text>
-							<view class="relpay">回复</view>
-						</view>
+  <view class="comment-group">
+    <view
+      class="comment-item"
+      v-for="commentItem in commentList"
+      :key="commentItem.id"
+    >
+      <view class="left">
+        <image
+          class="avatar-img"
+          v-if="commentItem.url"
+          :src="commentItem.url"
+        ></image>
+        <image
+          class="avatar-img"
+          v-else
+          src="../../static/images/comment-default-avatar.svg"
+        ></image>
+      </view>
+      <view class="right">
+        <view class="body">
+          <view class="content">
+            <view class="comment-author">
+              <view class="author-name">{{ commentItem.nickname }}</view>
+              <view class="author-tag" v-if="commentItem.autherTag">作者</view>
+            </view>
+            <view class="content-text">{{ commentItem.content }}</view>
+            <view class="comment-time">
+              <text class="time-text">{{ commentItem.createTime }}</text>
+              <view class="relpay" @click="handleReplyComment(commentItem)"
+                >回复</view
+              >
+            </view>
+          </view>
+          <view class="like-action">
+            <image
+              @tap="handleChangeCommentLikeStatus(commentItem)"
+              class="like-icon"
+              v-if="commentItem.userUpStatus === 1"
+              src="../../static/images/comment-liked.svg"
+            >
+            </image>
+            <image
+              @tap="handleChangeCommentLikeStatus(commentItem)"
+              class="like-icon"
+              v-else
+              src="../../static/images/comment-like.svg"
+            ></image>
+            <text class="like-num">{{ commentItem.upnumber }}</text>
+          </view>
+        </view>
 
-					</view>
-					<view class="like-action">
-						<image @tap="handleChangeCommentLikeStatus(commentItem)" class="like-icon" v-if="commentItem.userUpStatus === 1" src="../../static/images/comment-liked.svg">
-						</image>
-						<image @tap="handleChangeCommentLikeStatus(commentItem)" class="like-icon" v-else src="../../static/images/comment-like.svg"></image>
-						<text class="like-num">{{commentItem.upnumber}}</text>
-					</view>
-				</view>
-
-			</view>
-		</view>
-
-	</view>
+        <view class="back_list" v-for="(list, index) in commentItem.list" :key="index">
+          <view class="left">
+            <image
+              class="avatar-img"
+              v-if="commentItem.url"
+              :src="commentItem.url"
+            ></image>
+            <image
+              class="avatar-img"
+              v-else
+              src="../../static/images/comment-default-avatar.svg"
+            ></image>
+          </view>
+          <view class="right">
+            <view class="body">
+              <view class="content">
+                <view class="comment-author">
+                  <view class="author-name">{{ commentItem.nickname }}</view>
+                  <view class="author-tag" v-if="commentItem.autherTag"
+                    >作者</view
+                  >
+                </view>
+                <view class="content-text">{{ commentItem.content }}</view>
+                <view class="comment-time">
+                  <text class="time-text">{{ commentItem.createTime }}</text>
+                  <view class="relpay" @click="handleReplyComment(commentItem)"
+                    >回复</view
+                  >
+                </view>
+              </view>
+              <view class="like-action">
+                <image
+                  @tap="handleChangeCommentLikeStatus(commentItem)"
+                  class="like-icon"
+                  v-if="commentItem.userUpStatus === 1"
+                  src="../../static/images/comment-liked.svg"
+                >
+                </image>
+                <image
+                  @tap="handleChangeCommentLikeStatus(commentItem)"
+                  class="like-icon"
+                  v-else
+                  src="../../static/images/comment-like.svg"
+                ></image>
+                <text class="like-num">{{ commentItem.upnumber }}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script setup >
-	import {
-		ref,
-		defineProps,
-		watchEffect
-	} from 'vue'
-	import freshNewsService from '../../service/service';
-	
-	const props = defineProps({
-		dataId:{
-			type: String,
-			default:''
-		}
-	})
-	
-	const pageSize = ref(20)
-	
-	// 查询评论列表
-	const fetchCommentList = ({page, id}) => {
-		let params = {
-			id:id,
-			pageNum: page,
-			pageSize: pageSize.value
-		}
-		
-		freshNewsService.commentList(params).then(res => {
-			if(res && res.code === '200') {
-				console.log('评论----', res.data)
-				commentList.value = res.data.list
-					
-			}
-		})
-	}
+import { ref, defineProps, watchEffect } from "vue";
+import freshNewsService from "../../service/service";
+const emit = defineEmits(["replyComment"]);
+const props = defineProps({
+  dataId: {
+    type: String,
+    default: "",
+  },
+});
 
-	
-	const commentList = ref([
-		{ id: 0, author: 'Make zhao', avatar: null, content: '最近大好的阳光下更加出片啦…再配上新品抹茶柚子蒙布朗冰淇淋芭菲🍵', liked: true, likeNum: 28, autherTag: false, commentTime: '09:28', children: [{ author: 'Make zhao', avatar: null, content: '最近大好的阳光下更加出片啦…再配上新品抹茶柚子蒙布朗冰淇淋芭菲🍵', liked: true, likeNum: 28, autherTag: false, commentTime: '09:28' }] },
-		{ id: 1, author: 'Make zhao', avatar: null, content: '最近大好的阳光下更加出片啦…再配上新品抹茶柚子蒙布朗冰淇淋芭菲🍵', liked: false, likeNum: 28, autherTag: false, commentTime: '09:28', children: [] },
-		{ id: 2, author: 'Make zhao', avatar: null, content: '最近大好的阳光下更加出片啦…再配上新品抹茶柚子蒙布朗冰淇淋芭菲🍵', liked: true, likeNum: 28, autherTag: false, commentTime: '09:28', children: [] }
-	])
-	
-	watchEffect(
-		() => {
-			if(props.dataId && props.dataId != '') {
-				fetchCommentList({id:props.dataId, page: 1})
-			}
-		}
-	)
-	
-	// 修改评论点赞状态
-	const handleChangeCommentLikeStatus = (row) => {
-		
-		let params ={
-			commentId: row.id,
-			type: 2
-		}
-		
-		if(row.userUpStatus === 1) {
-			freshNewsService.cancelLike(params).then(res => {
-				if(res && res.code === '200') {
-					let newItem = {
-						...row,
-						userUpStatus: row.userUpStatus === 1 ? 0 :1,
-						upnumber: row.upnumber - 1 
-					}
-					let index = commentList.value.findIndex(item => item.id === row.id)
-					commentList.value.splice(index, 1, newItem)
-				}
-			})
-		} else  {
-			freshNewsService.addLike(params).then(res => {
-				if(res && res.code === '200') {
-					let newItem = {
-						...row,
-						userUpStatus: row.userUpStatus === 1 ? 0 :1,
-						upnumber: row.upnumber + 1
-					}
-					let index = commentList.value.findIndex(item => item.id === row.id)
-					commentList.value.splice(index, 1, newItem)
-				}
-			})
-		}
-		
-		
-		
-	}
+const pageSize = ref(20);
+
+// 查询评论列表
+const fetchCommentList = ({ page, id }) => {
+  let params = {
+    id: id,
+    pageNum: page,
+    pageSize: pageSize.value,
+  };
+
+  freshNewsService.commentList(params).then((res) => {
+    if (res && res.code === "200") {
+      commentList.value = res.data.list;
+    }
+  });
+};
+
+const commentList = ref([]);
+
+watchEffect(() => {
+  if (props.dataId && props.dataId != "") {
+    fetchCommentList({ id: props.dataId, page: 1 });
+  }
+});
+// 回复评论
+function handleReplyComment(row) {
+  emit("replyComment", row);
+}
+
+// 修改评论点赞状态
+const handleChangeCommentLikeStatus = (row) => {
+  let params = {
+    commentId: row.id,
+    type: 2,
+  };
+
+  if (row.userUpStatus === 1) {
+    freshNewsService.cancelLike(params).then((res) => {
+      if (res && res.code === "200") {
+        let newItem = {
+          ...row,
+          userUpStatus: row.userUpStatus === 1 ? 0 : 1,
+          upnumber: row.upnumber - 1,
+        };
+        let index = commentList.value.findIndex((item) => item.id === row.id);
+        commentList.value.splice(index, 1, newItem);
+      }
+    });
+  } else {
+    freshNewsService.addLike(params).then((res) => {
+      if (res && res.code === "200") {
+        let newItem = {
+          ...row,
+          userUpStatus: row.userUpStatus === 1 ? 0 : 1,
+          upnumber: row.upnumber + 1,
+        };
+        let index = commentList.value.findIndex((item) => item.id === row.id);
+        commentList.value.splice(index, 1, newItem);
+      }
+    });
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-	@import "@/static/config.scss"; // 注意相对路径
+@import "@/static/config.scss"; // 注意相对路径
 
-	.comment-group {
-		.comment-item {
-			padding: 32rpx;
-			display: flex;
-			flex-direction: row;
-			justify-content: flex-start;
+.comment-group {
+  .comment-item {
+    padding: 32rpx;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
 
-			.left {
-				width: 72rpx;
-				margin-right: 24rpx;
+    .left {
+      width: 72rpx;
+      margin-right: 24rpx;
 
-				.avatar-img {
-					width: 72rpx;
-					height: 72rpx;
-					border-radius: 100rpx;
-				}
+      .avatar-img {
+        width: 72rpx;
+        height: 72rpx;
+        border-radius: 100rpx;
+      }
+    }
 
-			}
+    .right {
+      width: calc(100% - 98rpx);
+      border-bottom: 2rpx solid $Color-B-4;
+      padding-bottom: 24rpx;
 
-			.right {
-				width: calc(100% - 98rpx);
-				border-bottom: 2rpx solid  $Color-B-4;
-				padding-bottom: 24rpx;
+      .body {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
 
-				.body {
-					width: 100%;
-					display: flex;
-					flex-direction: row;
-					justify-content: space-between;
-					align-items: flex-start;
+        .content {
+          width: calc(100% - 52rpx);
+          .comment-author {
+            display: flex;
+            flex-direction: row;
+            margin-bottom: 10rpx;
 
-					.content {
-						width: calc(100% - 52rpx);
-						.comment-author {
-							display: flex;
-							flex-direction: row;
-							margin-bottom: 10rpx;
+            .author-name {
+              font-size: 28rpx;
+              color: $Color-B-3;
+              margin-right: 8rpx;
+            }
 
-							.author-name {
-								font-size: 28rpx;
-								color: $Color-B-3;
-								margin-right: 8rpx;
+            .author-tag {
+              width: 34rpx;
+              height: 36rpx;
+              border-radius: 43rpx;
+              opacity: 0px;
+              background-color: $Color-B-5;
+              line-height: 36rpx;
+              font-size: 28rpx;
+              text-align: center;
+            }
+          }
 
-							}
+          .content-text {
+            font-family: PingFang SC;
+            font-size: 28rpx;
+            font-weight: 400;
+            line-height: 40rpx;
+            text-align: left;
+            color: $Color-B-1;
+            margin-bottom: 8rpx;
+          }
 
-							.author-tag {
-								width: 34rpx;
-								height: 36rpx;
-								border-radius: 43rpx;
-								opacity: 0px;
-								background-color: $Color-B-5;
-								line-height: 36rpx;
-								font-size: 28rpx;
-								text-align: center;
-							}
-						}
+          .comment-time {
+            display: flex;
 
-						.content-text {
-							font-family: PingFang SC;
-							font-size: 28rpx;
-							font-weight: 400;
-							line-height: 40rpx;
-							text-align: left;
-							color: $Color-B-1;
-							margin-bottom: 8rpx;
-						}
+            .time-text {
+              color: $Color-B-3;
+              font-size: 24rpx;
+            }
 
-						.comment-time {
-							display: flex;
+            .relpay {
+              color: $Color-B-2;
+              font-size: 24rpx;
+              margin-left: 16rpx;
+            }
+          }
+        }
 
-							.time-text {
-								color: $Color-B-3;
-								font-size: 24rpx;
-							}
+        .like-action {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          align-items: center;
 
-							.relpay {
-								color: $Color-B-2;
-								font-size: 24rpx;
-								margin-left: 16rpx;
-							}
-						}
+          .like-icon {
+            width: 28rpx;
+            height: 28rpx;
+            margin-bottom: 4rpx;
+          }
 
-					}
-
-					.like-action {
-						display: flex;
-						flex-direction: column;
-						justify-content: flex-start;
-						align-items: center;
-
-						.like-icon {
-							width: 28rpx;
-							height: 28rpx;
-							margin-bottom: 4rpx;
-						}
-
-						.like-num {
-							font-size: 24rpx;
-							color: $Color-B-3;
-						}
-					}
-				}
-			}
+          .like-num {
+            font-size: 24rpx;
+            color: $Color-B-3;
+          }
+        }
+      }
+    }
+  }
+}
+.back_list{
+	display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+	margin-top: 24rpx;
+	.left{
+		width: 48rpx !important;
+		margin-right: 16rpx;
+		.avatar-img{
+			width: 48rpx !important;
+			height: 48rpx !important;
+			border-radius: 50% !important;
 		}
 	}
+	&:last-child{
+		.right{
+			border-bottom: none !important;
+		}
+	}
+}
 </style>

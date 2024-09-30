@@ -360,7 +360,7 @@ async function queryList(current, size) {
         hide: 1,
       };
     });
-    paging.value.complete(res.data.list);
+    paging.value.complete(res.data.list || []);
   } catch (e) {
     paging.value.complete([]);
   }
