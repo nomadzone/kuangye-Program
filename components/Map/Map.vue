@@ -15,7 +15,7 @@
       @regionchange="regionchange"
     >
     <cover-view slot="callout">
-        <block v-for="(item, index) in markers" :key="index">
+        <block v-for="(item, index) in markers" :key="index" >
           <cover-view  :class="item.type==1?'customCalloutItem_big':'customCalloutItem'"  :marker-id="item.id">
             <cover-view v-if="item.type == 3" class="customCalloutbox_one">
               <cover-view  class="customCallout">
@@ -58,7 +58,6 @@
 import { onMounted, ref, getCurrentInstance, nextTick  } from "vue";
 import { getUserLocation } from "@/utils/index";
 import http from '@/utils/http.js'
-import { image } from "@climblee/uv-ui/libs/function/test";
 import { onShow } from "@dcloudio/uni-app";
 const { ctx } = getCurrentInstance()
 const emit = defineEmits("getLocation")
@@ -70,8 +69,8 @@ console.log(getCurrentInstance())
       }
     });
     const position = ref({
-      longitude: 0,
-      latitude: 0,
+      longitude: 108.952,
+      latitude: 34.223,
     })
     const markers = ref([])
     const mapList = ref([])
@@ -83,7 +82,6 @@ console.log(getCurrentInstance())
     onShow(() => {
       nextTick(() => {
         const location = uni.getStorageSync('location')
-        console.log(location, "location")
         if(!location) {
           resetLocation()
         } else {
@@ -91,8 +89,25 @@ console.log(getCurrentInstance())
         }
       })
     })
-
+    function doItem(item, index) {
+      if (item.type === 1) {
+        uni.navigateTo({
+          url: `/pagesToggle/pages/details/details?id=${item.infoId}`,
+          success: (res) => {
+            res.eventChannel.emit("getDetails", item);
+          },
+        });
+      } else if (item.type === 2) {
+        // 新鲜事
+        uni.navigateTo({
+          url: `/pagesFreshNews/pages/detail/index?id=${item.infoId}`,
+        });
+      } else if (item.type === 3) {
+        emit('partnerModalShow', item)
+      }
+    }
     function resetLocation() {
+      if (!uni.getStorageSync("token")) return
       const mapCtx = uni.createMapContext("map", ctx);
 
       getUserLocation(true, 'gcj02').then((res) => {
@@ -122,12 +137,10 @@ console.log(getCurrentInstance())
     }
     function goPath(e) {
       const markerId = e.detail.markerId; // 获取点击的 markerId
-      const marker = mapList.value[markerId]; // 根据 markerId 找到相应的 marker 数据
+      const marker = markers.value[markerId]; // 根据 markerId 找到相应的 marker 数据
       if (marker) {
         // 跳转到详情页面
-        uni.navigateTo({
-          url: `/pagesToggle/pages/details/details?id=${marker.id}&latitude=${marker.latitude}&longitude=${marker.longitude}`,
-        })
+        doItem(marker, markerId)
       }
     }
 
@@ -167,6 +180,7 @@ console.log(getCurrentInstance())
           let item = data[i]
           markerData.push({
             id: i,
+            infoId: item.id,
             latitude: Number(item.latitude),
             longitude: Number(item.longitude),
             width: 1,
@@ -178,12 +192,9 @@ console.log(getCurrentInstance())
             avatarUrl: data[i].avatarUrl,
             type: data[i].type,
             customCallout: callout
-
           });
         }
-        console.log(markerData, "markerData")
         markers.value = markerData;
-        console.log(markerData, "markerData")
       } catch (error) {
         console.log(error);
       }
@@ -194,118 +205,6 @@ defineExpose({
 });
 </script>
 
-<!-- <script>
-import http from "@/utils/http";
-export default {
-  props: {
-    isPositon: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  data() {
-    return {
-      longitude: 0,
-      latitude: 0,
-      initialLongitude: 113.32452, // 初始经度
-      initialLatitude: 23.099994, // 初始纬度
-      markers: [],
-      mapList: [],
-    };
-  },
-  created() {
-  },
-  methods: {
-    onCalloutTap(e) {
-      console.log(e);
-      this.goPath(e)
-    },
-    markertap(e) {
-      console.log(e);
-      this.goPath(e)
-    },
-    goPath(e) {
-      console.log(e)
-      const markerId = e.detail.markerId; // 获取点击的 markerId
-      const marker = this.mapList[markerId]; // 根据 markerId 找到相应的 marker 数据
-      if (marker) {
-        // 跳转到详情页面
-        uni.navigateTo({
-          url: `/pagesToggle/pages/details/details?id=${marker.id}&latitude=${marker.latitude}&longitude=${marker.longitude}`,
-        });
-      }
-    },
-    regionchange(e) {
-      console.log("regionchange", e);
-    },
-    resetLocation() {
-      const mapCtx = uni.createMapContext("map", this);
-      mapCtx.moveToLocation({
-        longitude: this.initialLongitude,
-        latitude: this.initialLatitude,
-      });
-      uni.setStorageSync('location', {
-        longitude: this.initialLongitude,
-        latitude: this.initialLatitude,
-      })
-      uni.removeStorageSync('selectLocation');
-    },
-    async getDataList(options) {
-      try {
-        let location = uni.getStorageSync('location')
-        let res = await http.homeActivityMap({
-          longitude:  options?.longitude || this.longitude || location.longitude,
-          latitude: options?.latitude || this.latitude || location.longitude,
-        });	
-        let data = res.data
-        let markers = [];
-        this.mapList = res.data;
-        let color = {
-          0: {
-            bg: '#E1FFF8',
-            line: '#00C4EF'
-          },
-          1: {
-            bg: '#E3F7FF',
-            line: '#62e6c8'
-          },
-          2: {
-            bg: '#FFF7E2',
-            line: '#ecd28d'
-          },
-        }
-        for (let i = 0; i < data.length; i++) {
-          let item = data[i]
-          markers.push({
-            id: i,
-            latitude: Number(item.latitude),
-            longitude: Number(item.longitude),
-            // iconPath: `../../static/images/${iconPath[i]}`,
-            width: 0,
-            height: 0,
-            callout: {
-              content: item?.title?.length > 9 ? `${item.title.substring(0, 9)}...` : item.title,
-              fontSize: 14,
-              bgColor: color[i % 3].bg,
-              color: "#000",
-              borderWidth: 1,
-              borderColor: color[i % 3].line,
-              borderRadius: 10,
-              padding: 8,
-              display: "ALWAYS",
-              textAlign: "center"
-            },
-          });
-        }
-        this.markers = markers;
-        console.log(markers, "markers")
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  },
-};
-</script> -->
 
 <style scoped lang="scss">
 /* index.wxss */
@@ -356,6 +255,7 @@ export default {
         height: 125rpx;
         border-radius: 16rpx 16rpx 0 0;
         flex-shrink: 0;
+        object-fit: cover;
       }
       .title{
         overflow: hidden;
@@ -373,7 +273,6 @@ export default {
     top: 4rpx;
     width: 52rpx;
     height: 50rpx;
-    background: #ffffff;
   }
   .sanjiao_down{
     position: absolute;

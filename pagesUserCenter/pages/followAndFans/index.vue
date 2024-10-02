@@ -18,7 +18,7 @@
       <FollowFansTab @changeTab="changeTab" :active="type"></FollowFansTab>
     </template>
     <template v-slot:cell="{ item }">
-      <view class="fans-item-row">
+      <view class="fans-item-row" @click.stop="toDetai(item)">
         <view class="left">
           <image
             class="fans-avatar"
@@ -32,7 +32,7 @@
           ></image>
           <text class="fans-name">{{ item.nickname }}</text>
         </view>
-        <view class="right" @click="gzClick(item)">
+        <view class="right" @click.stop="gzClick(item)">
           <button :class="item.status==1 ? 'active' : 'normal'">
             {{ item.status==1 ? "已关注" : "关注" }}
           </button>
@@ -67,6 +67,11 @@ const type = ref(null);
 function changeTab(index) {
   actIndex.value = index;
   paging.value.reload()
+}
+function toDetai(item) {
+  uni.navigateTo({
+					url: '/pagesUserCenter/pages/thirdInfo/index?userId=' + item.id
+				})
 }
 
 onLoad((options) => {

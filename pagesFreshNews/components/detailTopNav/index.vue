@@ -1,12 +1,12 @@
 <!-- components/CustomNavBar.vue -->
 <template>
 	<view class="nav-bar" :style="navBarStyleObj">
-		<view class="left" @click="onBack">
-			<image class="back-icon" src="@/static/images/back.png"></image>
-			<view class="author-avatar">
+		<view class="left">
+			<image class="back-icon"  @click="onBack" src="@/static/images/back.png"></image>
+			<view class="author-avatar" @click="toInfo">
 				<image class="author-img" :src="info.avatarUrl"></image>
 			</view>
-			<text class="author-name">{{info.nickname}}</text>
+			<text @click="toInfo" class="author-name">{{info.nickname}}</text>
 		</view>
 		<view class="right" @tap="handleChangeFollowStatus()">
 			<view v-if="info.userStatus" class="followed">已关注</view>
@@ -26,7 +26,7 @@
 		defineEmits
 	} from 'vue';
 	import freshNewsService from '../../service/service';
-	const emitFn = defineEmits("refreshFollowStatus")
+	const emitFn = defineEmits("refreshFollowStatus,inToInfo")
 	let navBarHeight = ref(40)
 	let statusBarHeight = ref(40)
 	const props = defineProps({
@@ -64,7 +64,7 @@
 
 		})
 	})
-	
+
 	// 修改关注状态
 	const handleChangeFollowStatus = () => {
 		uni. showLoading({
@@ -91,6 +91,10 @@
 	function onBack() {
 		uni.navigateBack();
 	}
+		// 跳转个人信息
+		function toInfo() {
+			emitFn('inToInfo')
+		}
 </script>
 
 <style scoped lang="scss">

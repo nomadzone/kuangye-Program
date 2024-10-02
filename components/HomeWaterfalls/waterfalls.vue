@@ -11,7 +11,7 @@
       :empty-view-error-img="emptyImg"
       :show-empty-view-reload="true"
       empty-view-text="暂未发起或参加活动"
-  :paging-style="{'margin-bottom':'400rpx'}"
+      :paging-style="{'margin-bottom':'400rpx'}"
     >
       <block v-if="props.sortIndex === 0">
         <custom-waterfalls-flow
@@ -47,7 +47,7 @@
                 </swiper-item>
               </swiper>
             </view>
-            <view v-if="item.type === 1" class="activity-item-content">
+            <view v-if="item.type === 1" class="activity-item-content" style="width: 100%;">
               <view class="content_top">
                 <view class="top_img">
                   <image
@@ -70,18 +70,24 @@
                   <view class="dances">{{ item?.distanceMeters }}Km</view>
                   <view class="line"></view>
                   <view class="time">{{
-                    formatDateText(item?.startdate)
+                    formatDateTextTwo(item?.startdate)
                   }}</view>
                 </view>
                 <view class="all_img">
-                  <view class="all_img_item">
+                  <view class="all_img_item" :style="{ width: ((item.allImages?.length * 20) + 32)+ + 'rpx' }" v-if="item.allImages?.length > 0">
                     <view
                       class="all_img_item_list"
-                      :style="{ left: -(index * 24) + 'rpx' }"
+        
                       v-for="(img, index) in item.allImages"
                       :key="index"
                     >
                       <image :src="img" mode="aspectFill"></image>
+                    </view>
+                  </view>
+                  <view v-else class="all_img_item" >
+                    <view
+                      class="all_img_item_list">
+                      <image src="/static/images/title-logo.svg" mode="aspectFill"></image>
                     </view>
                   </view>
                   <view class="num"
@@ -98,7 +104,7 @@
               </view>
             </view>
 
-            <view v-if="item.type === 2" class="activity_item_two">
+            <view v-if="item.type === 2" class="activity_item_two" style="width: 100%;">
               <view class="item_two_content">
                 <view class="content_top">
                   <image
@@ -137,7 +143,7 @@
                 </view>
               </view>
             </view>
-            <view v-if="item.type === 3" class="activity-item_thr">
+            <view v-if="item.type === 3" class="activity-item_thr" style="width: 100%;">
               <view class="thr_content">
                 <view class="content_thr_title">
                   <text>找搭子</text> {{ item?.describe }}
@@ -181,19 +187,25 @@
               <view class="btm_time">
                 <view class="dances">{{ item?.distanceMeters }}Km</view>
                 <view class="line"></view>
-                <view class="time">{{ formatDateText(item?.startdate) }}</view>
+                <view class="time">{{ formatDateTextTwo(item?.startdate) }}</view>
               </view>
               <view class="all_img">
-                <view class="all_img_item">
+                <view class="all_img_item" :style="{ width: ((item.allImages?.length * 20) + 32)+ + 'rpx' }" v-if="item.allImages?.length > 0">
                   <view
                     class="all_img_item_list"
-                    :style="{ left: -(index * 24) + 'rpx' }"
                     v-for="(img, index) in item.allImages"
                     :key="index"
                   >
                     <image :src="img" mode="aspectFill"></image>
                   </view>
                 </view>
+                <view v-else class="all_img_item">
+                  <view
+                    class="all_img_item_list">
+                    <image  src="/static/images/title-logo.svg" mode="aspectFill"></image>
+                    </view>
+                  </view>
+                
                 <view class="num">剩{{ item?.userActivityVo?.surplus }}位</view>
               </view>
               <view class="btn-group">
@@ -283,7 +295,7 @@
 import http from "@/utils/http.js";
 import useZPaging from "@/uni_modules/z-paging/components/z-paging/js/hooks/useZPaging.js";
 import constant from "@/utils/constant";
-import { formatDateText } from "@/utils/index.js";
+import { formatDateTextTwo } from "@/utils/index.js";
 import emptyImg from "@/static/images/empty-my.png";
 
 import { onShow } from "@dcloudio/uni-app";
@@ -303,12 +315,14 @@ const props = defineProps({
 
 onShow(() => {
   if(paging.value) {
+    list.value = [];
     paging.value.reload();
   }
 })
 
 async function queryList(current, size) {
-  let location = uni.getStorageSync("location");
+  try {
+      let location = uni.getStorageSync("location");
   let params = {
     longitude: location.longitude,
     latitude: location.latitude,
@@ -349,8 +363,14 @@ async function queryList(current, size) {
   });
   paging.value.complete(res.data.list || []);
   paging.value?.endRefresh();
+  }
+  catch (err) {
+    console.log(err);
+    paging.value.complete([]);
+  }
 }
 function toRold() {
+  list.value = []
   paging.value.reload();
 }
 async function doLike(item, index) {
@@ -480,8 +500,7 @@ defineExpose({
 .waterfalls_content {
   width: 100%;
   height: 100%;
-  background: #f5f5f5;
-  padding: 16rpx;
+  padding: 8rpx;
   box-sizing: border-box;
   padding-bottom: 200rpx;
 }
@@ -611,18 +630,20 @@ defineExpose({
 
       .all_img_item {
         max-width: 140rpx;
+        min-width: 32rpx;
         position: relative;
-
+        height: 50rpx;
+        display: flex;
+        align-items: center;
         .all_img_item_list {
-          width: 32rpx;
+          width: 12rpx;
           height: 32rpx;
-          position: absolute;
-          top: 0rpx;
-
+          position: relative;
           image {
-            width: 100%;
+            width: 32rpx;
             height: 100%;
             border-radius: 50%;
+
           }
         }
       }

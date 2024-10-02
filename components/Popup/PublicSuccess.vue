@@ -21,7 +21,7 @@
 				<view class="chart">
 					<view>
 						<image class="wechat" src="/static/images/wechat-fill.png" mode=""></image>
-						<text>Wade_Warren</text>
+						<text>{{fabuParams?.number}}</text>
 						<image @click="doCopy" class="copy" src="/static/images/copy.png" mode=""></image>
 					</view>
 				</view>
@@ -40,6 +40,10 @@
 			Gradual,
 		},
 		props: {
+			fabuParams: {
+				type: Object,
+				default: () => ({})
+			},
 			isClose: {
 				type: Boolean,
 				default: true
@@ -66,7 +70,7 @@
 		methods: {
 			doCopy() {
 				wx.setClipboardData({
-				  data: '复制成功',
+				  data: this.fabuParams?.number,
 				  success: function() {
 					wx.showToast({
 					  title: '复制成功',

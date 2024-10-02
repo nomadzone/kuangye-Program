@@ -5,10 +5,7 @@
       <image
         class="bk-img"
         mode="aspectFill"
-		:src="
-			userInfo?.avatarUrl ||
-			'/static/images/title-logo.svg'
-		"
+        :src="userInfo?.avatarUrl || '/static/images/title-logo.svg'"
       ></image>
       <view class="top-info-box">
         <image
@@ -32,28 +29,25 @@
               <image
                 class="avatar-img"
                 mode="aspectFill"
-                :src="
-                  userInfo?.avatarUrl ||
-                  '/static/images/title-logo.svg'
-                "
+                :src="userInfo?.avatarUrl || '/static/images/title-logo.svg'"
               ></image>
             </view>
-            <view
+            <!-- <view
               class="user-info-edit"
               @click="navito('/pagesUserCenter/pages/personalData/index')"
               >修改</view
-            >
+            > -->
           </view>
           <view class="user-data-row">
             <view class="data-item">
               <text class="item-num">{{ userInfo?.likesNumber || 0 }}</text>
               <text class="item-label">点赞</text>
             </view>
-            <view class="data-item" @click="toGz(0)">
+            <view class="data-item" >
               <text class="item-num">{{ userInfo?.followNumber || 0 }}</text>
               <text class="item-label">关注</text>
             </view>
-            <view class="data-item" @click="toGz(1)">
+            <view class="data-item">
               <text class="item-num">{{ userInfo?.fansNumber || 0 }}</text>
               <text class="item-label">粉丝</text>
             </view>
@@ -63,7 +57,7 @@
     </view>
     <view class="self-nav-container">
       <SelfNav v-if="pageViewType === 1" />
-      <OtherPageActions v-else />
+      <OtherPageActions :info="userInfo" :followStatus="userInfo?.isFans" v-else />
       <UserCenterTab
         :tabs="tabs"
         :activeTab="activeTab"
@@ -234,8 +228,8 @@
     </view>
   </view>
 </template>
-
-<script setup>
+  
+  <script setup>
 import { ref } from "vue";
 import CustomNavBar from "@/components/CustomNavBar/CustomNavBar.vue";
 import SelfNav from "@/pagesUserCenter/components/selfNav/index.vue";
@@ -246,9 +240,9 @@ import useZPaging from "@/uni_modules/z-paging/components/z-paging/js/hooks/useZ
 import constant from "@/utils/constant";
 import { formatDateText } from "@/utils/index.js";
 import emptyImg from "@/static/images/empty-my.png";
-import { onShow } from "@dcloudio/uni-app";
+import { onShow, onLoad } from "@dcloudio/uni-app";
 
-let pageViewType = ref(1); // 页面视角 1 自己 0 他人
+let pageViewType = ref(0); // 页面视角 1 自己 0 他人
 const paging = ref(null);
 const waterfallsFlowRef = ref(null);
 
@@ -276,12 +270,16 @@ let tabs = ref([
 ]);
 let activeTab = ref(0);
 let activeTabKey = ref(0);
+const userThirdId = ref(null);
+onLoad((options) => {
+  userThirdId.value = options.userId
+})
 
 onShow(() => {
   if (pageViewType.value === 1) {
-	getUserInfo()
+    getUserInfo();
   } else {
-    
+    getUserThird(userThirdId.value);
   }
 });
 
@@ -291,13 +289,18 @@ function toGz(type) {
     url: "/pagesUserCenter/pages/followAndFans/index?type=" + type,
   });
 }
+function getUserThird(userId) {
+  http.getUserInfoOther({userId:userId}).then((res) => {
+    userInfo.value = res.data;
+  });
+}
 
 function getUserInfo() {
-      http.getUserInfo().then((res) => {
-        userInfo.value = res.data;
-		uni.setStorageSync("userInfo", res.data);
-      });
-    }
+  http.getUserInfo().then((res) => {
+    userInfo.value = res.data;
+    uni.setStorageSync("userInfo", res.data);
+  });
+}
 // 设置激活tab
 const handleSetActiveTab = (val) => {
   activeTab.value = val;
@@ -346,8 +349,7 @@ async function queryList(current, size) {
       type: activeTab.value + 1,
       pageNum: current,
       pageSize: size,
-	  userId: userInfo.value?.id,
-
+      userId: userInfo.value?.id,
     });
     res.data.list = res.data.list.map((item) => {
       return {
@@ -367,8 +369,8 @@ async function queryList(current, size) {
 }
 useZPaging(paging, queryList);
 </script>
-
-<style lang="scss" scoped>
+  
+  <style lang="scss" scoped>
 .user-center-page {
   height: 100vh;
   width: 100vw;

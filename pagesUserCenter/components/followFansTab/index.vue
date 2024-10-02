@@ -8,14 +8,14 @@
       <view
         @tap="handleChangeTab(0)"
         :class="
-          activeTab === 0 ? 'center-item center-item-active' : 'center-item'
+          activeTab == 0 ? 'center-item center-item-active' : 'center-item'
         "
         >关注</view
       >
       <view
         @tap="handleChangeTab(1)"
         :class="
-          activeTab === 1 ? 'center-item center-item-active' : 'center-item'
+          activeTab == 1 ? 'center-item center-item-active' : 'center-item'
         "
         >粉丝</view
       >

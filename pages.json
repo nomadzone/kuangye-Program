@@ -24,19 +24,22 @@
 			"style": {
 				"navigationBarTitleText": "探索",
 				"navigationStyle": "custom"
-			}
+			},
+			"needLogin": true
 		},
 		{
 			"path": "pages/search/search",
 			"style": {
 				"navigationBarTitleText": ""
-			}
+			},
+			"needLogin": true
 		},
 		{
 			"path": "pages/webview/index",
 			"style": {
 				"navigationBarTitleText": ""
-			}
+			},
+			"needLogin": true
 		}
 	],
 	"subPackages": [{
@@ -45,58 +48,73 @@
 					"path": "pages/public/public",
 					"style": {
 						"navigationStyle": "custom"
-					}
+					},
+					"needLogin": true
 				},
 				{
 					"path": "pages/details/details",
 					"style": {
 						"navigationStyle": "custom"
-					}
+					},
+					"needLogin": true
 				}
 			]
 		},
 		{
 			"root": "pagesUserCenter",
-			"pages": [{
+			"pages": [
+				{
 				"path": "pages/index/index",
 				"style": {
 					"navigationStyle": "custom"
 				}
-			}, {
+			},
+			{
+				"path": "pages/thirdInfo/index",
+				"style": {
+					"navigationStyle": "custom"
+				}
+			}, 
+			{
 				"path": "pages/wallet/wallet",
 				"style": {
 					"navigationBarTitleText": "钱包",
 					"enablePullDownRefresh": true,
 					"navigationBarBackgroundColor": "#ffffff",
 					"navigationBarTextStyle": "black"
-				}
+				},
+				"needLogin": true
 			}, {
 				"path": "pages/bindBank/index",
 				"style": {
 					"navigationBarTitleText": "",
 					"navigationBarBackgroundColor": "#f5f5f5",
 					"navigationBarTextStyle": "black"
-				}
+				},
+				"needLogin": true
 			}, {
 				"path": "pages/funds/index",
 				"style": {
 					"navigationBarTitleText": "余额提现",
 					"navigationBarBackgroundColor": "#f5f5f5",
 					"navigationBarTextStyle": "black"
-				}
+				},
+				"needLogin": true
 			}, {
 				"path": "pages/paperclip/index",
 				"style": {
 					"enablePullDownRefresh": true,
 					"navigationStyle": "custom"
-				}
+				},
+				"needLogin": true
 			}, {
 				"path": "pages/audit/index",
 				"style": {
 					"enablePullDownRefresh": true,
 					"onReachBottomDistance": 50,
 					"navigationStyle": "custom"
-				}
+				},
+				"needLogin": true
 			}, {
 				"path": "pages/order/index",
 				"style": {
@@ -105,7 +123,8 @@
 					"navigationBarTitleText": "我的订单",
 					"navigationBarBackgroundColor": "#fff",
 					"navigationBarTextStyle": "black"
-				}
+				},
+				"needLogin": true
 			}, {
 				"path": "pages/orderRefund/index",
 				"style": {
@@ -114,22 +133,23 @@
 					"navigationBarTitleText": "申请退款",
 					"navigationBarBackgroundColor": "#fff",
 					"navigationBarTextStyle": "black"
-				}
+				},
+				"needLogin": true
 			}, {
 				"path": "pages/personalData/index",
 				"style": {
 					"navigationBarBackgroundColor": "#fff",
 					"navigationBarTextStyle": "black",
 					"navigationBarTitleText": "个人资料"
-
-				}
+				},
+				"needLogin": true
 			}, {
 				"path": "pages/followAndFans/index",
 				"style": {
 					"navigationStyle": "custom",
 					"navigationBarTitleText": "个人资料"
-
-				}
+				},
+				"needLogin": true
 			}]
 		},
 		{
@@ -139,14 +159,16 @@
 					"style": {
 						"navigationStyle": "custom",
 						"navigationBarTitleText": "发布新鲜事"
-					}
+					},
+					"needLogin": true
 				},
 				{
 					"path": "pages/detail/index",
 					"style": {
 						"navigationStyle": "custom",
 						"navigationBarTitleText": "查看新鲜事"
-					}
+					},
+					"needLogin": true
 				}
 			]
 		},
@@ -157,27 +179,32 @@
 				"style": {
 					"navigationStyle": "custom",
 					"navigationBarTitleText": "发布找搭子"
-				}
+				},
+				"needLogin": true
 			}]
 		}, 
 		{
 			"root": "pagesIdentify",
 			"pages": [{
 					"path": "pages/index/index",
-					"navigationBarTitleText": ""
+					"navigationBarTitleText": "",
+					"needLogin": true
 				},
 				{
 					"path": "pages/infoCheck/index",
-					"navigationBarTitleText": null
+					"navigationBarTitleText": null,
+					"needLogin": true
 				},
 				{
 					"path": "pages/result/index",
-					"navigationBarTitleText": null
+					"navigationBarTitleText": null,
+					"needLogin": true
 				},
 				{
 					"path": "pages/webview/index",
 					"navigationBarTitleText": "发布一起野",
-					"navigationStyle": "custom"
+					"navigationStyle": "custom",
+					"needLogin": true
 				}
 			]
 		},
@@ -187,11 +214,13 @@
 			"pages":[
 				{
 					"path": "pages/shop/index",
-					"navigationStyle": "custom"
+					"navigationStyle": "custom",
+					"needLogin": true
 				},
 				{
 					"path": "pages/package/index",
-					"navigationBarTitleText": null
+					"navigationBarTitleText": null,
+					"needLogin": true
 				}
 			]
 		},
@@ -202,13 +231,15 @@
 					"path": "pages/index/index",
 					"style": {
 						"navigationStyle": "custom"
-					}
+					},
+					"needLogin": true
 				},
 				{
 					"path": "pages/tags/index",
 					"style": {
 						"navigationStyle": "custom"
-					}
+					},
+					"needLogin": true
 				}
 			]
 		}

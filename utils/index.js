@@ -4,7 +4,7 @@ import http from './http'
 export const getDayHours = (start = 0, end = 23)=> {
 	let hours = []
 	for (let i=start;i<(end+1);i++) {
-		hours.push((i < 9 ? `0${i}` : i) + '时')
+		hours.push((i <= 9 ? `0${i}` : i) + '时')
 	}
 	return  hours
 }
@@ -144,7 +144,27 @@ export const formatDateText = (dateString) => {
 	// 返回格式化后的字符串
 	return `${month}-${day}(${dayOfWeek}) ${hours}:${minutes}`;
   }
+  export const formatDateTextTwo = (dateString) => {
+	if (!dateString) return ''
+	dateString = dateString.replace(/-/g, '/');
+
+	const date = new Date(dateString);
   
+	// 获取月份和日期
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+  
+	// 获取星期几
+	const daysOfWeek = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+	const dayOfWeek = daysOfWeek[date.getDay()];
+  
+	// 获取小时和分钟
+	const hours = String(date.getHours()).padStart(2, '0');
+	const minutes = String(date.getMinutes()).padStart(2, '0');
+  
+	// 返回格式化后的字符串
+	return `(${dayOfWeek}) ${hours}:${minutes}`;
+  }
   
 	  
   export const debounce = (fn, delay) => {

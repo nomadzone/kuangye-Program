@@ -46,7 +46,7 @@
             <view>
               <image src="/static/images/map-pin-line.png" mode=""></image>
               <text v-if="!activity.address">集合地点</text>
-              <text v-else style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; color: #1b1b1b;">{{ activity.address }}</text>
+              <text v-else style="text-overflow: ellipsis; overflow: hidden;  color: #1b1b1b;">{{ activity.address }}</text>
               <image
                 src="/static/images/arrow-right-s-line_gray.png"
                 mode=""
@@ -263,6 +263,7 @@
     <!-- 发布成功 -->
     <PublicSuccess
       :show="publicSuccessShow"
+      :fabuParams="fabuParams"
       @close="publicSuccessClose"
       @view="doView"
     ></PublicSuccess>
@@ -321,6 +322,7 @@ export default {
       publicId: '', // 发布成功后的id
       toastShow: false,
       publicSuccessShow: false,
+      fabuParams: {},
       minpeople: "",
       maxpeople: "",
       StatusBar: 0,
@@ -619,8 +621,6 @@ export default {
           tip = '最多人数不能小于1'
         }  else if (params.minpeople > params.maxpeople) {
           tip = '最少人数不能大于最多人数'
-        } else if (!params.contactphoto) {
-          tip = '请上传联系微信二维码'
         }
         // else if (!params.number) {
         //   tip = '请输入微信号'
@@ -650,6 +650,7 @@ export default {
         }
         this.publicSuccessShow = true;
         this.publicId = res.data
+        this.fabuParams = params
       } catch (error) {}
     },
     doView() {

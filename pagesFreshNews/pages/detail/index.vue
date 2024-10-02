@@ -1,6 +1,6 @@
 <template>
 	<view class="fresh-news-detail-page">
-		<DetailTopNav :info="detailInfo" @refreshFollowStatus="handleRefreshFollowStatus"></DetailTopNav>
+		<DetailTopNav :info="detailInfo" @inToInfo="handleInToInfo" @refreshFollowStatus="handleRefreshFollowStatus"></DetailTopNav>
 		<view class="top-swipper-box">
 			<swiper class="swiper" circular :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval"
 				:duration="duration" indicator-color="rgba(221, 221, 221, 1)"
@@ -19,9 +19,9 @@
 			<view class="time-text">{{detailInfo.createTime}}</view>
 		</view>
 		<view class="comment-num-row">
-			评论 <text class="comment-num-text">{{detailInfo.commentNum}}</text>
+			评论 <text class="comment-num-text">{{detailInfo.commentNum || 0}}</text>
 		</view>
-		<Comments :dataId="initId" @replyComment="replyComment" />
+		<Comments ref="commentsRef" :dataId="initId" @replyComment="replyComment"  />
 		<view class="bottom-comment-box">
 			<view class="input-box">
 				<image src="../../static/images/comment-prev-icon.svg" class="prev-icon"></image>
@@ -71,6 +71,7 @@
 	const autoplay = ref(true)
 	const interval = ref(3000)
 	const duration = ref(1000)
+	const commentsRef = ref()
 
 
 	let rebackId = ref(null) // 评论回复id
@@ -101,7 +102,6 @@
 		commentInputValue.value = e.target.value
 	}
 	function replyComment(item) {
-		console.log('item====', item)
 		rebackDetail.value = item
 	}
 	// 提交评论
@@ -112,7 +112,7 @@
 		let params = {
 			activityId: initId.value,
 			content: commentInputValue.value,
-			topId: rebackDetail.value.id
+			topId: rebackDetail.value?.id
 		}
 
 		freshNewsService.commentAdd(params).then(res => {
@@ -122,8 +122,8 @@
 						icon: 'success',
 						duration: 2000
 						})
-				getDetailInfo()
 				commentInputValue.value = ''
+				commentsRef.value.fetchCommentList(initId.value, 1)
 				rebackId.value = null
 			}
 		})
@@ -142,7 +142,17 @@
 			userStatus: !detailInfo.value.userStatus
 		}
 	}
-	
+	function handleInToInfo() {
+		if (detailInfo.value.userLaunchStatus != 1) {
+				uni.navigateTo({
+					url: '/pagesUserCenter/pages/index/index?userId=' + detailInfo.value.userId
+				})
+			} else {
+				uni.navigateTo({
+					url: '/pagesUserCenter/pages/index/index'
+				})
+			}
+	}
 	//  修改点赞状态
 	const handleChangeLike  = () => {
 		let params = {

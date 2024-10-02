@@ -34,6 +34,8 @@ const http = {
 		preferenceAdd: (data) => post('/preference/add', data), // 添加偏好
 		fansFollow: (data) => get('/fans/follow', data), // 关注列表
 		fansFans: (data) => get('/fans/fans', data), // 粉丝列表
+		// user/getUserInfoOther
+		getUserInfoOther: (data) => get('/user/getUserInfoOther', data), // 其他用户信息
 	}
 
 

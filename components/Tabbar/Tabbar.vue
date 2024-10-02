@@ -70,12 +70,24 @@
 		methods: {
 			doPath(url, type = 0) {
 				if (!url) return 
-				// if (type === 1) {
-				// 	let userInfo = uni.getStorageSync('userInfo')
-				// 	if (userInfo.status !== 1) {
-				// 		url = '/pagesIdentify/pages/webview/index'
-				// 	}
-				// }
+				if (type === 1) {
+					let userInfo = uni.getStorageSync('userInfo')
+					if (userInfo.status != 1) {
+						http.getIdentifyUrl().then(res => {
+							if(res.code === '200') {
+								uni.setStorage({
+									key:'identifyObj',
+									data:res.data,
+									success:() => {
+										uni.navigateTo({
+											url: '/pagesIdentify/pages/webview/index?url=' + res.data.url
+										})
+									}
+								})
+							}
+						})
+					}
+				}
 				this.visible = false;
 				uni.navigateTo({
 					url

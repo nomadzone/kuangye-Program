@@ -2,7 +2,7 @@
   <view class="index_box">
 	<HomeNavbar :userInfo="userInfo" @selectLoaction='doAction' :title="schooolTitle"/>
 	<Gradual></Gradual>
-	<Map ref="map" class="map" @getLocation='getLocation'></Map>
+	<Map ref="map" class="map" @getLocation='getLocation' @partnerModalShow='handleShowPartnerModal'></Map>
 	<view class="container" :class="showPointList?'container_big':''"   :style="touchType?`height:calc(${showVh} - ${pointHeight}rpx); top: calc( ${topVh} + ${pointHeight}rpx);`: ''">
 		<view class="sticky">
 			<view class="touch_view" @click.stop="showPointClick()" @touchmove.stop="touchM" @touchend.stop="touchE"></view>
@@ -12,8 +12,7 @@
 				<!-- <HomeCate></HomeCate> -->
 			</view>
 			<view  class="water-view">
-				<!-- <HomeWaterfalls ref="HomeWaterfalls" :isAd="isAd" :page="'home'" @partnerModalShow="handleShowPartnerModal"></HomeWaterfalls> -->
-				 <WaterFalls ref="WaterfallsRef" :sortIndex="sortIndex"  @partnerModalShow="handleShowPartnerModal"></WaterFalls>
+				 <WaterFalls ref="WaterfallsRef" :sortIndex="sortIndex" @partnerModalShow="handleShowPartnerModal"></WaterFalls>
 			</view>
 		</view>
 		
@@ -88,7 +87,6 @@ export default {
             } else {
                 this.showPointMap = !this.showPointMap
             }
-			console.log('222222222222')
             this.showPointList=!this.showPointList
 
         },
@@ -170,7 +168,6 @@ export default {
 	  // 找搭子弹出层
 	  handleShowPartnerModal(row) {
 		  let _this = this
-		  console.log('找搭子弹出层---', row)
 		  _this.$refs.partnerModalRef.show(row)
 	  },
   }

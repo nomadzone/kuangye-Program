@@ -2,10 +2,10 @@
 	<view class="page details">
 		<Navbar :delta="delta">
 			<view class="navbar">
-				<image :src="activityVo?.initiatorUrl" mode=""></image>
-				<text>{{ activityVo?.initiatorName }}</text>
+				<image :src="activityVo?.initiatorUrl" mode="" @click="toInfo"></image>
+				<text @click="toInfo">{{ activityVo?.initiatorName }}</text>
 				<!-- v-if="info.userLaunchStatus == 2" -->
-				<view @click="doFllow" class="fllow">
+				<view v-if="info.userLaunchStatus != 1" @click="doFllow" class="fllow">
 					<text v-if="info.userFollowStatus == 1" class="fllow-ok">已关注</text>
 					<text v-else>+ 关注</text>
 				</view>
@@ -33,8 +33,8 @@
 					<swiper class="swiper-container" circular autoplay indicator-dots
 						indicator-color="rgb(255 255 255 / 40%)" indicator-active-color="#fff" interval="5000"
 						duration="500">
-						<swiper-item v-for="(picUrl, picIndex) in activityVo?.images" :key="picIndex">
-							<image :src="picUrl" class="img"></image>
+						<swiper-item class="items" v-for="(picUrl, picIndex) in activityVo?.images" :key="picIndex">
+							<image :src="picUrl" class="img" mode="widthFix"></image>
 						</swiper-item>
 					</swiper>
 				</view>
@@ -81,7 +81,7 @@
 				</view>
 				<view class="apply-content" v-if="userActivityUpVo.length > 0">
 					<template v-for="(item, index) in userActivityUpVo" :key="index">
-						<view v-if="index < 6 || showApply" :key="index">
+						<view v-if="index < 6 || showApply" :key="index" @click="toThird(item)" >
 							<view class="avator">
 								<image :class="[item.sex == '0' ? 'man' : 'woman']" :src="item.images" mode=""></image>
 								<image class="sex" v-if="item.gender == 0" src="/static/images/man-icon.png" mode="">
@@ -376,6 +376,24 @@ export default {
 				return;
 			}
 			this.viewPopup = true
+		},
+		// 跳转个人信息
+		toInfo() {
+			console.log('this.info.userLaunchStatus', this.info)
+			if (this.info.userLaunchStatus != 1) {
+				uni.navigateTo({
+					url: '/pagesUserCenter/pages/thirdInfo/index?userId=' + this.activityVo.userId
+				})
+			} else {
+				uni.navigateTo({
+					url: '/pagesUserCenter/pages/index/index'
+				})
+			}
+		},
+		toThird(item) {
+			uni.navigateTo({
+					url: '/pagesUserCenter/pages/thirdInfo/index?userId=' + item.userId
+				})
 		},
 		async doFllow() {
 			if (this.info.userFollowStatus == 1) {
@@ -792,10 +810,16 @@ export default {
 			border-radius: 16rpx;
 			overflow: hidden;
 			height: 440rpx;
-
-			image {
+			.items{
 				width: 100%;
 				height: 440rpx;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+			image {
+				width: 100%;
+				height: 100%;
 				border-radius: 16rpx;
 			}
 		}

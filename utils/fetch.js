@@ -33,6 +33,7 @@ const httpRequest = (url, method = 'GET', data = null, headers = {}) => {
                     resolve(res.data);
                 } else if (res.statusCode == 401){
                     showModal()
+                    reject(res)
                     return
                 } {
                     if (res?.data?.msg?.indexOf('重新登录') > -1) {
@@ -58,11 +59,16 @@ function showModal() {
         uni.showModal({
             title: '提示',
             content: '请先登录',
-            success: () => {
-                uni.navigateTo({
-                    url: '/pages/login/index'
-                })
-            }
+            success: (res) => {
+                if (res.confirm) {
+                    uni.navigateTo({
+                        url: '/pages/login/index'
+                    })
+                }
+            },
+            fail: () => {
+            console.log('showModal fail')
+                }
             })
     }, 1500)
     

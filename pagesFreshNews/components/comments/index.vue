@@ -68,34 +68,34 @@
             <view class="body">
               <view class="content">
                 <view class="comment-author">
-                  <view class="author-name">{{ commentItem.nickname }}</view>
-                  <view class="author-tag" v-if="commentItem.autherTag"
+                  <view class="author-name">{{ list.nickname }}</view>
+                  <view class="author-tag" v-if="list.autherTag"
                     >作者</view
                   >
                 </view>
-                <view class="content-text">{{ commentItem.content }}</view>
+                <view class="content-text">{{ list.content }}</view>
                 <view class="comment-time">
-                  <text class="time-text">{{ commentItem.createTime }}</text>
-                  <view class="relpay" @click="handleReplyComment(commentItem)"
+                  <text class="time-text">{{ list.createTime }}</text>
+                  <view class="relpay" @click="handleReplyComment(list)"
                     >回复</view
                   >
                 </view>
               </view>
               <view class="like-action">
                 <image
-                  @tap="handleChangeCommentLikeStatus(commentItem)"
+                  @tap="handleChangeCommentLikeStatus(list)"
                   class="like-icon"
-                  v-if="commentItem.userUpStatus === 1"
+                  v-if="list.userUpStatus === 1"
                   src="../../static/images/comment-liked.svg"
                 >
                 </image>
                 <image
-                  @tap="handleChangeCommentLikeStatus(commentItem)"
+                  @tap="handleChangeCommentLikeStatus(list)"
                   class="like-icon"
                   v-else
                   src="../../static/images/comment-like.svg"
                 ></image>
-                <text class="like-num">{{ commentItem.upnumber }}</text>
+                <text class="like-num">{{ list.upnumber }}</text>
               </view>
             </view>
           </view>
@@ -119,7 +119,7 @@ const props = defineProps({
 const pageSize = ref(20);
 
 // 查询评论列表
-const fetchCommentList = ({ page, id }) => {
+const fetchCommentList = ( id,page) => {
   let params = {
     id: id,
     pageNum: page,
@@ -128,16 +128,16 @@ const fetchCommentList = ({ page, id }) => {
 
   freshNewsService.commentList(params).then((res) => {
     if (res && res.code === "200") {
-      commentList.value = res.data.list;
+      commentList.value = res.data?.list || [];
     }
   });
 };
 
 const commentList = ref([]);
 
-watchEffect(() => {
+watchEffect(() => { // 监听props变化
   if (props.dataId && props.dataId != "") {
-    fetchCommentList({ id: props.dataId, page: 1 });
+    fetchCommentList(props.dataId, 1);
   }
 });
 // 回复评论
@@ -178,6 +178,9 @@ const handleChangeCommentLikeStatus = (row) => {
     });
   }
 };
+defineExpose({
+  fetchCommentList,
+})
 </script>
 
 <style lang="scss" scoped>

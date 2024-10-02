@@ -1,16 +1,16 @@
 <template>
   <view class="navbar" :style="{ top: StatusBar + 'px'}">
-    <view class="left" @tap="handleGoUserCenter" v-if="userInfo.avatarUrl">
+    <view class="left" @tap="handleGoUserCenter">
       <image :src="userInfo.avatarUrl" v-if="userInfo.avatarUrl" mode="aspectFill"  class="icon-left" />
       <image v-else src="/static/images/title-logo.svg" class="icon-logo" style="height: 80rpx;width: 80rpx;" />
     </view>
 	<view class='right'>
 		<view class="top" @tap="handleGoUserCenter">
 			<!-- <image src="/static/images/title-logo.png" class="icon-logo" /> -->
-		  <text class="title" style="font-size: 28rpx;">{{ userInfo.nickname }}</text>
+		  <text class="title" style="font-size: 28rpx;">{{ userInfo.nickname || '未登录' }}</text>
 		</view>
-		<view class="bottom" @click="handleRightAction" v-if="userInfo.address">
-		  <text class="title" style="font-size: 24rpx;">{{ userInfo.address }}</text>
+		<view class="bottom" @click="handleRightAction" >
+		  <text class="title" style="font-size: 24rpx;">{{ userInfo.address || '西安钟楼' }}</text>
 		  <image src="/static/images/arrow-right.png" class="icon" />
 		</view>
 	</view>
@@ -55,6 +55,7 @@ export default {
       })
     },
     handleRightAction() {
+      if (!uni.getStorageSync('token')) return
       let that = this
       wx.chooseLocation({
         success: function (res) {

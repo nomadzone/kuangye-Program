@@ -123,6 +123,7 @@
 			background-color: #ffffff;
 			border-radius: 24rpx;
 			padding: 32rpx 24rpx;
+			position: relative;
 
 			.imgs-box {
 				display: flex;
