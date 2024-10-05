@@ -32,7 +32,7 @@ const httpRequest = (url, method = 'GET', data = null, headers = {}) => {
                 if (res.statusCode === 200) {
                     resolve(res.data);
                 } else if (res.statusCode == 401){
-                    showModal()
+                    // showModal()
                     reject(res)
                     return
                 } {

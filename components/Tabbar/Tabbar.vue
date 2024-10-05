@@ -15,6 +15,7 @@
 				<view class="popup-title">一起野</view>
 				<view class="popup-desc">我是活动主理人，发起付费活动</view>
 				<view class="popup-tag" v-if="status !== 0">未认证</view>
+				<view class="popup-tag" v-else>已认证</view>
 				<image src="../../static/images/popu-1.png" mode=""></image>
 			</view>
 			<view class="popup-bottom">
@@ -94,10 +95,9 @@
 				})
 			},
 			tuEnd() {
-				uni.showtoast({
-					title: '功能开发中， 敬请期待                               ',
-					icon: 'none'
-				})
+				uni.switchTab({
+					url: '/pages/explore/explore'
+					})
 			},
 			goTo(pagePath) {
 				uni.switchTab({
@@ -251,6 +251,7 @@
 			position: absolute;
 			top: 30rpx;
 			right: 30rpx;
+			font-size: 24rpx;
 		}
 
 		.popup-title {

@@ -1,17 +1,20 @@
 <template>
   <view class="navbar" :style="{ top: StatusBar + 'px'}">
-    <view class="left" @tap="handleGoUserCenter">
+    <view class="left" @tap="handleGoUserCenter" v-if="userInfo.avatarUrl">
       <image :src="userInfo.avatarUrl" v-if="userInfo.avatarUrl" mode="aspectFill"  class="icon-left" />
       <image v-else src="/static/images/title-logo.svg" class="icon-logo" style="height: 80rpx;width: 80rpx;" />
+    </view>
+    <view class="left" @tap="handleGoUserCenter" v-if="!userInfo.avatarUrl">
+      <image src="/static/images/moren.png" class="icon-logo" style="height: 80rpx;width: 80rpx;" />
     </view>
 	<view class='right'>
 		<view class="top" @tap="handleGoUserCenter">
 			<!-- <image src="/static/images/title-logo.png" class="icon-logo" /> -->
-		  <text class="title" style="font-size: 28rpx;">{{ userInfo.nickname || '未登录' }}</text>
+		  <text class="title" style="font-size: 28rpx;">{{ userInfo.nickname || '' }}</text>
 		</view>
 		<view class="bottom" @click="handleRightAction" >
-		  <text class="title" style="font-size: 24rpx;">{{ userInfo.address || '西安钟楼' }}</text>
-		  <image src="/static/images/arrow-right.png" class="icon" />
+		  <text class="title" style="font-size: 24rpx;">{{ userInfo.address || '' }}</text>
+		  <image src="/static/images/arrow-right.png" v-if="userInfo.address" class="icon" />
 		</view>
 	</view>
   </view>

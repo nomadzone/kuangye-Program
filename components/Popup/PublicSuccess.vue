@@ -20,6 +20,7 @@
 				</view>
 				<view class="chart">
 					<view>
+						<button open-type="contact" class="chart-btn" plain></button>
 						<image class="wechat" src="/static/images/wechat-fill.png" mode=""></image>
 						<text>{{fabuParams?.number}}</text>
 						<image @click="doCopy" class="copy" src="/static/images/copy.png" mode=""></image>
@@ -164,6 +165,7 @@
 		}
 		.chart {
 			padding: 48rpx 0;
+			position: relative;
 			> view {
 				display: flex;
 				gap: 20rpx;
@@ -183,6 +185,14 @@
 				width: 56rpx;
 				height: 56rpx;
 			}
+			.chart-btn{
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                opacity: 0;
+            }
 		}
 		.hover {
 			opacity: 0.8;

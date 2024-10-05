@@ -85,6 +85,11 @@ console.log(getCurrentInstance())
         if(!location) {
           resetLocation()
         } else {
+          const mapCtx = uni.createMapContext("map", ctx);
+          mapCtx.moveToLocation({
+          longitude: location.longitude,
+          latitude: location.latitude,
+        });
           getDataList()
         }
       })

@@ -36,6 +36,25 @@ const http = {
 		fansFans: (data) => get('/fans/fans', data), // 粉丝列表
 		// user/getUserInfoOther
 		getUserInfoOther: (data) => get('/user/getUserInfoOther', data), // 其他用户信息
+		// /system/header/list
+		headerList: (data) => post('/system/header/list', data), // 首页轮播图0.
+		// /system/header/findByld
+		headerFindByld: (data) => post('/system/header/findById', data), // 详情
+		// /system/order/add
+		orderAdd: (data) => get('/system/order/add', data), // 订单添加
+		// /system/order/pay
+		orderPaySys: (data) => get('/system/order/pay', data), // 订单支付
+		// /system/order/paySuccess
+		orderPaySuccess: (data) => get('/system/order/paySuccess', data), // 订单支付成功
+		// /system/order/cancellation
+		orderCancellation: (data) => get('/system/order/cancellation', data), // 订单取消
+		// /system/comment/add
+		commentAdd: (data) => get('/system/comment/add', data), // 评论添加
+		// /system/up/up
+		upUp: (data) => get('/system/up/up', data), // 点赞
+		// /system/up/down
+		upDown: (data) => get('/system/up/down', data), // 取消点赞
+
 	}
 
 

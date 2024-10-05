@@ -163,7 +163,7 @@ export const formatDateText = (dateString) => {
 	const minutes = String(date.getMinutes()).padStart(2, '0');
   
 	// 返回格式化后的字符串
-	return `(${dayOfWeek}) ${hours}:${minutes}`;
+	return `${month}-${day}(${dayOfWeek})`;
   }
   
 	  
@@ -249,14 +249,12 @@ export const formatDateText = (dateString) => {
       uni.getLocation({
         type,
         success: (res) => {
-          console.log(res)
           resolve({
             latitude: res.latitude,
             longitude: res.longitude
           })
         },
         fail: (err) => {
-          console.log(err)
           if (!isGoSetting) return
           // 判断是否开启定位权限
           isLocationAuth(true).then((red) => {

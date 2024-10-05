@@ -136,8 +136,12 @@ const handleWxLogin = async({ target }) => {
       uni.navigateTo({
         url: "/pagesUserPreferences/pages/tags/index"
       });
+    } else {
+      uni.reLaunch({
+        url: "/pages/index/index"
+        });
     }
-      uni.navigateBack()
+      
     } else {
       uni.showToast({
         title: '获取用户信息失败',

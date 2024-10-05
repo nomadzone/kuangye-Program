@@ -9,9 +9,9 @@
 			<image class="nav-icon" src="../../static/icons/selfNav/ticket-nav-icon.svg"></image>
 			<text class="nav-text">票夹</text>
 		</view>
-		<view class="nav-item" @click="doPath('/pagesUserCenter/pages/wallet/wallet')">
+		<view class="nav-item" v-if="userInfo.status == 1" @click="doPath('/pagesUserCenter/pages/wallet/wallet')">
 			<image class="nav-icon" src="../../static/icons/selfNav/wallet-nav-icon.svg"></image>
-			<text class="nav-text">钱包</text>
+			<text class="nav-text">钱包</text> 
 		</view>
 		<view class="nav-item" v-if="userRole === 'business'">
 			<image class="nav-icon" src="../../static/icons/selfNav/scan-nav-icon.svg"></image>
@@ -27,6 +27,10 @@
 		userRole: {
 			type: String,
 			default: 'user'
+		},
+		userInfo:{
+			type: Object,
+			default: {}
 		}
 	})
 	const doPath = (url)=> {

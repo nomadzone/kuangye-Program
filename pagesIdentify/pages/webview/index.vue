@@ -1,7 +1,7 @@
 <!-- 百度身份验证外部链接 -->
 <template>
 	<view class="baidu-identify-webview">
-		<web-view :src="identifyObj.url" @load="onWebviewUrlChange"></web-view>
+		<web-view :src="url" @load="onWebviewUrlChange"></web-view>
 	</view>
 </template>
 
@@ -11,13 +11,15 @@
 	let webUrl = ref('')
 	
 	let identifyObj = ref(null)
+	let url = ref('')
 	
 	onMounted(() => {
 		uni.getStorage({
 			key: 'identifyObj',
 			success:(data) => {
 				identifyObj.value = data.data
-				console.log('identifyObj.value', identifyObj.value)
+				url.value = 'https://www.kuangyeonline.com/authentication.html?url=' + data.data.url
+				console.log('identifyObj.value==>', url.value)
 			}
 		})
 	})

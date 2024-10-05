@@ -28,6 +28,22 @@
 			"needLogin": true
 		},
 		{
+			"path": "pages/explore/detail",
+			"style": {
+				"navigationBarTitleText": "探索",
+				"navigationStyle": "custom"
+			},
+			"needLogin": true
+		},
+		{
+			"path": "pages/explore/packageDetail",
+			"style": {
+				"navigationBarTitleText": "",
+			   "navigationBarBackgroundColor": "#F7F5FF"
+			},
+			"needLogin": true
+		},
+		{
 			"path": "pages/search/search",
 			"style": {
 				"navigationBarTitleText": ""

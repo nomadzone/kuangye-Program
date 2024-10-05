@@ -131,19 +131,22 @@ export function interceptRoute() {
           // 判断要打开的页面是否需要验证登录
           if (needLogin.includes(url) && !token) {
             console.log('拦截成功', url)
-            uni.showModal({
-              title: '提示',
-              content: '您还未登录，前往登录？',
-              cancelText: '取消',
-              confirmText: '确认',
-              success: (res) => {
-                if (res.confirm) {
-                  uni.reLaunch({
-                    url: '/pages/login/index'
-                  })
-                }
-              }
+            uni.reLaunch({
+              url: '/pages/login/index'
             })
+            // uni.showModal({
+            //   title: '提示',
+            //   content: '您还未登录，前往登录？',
+            //   cancelText: '取消',
+            //   confirmText: '确认',
+            //   success: (res) => {
+            //     if (res.confirm) {
+            //       uni.reLaunch({
+            //         url: '/pages/login/index'
+            //       })
+            //     }
+            //   }
+            // })
             return false
           }
           //

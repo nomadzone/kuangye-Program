@@ -1,10 +1,10 @@
 <template>
-  <view class="navbar" :style="{ top: StatusBar + 'px'}">
+  <view class="navbar" :style="{ paddingTop: StatusBar + 'px'}">
     <view class="left" @click="doBack">
-      <image src="/static/images/back.png" mode=""></image>
+      <image :src="type==1?'/static/images/back_two.png' : '/static/images/back.png'" mode=""></image>
     </view>
 	<slot></slot>
-	<view class='center'>
+	<view class='center' :class="type==1?'center-white':''">
 		{{ title }}
 	</view>
 	<view class='right'>
@@ -13,46 +13,66 @@
 </template>
 
 <script>
+
+
 export default {
   props: {
     title: {
       type: String,
-      default: ''
+      default: "",
     },
-	zIndex: {
-		type: String,
-		default: '9'
-	},
-	delta: {
-		type: Number,
-		default: 1
-	}
+    zIndex: {
+      type: String,
+      default: "9",
+    },
+    delta: {
+      type: Number,
+      default: 1,
+    },
+    type: {
+      type: String,
+      default: "",
+    },
   },
   data() {
-	  return {
-		  StatusBar: 0,
-	  }
+    return {
+      StatusBar: 0,
+      scrollHeight: 0,
+      scrollBg: false
+    };
   },
   created() {
-	  const sys = wx.getSystemInfoSync()
-	  this.StatusBar = sys.statusBarHeight
+    const sys = wx.getSystemInfoSync();
+    this.StatusBar = sys.statusBarHeight;
+    // 监听页面滚动到一定高度
   },
-  computed: {
-  },
+
+  computed: {},
   methods: {
     doBack() {
       uni.navigateBack({
-        delta: this.delta
-      })
-    }
+        delta: this.delta,
+      });
+    },
+    onScroll() {
+      const that = this;
+      wx.onWindowScroll(function(res) {
+        that.scrollHeight = res.scrollTop;
+        console.log(that.scrollHeight);
+        if (that.scrollHeight > 100) {
+          that.scrollBg = true
+        }
+      });
   }
 }
+};
 </script>
 
 <style scoped lang="scss">
 .navbar {
   position: fixed;
   left: 0;
+  top: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -63,18 +83,21 @@ export default {
   height: 80rpx;
   box-sizing: border-box;
   > view {
-	  flex: 1;
+    flex: 1;
   }
   z-index: 4;
   .center {
-	  text-align: center;
+    text-align: center;
+  }
+  .center-white{
+    color: #ffffff;
   }
   .left {
-	  display: flex;
-	image {
-		width: 40rpx;
-		height: 40rpx;
-	}
+    display: flex;
+    image {
+      width: 40rpx;
+      height: 40rpx;
+    }
   }
 }
 </style>

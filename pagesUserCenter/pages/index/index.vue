@@ -5,10 +5,7 @@
       <image
         class="bk-img"
         mode="aspectFill"
-		:src="
-			userInfo?.avatarUrl ||
-			'/static/images/title-logo.svg'
-		"
+        :src="userInfo?.avatarUrl || '/static/images/title-logo.svg'"
       ></image>
       <view class="top-info-box">
         <image
@@ -32,10 +29,7 @@
               <image
                 class="avatar-img"
                 mode="aspectFill"
-                :src="
-                  userInfo?.avatarUrl ||
-                  '/static/images/title-logo.svg'
-                "
+                :src="userInfo?.avatarUrl || '/static/images/title-logo.svg'"
               ></image>
             </view>
             <view
@@ -62,7 +56,7 @@
       </view>
     </view>
     <view class="self-nav-container">
-      <SelfNav v-if="pageViewType === 1" />
+      <SelfNav v-if="pageViewType === 1" :userInfo="userInfo" />
       <OtherPageActions v-else />
       <UserCenterTab
         :tabs="tabs"
@@ -83,8 +77,15 @@
           >已参加</view
         >
       </view>
+      <view class="no_rz" v-if="userInfo?.status != 1">
+        <image src="../../static/images/no_rz.png"></image>
+        <view class="rz_box">
+          <view class="rz_left">实名认证后集合发布活动</view>
+          <view class="rz_btn" @click="toWebView()">去认证</view>
+        </view>
+      </view>
 
-      <view class="activity-list-box">
+      <view class="activity-list-box" v-show="userInfo?.status == 1">
         <z-paging
           :fixed="false"
           ref="paging"
@@ -279,9 +280,8 @@ let activeTabKey = ref(0);
 
 onShow(() => {
   if (pageViewType.value === 1) {
-	getUserInfo()
+    getUserInfo();
   } else {
-    
   }
 });
 
@@ -291,13 +291,27 @@ function toGz(type) {
     url: "/pagesUserCenter/pages/followAndFans/index?type=" + type,
   });
 }
-
-function getUserInfo() {
-      http.getUserInfo().then((res) => {
-        userInfo.value = res.data;
-		uni.setStorageSync("userInfo", res.data);
+function toWebView() {
+  http.getIdentifyUrl().then((res) => {
+    if (res.code === "200") {
+      uni.setStorage({
+        key: "identifyObj",
+        data: res.data,
+        success: () => {
+          uni.navigateTo({
+            url: "/pagesIdentify/pages/webview/index?url=" + res.data.url,
+          });
+        },
       });
     }
+  });
+}
+function getUserInfo() {
+  http.getUserInfo().then((res) => {
+    userInfo.value = res.data;
+    uni.setStorageSync("userInfo", res.data);
+  });
+}
 // 设置激活tab
 const handleSetActiveTab = (val) => {
   activeTab.value = val;
@@ -346,8 +360,7 @@ async function queryList(current, size) {
       type: activeTab.value + 1,
       pageNum: current,
       pageSize: size,
-	  userId: userInfo.value?.id,
-
+      userId: userInfo.value?.id,
     });
     res.data.list = res.data.list.map((item) => {
       return {
@@ -536,6 +549,47 @@ useZPaging(paging, queryList);
         color: #ffffff;
         border-color: #222222;
       }
+    }
+  }
+}
+.no_rz {
+  width: 100%;
+  background: #f5f5f5;
+  padding: 16rpx;
+  height: calc(100vh - 780rpx);
+  box-sizing: border-box;
+  position: relative;
+  image {
+    width: 100%;
+    height: 99rpx;
+  }
+  .rz_box{
+    position: absolute;
+    top: 16rpx;
+    left: 0;
+    width: 100%;
+    height: 99rpx;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32rpx;
+    box-sizing: border-box;
+    z-index: 2;
+    .rz_left{
+      color: #000000;
+      font-size: 24rpx;
+      font-weight: 600;
+    }
+    .rz_btn{
+      width: 128rpx;
+      height: 50rpx;
+      border-radius: 30rpx;
+      background: #F69803;
+      color: #ffffff;
+      font-size: 24rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 }

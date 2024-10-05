@@ -10,7 +10,7 @@
       :empty-view-img-style="{ width: '256rpx', height: '256rpx' }"
       :empty-view-error-img="emptyImg"
       :show-empty-view-reload="true"
-      empty-view-text="暂未发起或参加活动"
+      :empty-view-text="!token?'未登录，请先登录':'暂未发起或参加活动'"
       :paging-style="{'margin-bottom':'400rpx'}"
     >
       <block v-if="props.sortIndex === 0">
@@ -274,7 +274,7 @@
                   <text>找搭子</text> {{ item?.describe }}
                 </view>
                 <view class="content_thr_desc">
-                  <view class="dance">{{ item?.distanceMeters }}</view>
+                  <view class="dance">{{ item?.distanceMeters }}Km</view>
                   <view class="line"></view>
                   <view class="position">{{ item?.address }}</view>
                 </view>
@@ -304,6 +304,7 @@ const paging = ref(null);
 const list = ref([]);
 const images = ref([]);
 const partnerModalRef = ref(null);
+const token = uni.getStorageSync("token");
 
 const emit = defineEmits(['partnerModalShow'])
 const props = defineProps({
@@ -701,7 +702,7 @@ defineExpose({
   .thr_content {
     width: 100%;
     min-height: 180rpx;
-    background: #e1fff8;
+    background: #00c4ef40;
     border-radius: 24rpx;
     overflow: hidden;
     padding: 16rpx;

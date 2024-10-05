@@ -6,32 +6,30 @@
 				<view class="body-content" v-if="!info.images">{{info.describe}}</view>
 				<view class="address-row-light" v-if="info.images">
 					<view class="address-info">
-						<image class="address-icon" src="../../static/images/partner-modal-img-address.png"></image>
+						<image class="address-icon" src="../../static/images/address.png"></image>
 						<view class="distance-text">{{info?.distanceMeters}}km</view>
 						<view class="split-line"></view>
 						<view class="address-text">{{info.address}}</view>
 					</view>
 					<view class="guide-link">
-						<view class="guide-text">导航</view>
-						<image class="guide-icon" src="../../static/images/partner-modal-img-guide.png"></image>
+						<!-- <view class="guide-text">导航</view> -->
 					</view>
 				</view>
 				<view class="address-row-light address-row" v-else>
 					<view class="address-info">
-						<image class="address-icon" src="../../static/images/partner-modal-noimg-address.png"></image>
+						<image class="address-icon" src="../../static/images/address.png"></image>
 						<view class="distance-text">{{info?.distanceMeters}}km</view>
 						<view class="split-line"></view>
 						<view class="address-text">{{info.address}}</view>
 					</view>
 					<view class="guide-link">
-						<view class="guide-text">导航</view>
-						<image class="guide-icon" src="../../static/images/partner-modal-noimg-guide.png"></image>
+						<!-- <view class="guide-text">导航</view> -->
 					</view>
 				</view>
 
 				<view class="date-row-light" v-if="info.images">
 					<view class="date-info">
-						<image class="date-icon" src="../../static/images/partner-modal-img-date.png"></image>
+						<image class="date-icon" src="../../static/images/dates.png"></image>
 						<view class="date-text">{{info.startdate}}</view>
 						<view class="split-line"></view>
 						<view class="time-text">{{info.enddate}}</view>
@@ -40,7 +38,7 @@
 				</view>
 				<view class="date-row-light date-row" v-else>
 					<view class="date-info">
-						<image class="date-icon" src="../../static/images/partner-modal-img-date.png"></image>
+						<image class="date-icon" src="../../static/images/dates.png"></image>
 						<view class="date-text">{{info.startdate}}</view>
 						<view class="split-line"></view>
 						<view class="time-text">{{info.enddate}}</view>
@@ -85,6 +83,12 @@
 	.info-container {
 		position: relative;
 		z-index: 1000;
+		height: 686rpx;
+		padding: 32rpx;
+		box-sizing: border-box;
+		background: linear-gradient(180deg, #A8E6FF 2%, #E3F7FF 57.5%);
+		display: flex;
+		flex-direction: column;
 		.top-content {
 			font-family: PingFang SC;
 			font-size: 40rpx;
@@ -94,14 +98,12 @@
 		}
 
 		.partner-modal-info-box {
-			height: 686rpx;
-			padding: 32rpx;
+			width: 100%;
+			height: 100%;
 			border-radius: 24rpx;
-			background: linear-gradient(180deg, #A8E6FF 2%, #E3F7FF 57.5%);
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;
-
 			.info-top {
 				.body-content {
 					font-family: PingFang SC;
@@ -117,7 +119,7 @@
 					flex-direction: row;
 					justify-content: space-between;
 					align-items: center;
-					color: #ffffff;
+					color: #000000;
 					font-size: 28rpx;
 					margin-bottom: 8rpx;
 					height: 40rpx;
@@ -140,7 +142,7 @@
 						.split-line {
 							height: 22rpx;
 							width: 2rpx;
-							background-color: #ffffff;
+							background-color: #000000;
 						}
 
 						.address-text {
@@ -188,7 +190,7 @@
 					flex-direction: row;
 					justify-content: flex-start;
 					align-items: center;
-					color: #ffffff;
+					color: #000000;
 					font-size: 28rpx;
 					height: 40rpx;
 
@@ -210,7 +212,7 @@
 						.split-line {
 							height: 22rpx;
 							width: 2rpx;
-							background-color: #FFFFFF;
+							background-color: #000000;
 						}
 
 						.time-text {
@@ -265,7 +267,7 @@
 							font-size: 28rpx;
 							font-weight: 600;
 							text-align: left;
-							color: #ffffff;
+							color: #000000;
 						}
 						.name-text {
 							color: $Color-B-1;

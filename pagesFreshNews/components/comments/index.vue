@@ -55,8 +55,8 @@
           <view class="left">
             <image
               class="avatar-img"
-              v-if="commentItem.url"
-              :src="commentItem.url"
+              v-if="list.url"
+              :src="list.url"
             ></image>
             <image
               class="avatar-img"

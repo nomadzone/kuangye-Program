@@ -3,7 +3,7 @@
   registry: 'https://registry.npmmirror.com',
   pkgs: [
     {
-      name: 'z-paging',
+      name: 'decimal.js',
       version: 'latest',
       type: 'tag',
       alias: undefined,
@@ -15,7 +15,7 @@
   cacheDir: 'C:\\Users\\mayn\\.npminstall_tarball',
   env: {
     npm_config_registry: 'https://registry.npmmirror.com',
-    npm_config_argv: '{"remain":[],"cooked":["--fix-bug-versions","--china","--userconfig=C:\\\\Users\\\\mayn\\\\.cnpmrc","--disturl=https://cdn.npmmirror.com/binaries/node","--registry=https://registry.npmmirror.com","z-paging","--save"],"original":["--fix-bug-versions","--china","--userconfig=C:\\\\Users\\\\mayn\\\\.cnpmrc","--disturl=https://cdn.npmmirror.com/binaries/node","--registry=https://registry.npmmirror.com","z-paging","--save"]}',
+    npm_config_argv: '{"remain":[],"cooked":["--fix-bug-versions","--china","--userconfig=C:\\\\Users\\\\mayn\\\\.cnpmrc","--disturl=https://cdn.npmmirror.com/binaries/node","--registry=https://registry.npmmirror.com","decimal.js"],"original":["--fix-bug-versions","--china","--userconfig=C:\\\\Users\\\\mayn\\\\.cnpmrc","--disturl=https://cdn.npmmirror.com/binaries/node","--registry=https://registry.npmmirror.com","decimal.js"]}',
     npm_config_user_agent: 'npminstall/7.9.0 npm/? node/v18.17.0 win32 x64',
     npm_config_cache: 'C:\\Users\\mayn\\.npminstall_tarball',
     NODE: 'D:\\nvm\\v18.17.0\\node.exe',
