@@ -7,7 +7,7 @@
         <view class="shop-info-content">
           <view class="left">
             <image src="/static/images/clock.png"></image> 营业时间:
-            {{ getJsonData(info?.businessHoursStart) }}
+            {{ getJsonData(info?.businessHoursStart) || "-" }}
           </view>
           <view class="right">
             <view class="right_btn">{{
@@ -28,7 +28,7 @@
             <image src="/static/images/address_icon.png"></image>
             {{ info?.distanceMeters }}Km {{ info?.address }}
           </view>
-          <view class="right">
+          <view class="right" @click="toMap">
             <image src="/static/images/ts_icon.png"></image>
           </view>
         </view>
@@ -84,7 +84,7 @@
           >评价 <image class="xing" src="/static/images/xing.png"></image>
           <view class="xing_text">{{ info?.score }}分</view></view
         >
-      <PlList :commentList="info?.shopCommentList"></plList>
+      <PlList :commentList="info?.shopCommentList" @replyComment="replyComment"></plList>
 
       </view>
       
@@ -92,7 +92,8 @@
 
     <view class="btm_btn">
       <view class="btm_btn_left">
-        <image src="/static/images/Button_dp.png"></image>
+        <image v-if="info?.isCollect == 1" src="/static/images/Button_dp.png"  @click="collect"></image>
+        <image v-else src="/static/images/Button_dp_two.png" @click="collect"></image>
       </view>
       <view class="btm_btn_right" @click="todapplyPopupPl"> 我要评价 </view>
     </view>
@@ -191,6 +192,7 @@ const applyPopupPl = ref(false);
 const ratevalue = ref(0);
 const plvalue = ref("");
 const buyNumber = ref(1);
+const id = ref("");
 
 const pjForm = ref({
   shopId: '',
@@ -199,13 +201,34 @@ const pjForm = ref({
   rate: '',
 })
 
-onLoad(() => {
+onLoad((options) => {
+  id.value = options.id;
   getDetail();
 });
+function replyComment(item) {
+  applyPopupPl.value = true;
+  plvalue.value = "";
+  pjForm.value = {
+    shopId: info.value.id,
+    level: 2,
+    content: plvalue.value,
+    score: ratevalue.value,
+    replyId: item.id,
+    pid: item.pid
+  }
+}
 function showPopup(item) {
   applyPopup.value = true;
   buyItem.value = item;
   buyNumber.value = 1;
+}
+function toMap() {
+  uni.openLocation({
+    latitude: info.value.dimension,
+    longitude: info.value.longitude,
+    name: info.value.name,
+    address: info.value.address,
+  });
 }
 // 选择数量
 function changeNumber(type) {
@@ -305,11 +328,12 @@ function indetail(item) {
 }
 // getDetail
 function getDetail() {
+  const location = uni.getStorageSync("location");
   http
     .headerFindByld({
-      id: "57",
-      dimension: "1",
-      longitude: "1",
+      id: id.value,
+      longitude: location.longitude,
+      	dimension: location.latitude,
     })
     .then((res) => {
       info.value = res.data;
@@ -323,6 +347,40 @@ function getJsonData(datas) {
   } catch (e) {
     console.log(e);
   }
+}
+// 收藏
+function collect() {
+  if(info.value.isCollect == 1){
+    http.collectUp({shopId: info.value.id}).then((res) => {
+      if (res.code === "200") {
+        info.value.isCollect = 0;
+        uni.showToast({
+          title: "收藏成功",
+          icon: "success",
+        });
+      } else {
+        uni.showToast({
+          title: res.msg,
+          icon: "none",
+        });
+      }
+    });
+    }else{
+    http.collectDown({shopId: info.value.id}).then((res) => {
+      if (res.code === "200") {
+        info.value.isCollect = 1;
+        uni.showToast({
+          title: "取消收藏成功",
+          icon: "success",
+        });
+      } else {
+        uni.showToast({
+          title: res.msg,
+          icon: "none",
+        });
+      }
+    });
+    }
 }
 onReachBottom(() => {
   console.log("下拉加载");
@@ -351,6 +409,8 @@ function dopjPopup() {
         title: "评价成功",
         icon: "success",
       });
+      applyPopupPl.value = false;
+      getDetail();
     } else {
       uni.showToast({
         title: res.msg,
@@ -645,7 +705,7 @@ page {
     background: #222222;
     color: #ffffff;
     font-size: 32rpx;
-    border-radius: 32rpx;
+    border-radius: 70rpx;
   }
 }
 .popup_content {

@@ -2,21 +2,21 @@
 	<view class="page">
 		<view class="card">
 			<view class="title">
-				<image :src="order.image" mode=""></image>
-				<view>{{ order.title }}</view>
+				<image :src="buyItem?.shopCombo?.comboPhotoUrl?.split(',')[0]" mode="aspectFill"></image>
+				<view>{{ buyItem?.shopComboName }}</view>
 			</view>
 			<view class="number">
 				<view>退款数量</view>
 				<view class="number-opt">
-					<view @click="doMinus" :class="[total > 1 ? '' : 'gray']">-</view>
+					<view @click="doMinus" :class="gray">-</view>
 					<text>{{ total }}</text>
-					<view @click="doAdd">+</view>
+					<view class="gray" @click="doAdd">+</view>
 				</view>
 			</view>
 			<view class="price">
 				<view>
 					<text>退款金额</text>
-					<text>¥{{ order.amount }}</text>
+					<text>¥{{ buyItem?.orderAmount }}</text>
 				</view>
 				<view class="price-tip">1-3个工作日退款至原支付方，以实际退款金额为准</view>
 			</view>
@@ -48,6 +48,7 @@
 <script>
 	import PoupWrap from '@/components/Popup/Wrap.vue';
 	import Reason from '@/components/Popup/Reason.vue';
+	import http from "@/utils/http";
 	export default {
 		components: {
 			PoupWrap,
@@ -61,6 +62,7 @@
 				show: false,
 				selectReason: null,
 				selectIndex: 0,
+				buyItem: {},
 				total: 1,
 				order: {
 					id: 1,
@@ -86,18 +88,43 @@
 				]
 			}
 		},
-		onLoad() {
+		onLoad(options) {
 			this.StatusBar = uni.getStorageSync('statusBarHeight')
+			this.getDetail(options.id)
 		},
 		methods: {
+			getDetail(id) {
+				const location = uni.getStorageSync("location");
+				http.orderFindById({
+					id: id,
+					longitude: location.longitude,
+					dimension: location.latitude,
+					})
+					.then((res) => {
+					this.buyItem = res.data;
+					});
+				},
 			doSumbit() {
-				uni.showToast({
-					title: '已申请退款',
-					icon: 'success'
+				http.orderRefund({id: this.buyItem.id }).then(res => {
+					if (res.code == 200) {
+						uni.showToast({
+							title: '申请退款成功',
+							icon: 'success',
+							duration: 2000
+						});
+						setTimeout(() => {
+							uni.navigateBack({
+								delta: 1
+							});
+						}, 2000);
+					} else {
+						uni.showToast({
+							title: '申请退款失败',
+							icon: 'none',
+							duration: 2000
+						});
+					}
 				})
-				setTimeout(()=> {
-					uni.navigateBack()
-				}, 1500)
 			},
 			doReason(item, i) {
 				this.selectReason = item 
@@ -105,10 +132,10 @@
 				this.show = false;
 			},
 			doMinus() {
-				this.total = this.total === 1 ? 1 : (this.total - 1)
+				// this.total = this.total === 1 ? 1 : (this.total - 1)
 			},
 			doAdd() {
-				this.total = this.total + 1
+				// this.total = this.total + 1
 			}
 		}
 	}

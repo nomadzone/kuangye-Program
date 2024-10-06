@@ -3,7 +3,7 @@
     <view class="comment-group">
       <view
         class="comment-item"
-        v-for="commentItem in commentList"
+        v-for="(commentItem, index) in commentList"
         :key="commentItem.id"
       >
         <view class="left">
@@ -35,23 +35,23 @@
             </view>
             <view class="like-action">
               <image
-                @tap="handleChangeCommentLikeStatus(commentItem)"
+                @tap="handleChangeCommentLikeStatus(commentItem, index)"
                 class="like-icon"
-                v-if="commentItem.userUpStatus === 1"
+                v-if="commentItem.isUp == 0"
                 src="@/static/images/comment-liked.svg"
               >
               </image>
               <image
-                @tap="handleChangeCommentLikeStatus(commentItem)"
+                @tap="handleChangeCommentLikeStatus(commentItem, index)"
                 class="like-icon"
                 v-else
                 src="@/static/images/comment-like.svg"
               ></image>
-              <text class="like-num">{{ commentItem.upnumber }}</text>
+              <text class="like-num">{{ commentItem.upCount }}</text>
             </view>
           </view>
   
-          <view class="back_list" v-for="(list, index) in commentItem?.hopCommentList || []" :key="index">
+          <view class="back_list" v-for="(list, indexs) in commentItem?.hopCommentList || []" :key="indexs">
             <view class="left">
               <image
                 class="avatar-img"
@@ -83,19 +83,19 @@
                 </view>
                 <view class="like-action">
                   <image
-                    @tap="handleChangeCommentLikeStatus(list)"
+                    @tap="handleChangeCommentLikeStatus(list, index, indexs)"
                     class="like-icon"
-                    v-if="list.userUpStatus === 1"
+                    v-if="list.isUp == 0"
                     src="@/static/images/comment-liked.svg"
                   >
                   </image>
                   <image
-                    @tap="handleChangeCommentLikeStatus(list)"
+                    @tap="handleChangeCommentLikeStatus(list, index, indexs)"
                     class="like-icon"
                     v-else
                     src="@/static/images/comment-like.svg"
                   ></image>
-                  <text class="like-num">{{ list.upnumber }}</text>
+                  <text class="like-num">{{ list.upCount }}</text>
                 </view>
               </view>
             </view>
@@ -126,33 +126,50 @@
   }
   
   // 修改评论点赞状态
-  const handleChangeCommentLikeStatus = (row) => {
+  const handleChangeCommentLikeStatus = (row, index, indexs) => {
     let params = {
       commentId: row.id,
     };
   
-    if (row.userUpStatus === 1) {
-      freshNewsService.upDown(params).then((res) => {
+    if (row.isUp == 0) {
+      http.upDown(params).then((res) => {
         if (res && res.code === "200") {
-          let newItem = {
-            ...row,
-            userUpStatus: row.userUpStatus === 1 ? 0 : 1,
-            upnumber: row.upnumber - 1,
-          };
-          let index = commentList.value.findIndex((item) => item.id === row.id);
-          commentList.value.splice(index, 1, newItem);
+          if(indexs){
+            let newItem = {
+              ...row,
+              isUp: 1,
+              upCount: row.upCount - 1,
+           }
+           props.commentList[index].hopCommentList.splice(indexs, 1, newItem);
+          } else {
+            let newItem = {
+              ...row,
+              isUp: 1,
+              upCount: row.upCount - 1,
+            };
+            props.commentList.splice(index, 1, newItem);
+          }
         }
       });
     } else {
-      freshNewsService.upUp(params).then((res) => {
+      http.upUp(params).then((res) => {
         if (res && res.code === "200") {
-          let newItem = {
-            ...row,
-            userUpStatus: row.userUpStatus === 1 ? 0 : 1,
-            upnumber: row.upnumber + 1,
-          };
-          let index = commentList.value.findIndex((item) => item.id === row.id);
-          commentList.value.splice(index, 1, newItem);
+          if(indexs){
+            let newItem = {
+              ...row,
+              isUp: 0,
+              upCount: row.upCount + 1,
+            }
+            console.log(props.commentList[index].hopCommentList)
+            props.commentList[index].hopCommentList.splice(indexs, 1, newItem);
+          } else {
+            let newItem = {
+              ...row,
+              isUp: 0,
+              upCount: row.upCount + 1,
+            };
+            props.commentList.splice(index, 1, newItem);
+          }
         }
       });
     }

@@ -49,11 +49,23 @@ const http = {
 		// /system/order/cancellation
 		orderCancellation: (data) => get('/system/order/cancellation', data), // 订单取消
 		// /system/comment/add
-		commentAdd: (data) => get('/system/comment/add', data), // 评论添加
+		commentAdd: (data) => post('/system/comment/add', data), // 评论添加
 		// /system/up/up
 		upUp: (data) => get('/system/up/up', data), // 点赞
 		// /system/up/down
 		upDown: (data) => get('/system/up/down', data), // 取消点赞
+		// /system/collect/up
+		collectUp: (data) => get('/system/collect/up', data), // 收藏
+		// /system/collect/down
+		collectDown: (data) => get('/system/collect/down', data), // 取消收藏
+		// /system/order/list
+		orderList: (data) => post('/system/order/list', data), // 订单列表
+		// /system/order/findById
+		orderFindById: (data) => get('/system/order/findById', data), // 订单详情
+		// /system/order/cancel
+		orderCancel: (data) => get('/system/order/cancel', data), // 订单取消
+		// /system/order/refund
+		orderRefund: (data) => get('/system/order/refund', data), // 订单退款
 
 	}
 

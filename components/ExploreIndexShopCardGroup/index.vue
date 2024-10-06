@@ -53,8 +53,9 @@
 		list: Array
 	});
 	function toDetail(item) {
-		uni.navigateTo({
-			url: `/pages/explore/detail?item=${JSON.stringify(item)}`
+		console.log('12',item)
+		uni.navigateTo({ 
+			url: `/pages/explore/detail?id=${item.id}`
 			})
 	}
 </script>

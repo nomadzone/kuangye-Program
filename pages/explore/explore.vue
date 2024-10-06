@@ -118,13 +118,13 @@ let typeOptions = ref([
 ]);
 
 function getheaderList() {
-	let location = uni.getStorageSync('location')
-	// "dimension": location.latitude,
-	// "longitude": location.longitude
+	const location = uni.getStorageSync("location");
 	http.headerList({
 		"pageNum": "10",
 		"pageSize": pageSize.value,
 		"name": "",
+		longitude: location.longitude,
+      	dimension: location.latitude,
 
 	}).then(res=> {
 		shopList.value = shopList.value.concat(res.data.list || [])

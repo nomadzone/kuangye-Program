@@ -151,6 +151,17 @@
 					"navigationBarTextStyle": "black"
 				},
 				"needLogin": true
+			},
+			{
+				"path": "pages/order/detail",
+				"style": {
+					"enablePullDownRefresh": true,
+					"onReachBottomDistance": 50,
+					"navigationBarTitleText": "订单详情",
+					"navigationBarBackgroundColor": "#fff",
+					"navigationBarTextStyle": "black"
+				},
+				"needLogin": true
 			}, {
 				"path": "pages/personalData/index",
 				"style": {
