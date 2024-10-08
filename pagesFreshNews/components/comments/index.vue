@@ -38,14 +38,14 @@
               @tap="handleChangeCommentLikeStatus(commentItem)"
               class="like-icon"
               v-if="commentItem.userUpStatus === 1"
-              src="../../static/images/comment-liked.svg"
+              src="@/static/icons/comment-likeds.svg"
             >
             </image>
             <image
               @tap="handleChangeCommentLikeStatus(commentItem)"
               class="like-icon"
               v-else
-              src="../../static/images/comment-like.svg"
+              src="@/static/icons/comment-likes.svg"
             ></image>
             <text class="like-num">{{ commentItem.upnumber }}</text>
           </view>
@@ -86,14 +86,14 @@
                   @tap="handleChangeCommentLikeStatus(list)"
                   class="like-icon"
                   v-if="list.userUpStatus === 1"
-                  src="../../static/images/comment-liked.svg"
+                  src="@/static/icons/comment-likeds.svg"
                 >
                 </image>
                 <image
                   @tap="handleChangeCommentLikeStatus(list)"
                   class="like-icon"
                   v-else
-                  src="../../static/images/comment-like.svg"
+                  src="@/static/icons/comment-likes.svg"
                 ></image>
                 <text class="like-num">{{ list.upnumber }}</text>
               </view>

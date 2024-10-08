@@ -2,7 +2,19 @@
   <view class="container">
     <Navbar type="1" :title="info?.name"></Navbar>
     <view class="show-image">
-      <view class="image_container"></view>
+      <view class="image_container">
+        <swiper
+					class="swiper"
+					:duration="500"
+					indicator-dots
+					:circular="true"
+					indicator-active-color="#ffffff"
+				>
+					<swiper-item class="swiper_slider" v-for="(list, index) in info.profilePhotoUrl?.split(',')" :key="index">
+						<image :src="list" mode="aspectFill"></image>
+					</swiper-item>
+				</swiper>
+      </view>
       <view class="shop-info">
         <view class="shop-info-content">
           <view class="left">
@@ -42,13 +54,15 @@
           <view class="tao_list" v-if="showTc ? true : index < 2"  @click.stop="indetail(item)">
             <view class="tao_list_left">
               <image :src="item?.comboPhotoUrl?.split(',')[0]" mode="aspectFill"></image>
+              <view v-if="item?.discount" class="swiper-item-title"
+                >限时{{ item?.discount }}折</view>
             </view>
             <view class="tao_list_right">
               <view class="right_title"
                 >{{ item?.comboName }}</view
               >
               <view class="right_content">
-                <view class="content_list">套餐描述</view>
+                <view class="content_list">{{getMemo(item)}}</view>
               </view>
               <view class="right_price">
                 <view class="price_left">
@@ -69,7 +83,7 @@
             showTc
               ? "收起"
               : "查看其他" + (info?.shopComboList?.length - 2) + "个"
-          }}套餐 <image src="/static/images/down.png"></image
+          }}套餐 <image :class="showTc? 'down_iamge' : ''" src="/static/images/down.png"></image
         ></view>
       </view>
 
@@ -119,10 +133,8 @@
           <view class="number_right">
             <view
               class="right_btn"
-              :class="{ active: buyNumber === 1 }"
               @click="changeNumber(1)"
-              >-</view
-            >
+              >-</view>
             <view class="right_num">{{ buyNumber }}</view>
             <view class="right_btm" @click="changeNumber(2)">+</view>
           </view>
@@ -130,7 +142,7 @@
         <view class="icon_text">
           <image class="icon" src="/static/images/tk1.png"></image> 可用日期
         </view>
-        <view class="no_text"> 2024-01-01 </view>
+        <view class="no_text"> {{buyItem?.validTimeStart}}-{{ buyItem?.validTimeEnd }} </view>
         <view class="icon_text">
           <image class="icon" src="/static/images/tk2.png"></image> 使用方式
         </view>
@@ -182,7 +194,7 @@ import { onReachBottom, onPageScroll, onLoad } from "@dcloudio/uni-app";
 import PoupWrap from "@/components/Popup/Wrap.vue";
 import Decimal from "decimal.js";
 import http from "@/utils/http.js";
-import PlList from "./plList.vue";
+import PlList from "@/components/PlList/plList.vue";
 import { ref } from "vue";
 const applyPopup = ref(false);
 const info = ref({});
@@ -205,16 +217,53 @@ onLoad((options) => {
   id.value = options.id;
   getDetail();
 });
+function getMemo(item) {
+  if(item.allDayStatus && item.legalHolidayStatus) {
+    return "全部日期可用，包含法定节假日";
+  } else if(item.allDayStatus && !item.legalHolidayStatus) {
+    return "不包含法定节假日"
+  }
+  // monday  tuesday  wednesday  thursday  friday  saturday  sunday
+  getAvailability(item.monday, item.tuesday, item.wednesday, item.thursday, item.friday, item.saturday, item.sunday)
+}
+function getAvailability(monday, tuesday, wednesday, thursday, friday, saturday, sunday) {
+    // 将每一天的可用性放入一个数组中
+    const days = [
+        { name: '周一', available: monday },
+        { name: '周二', available: tuesday },
+        { name: '周三', available: wednesday },
+        { name: '周四', available: thursday },
+        { name: '周五', available: friday },
+        { name: '周六', available: saturday },
+        { name: '周日', available: sunday },
+    ];
+
+    // 筛选出可用的日子
+    const availableDays = days.filter(day => day.available).map(day => day.name);
+
+    // 返回结果
+    if (availableDays.length === 7) {
+        return '周一至周日';
+    }
+    if (availableDays.length > 0) {
+        return `${availableDays.join('')}可用`; // 使用模板字符串
+    }
+    return '无可用时间'; // 如果没有任何可用的日子
+}
 function replyComment(item) {
   applyPopupPl.value = true;
   plvalue.value = "";
+  let userInfo = uni.getStorageSync("userInfo");
   pjForm.value = {
     shopId: info.value.id,
     level: 2,
     content: plvalue.value,
     score: ratevalue.value,
-    replyId: item.id,
-    pid: item.pid
+    replyId: item.userId,
+    pid: item.id,
+    replyNickName: item.nickName,
+    image: item.image,
+    nickName: userInfo.nickName,
   }
 }
 function showPopup(item) {
@@ -224,8 +273,8 @@ function showPopup(item) {
 }
 function toMap() {
   uni.openLocation({
-    latitude: info.value.dimension,
-    longitude: info.value.longitude,
+    latitude: info.value.dimension*1,
+    longitude: info.value.longitude*1,
     name: info.value.name,
     address: info.value.address,
   });
@@ -251,7 +300,7 @@ function getMaxPrice(price) {
 async function doApplyPopup() {
   let resPiao = await http.orderAdd({
     shopComboId: buyItem.value.id,
-    number: 2,
+    number: 1,
   });
   if (resPiao.code !== "200") {
     uni.showToast({
@@ -273,7 +322,9 @@ async function doApplyPopup() {
   });
   if (res.code === "200" && res.data) {
     const payParams = res.data?.jsapi;
-    const orderId = res.data?.orderId;
+    const settlementId = res.data?.settlementId;
+    const userConsumptionId = res.data?.userConsumptionId;
+    const id = res.data.id
     uni.requestPayment({
       provider: "wxpay",
       timeStamp: payParams.timeStamp,
@@ -286,7 +337,7 @@ async function doApplyPopup() {
           title: "支付成功",
           icon: "success",
         });
-        let resSuc = await http.orderPaySuccess({ orderId });
+        let resSuc = await http.orderPaySuccess({ id:id });
         if (resSuc.code !== "200") {
           uni.showToast({
             title: resSuc?.msg,
@@ -294,6 +345,11 @@ async function doApplyPopup() {
           });
         } else {
           // 跳转订单详情页面 目前还没写
+          applyPopup.value = false;
+          // 跳转订单详情页面 目前还没写
+          uni.navigateTo({
+        	  url: "/pagesUserCenter/pages/order/detail?id=" + id,
+		      });
         }
       },
       fail: async (err) => {
@@ -301,7 +357,7 @@ async function doApplyPopup() {
           title: "支付失败",
           icon: "none",
         });
-        let resErr = await http.orderCancellation({ orderId });
+        let resErr = await http.orderCancellation({ settlementId: settlementId, userConsumptionId: userConsumptionId });
         if (resErr.code !== "200") {
           uni.showToast({
             title: resErr?.msg,
@@ -310,6 +366,11 @@ async function doApplyPopup() {
           return;
         } else {
           // 跳转订单详情页面 目前还没写
+          applyPopup.value = false;
+          // 跳转订单详情页面 目前还没写
+          uni.navigateTo({
+        	  url: "/pagesUserCenter/pages/order/detail?id=" + id,
+		      });
         }
       },
     });
@@ -341,9 +402,9 @@ function getDetail() {
 }
 function getJsonData(datas) {
   try {
-    return;
+    if(!datas) return "";
     let data = JSON.parse(datas);
-    return data.start + "-" + data.end;
+    return data[0].start + "-" + data[0].end;
   } catch (e) {
     console.log(e);
   }
@@ -449,6 +510,18 @@ page {
       width: 100%;
       height: 452rpx;
       background: #000000;
+      .swiper{
+        width: 100%;
+        height: 100%;
+        .swiper_slider {
+          width: 100%;
+          height: 100%;
+          img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
     }
     .shop-info {
       width: 686rpx;
@@ -549,11 +622,22 @@ page {
         height: 160rpx;
         border-radius: 16rpx;
         margin-right: 22rpx;
+        position: relative;
         image {
           width: 160rpx;
           height: 160rpx;
           border-radius: 16rpx;
         }
+        .swiper-item-title {
+            font-size: 24rpx;
+            color: #ffffff;
+            padding: 4rpx 12rpx;
+            background: rgba(0, 0, 0, 0.4);
+            position: absolute;
+            top: 7rpx;
+            left: 7rpx;
+            border-radius: 30rpx;
+          }
       }
       .tao_list_right {
         width: calc(100% - 160rpx - 22rpx);
@@ -627,6 +711,10 @@ page {
         width: 28rpx;
         height: 28rpx;
         margin-left: 16rpx;
+      }
+      .down_iamge{
+        // 旋转180度
+        transform: rotate(180deg);
       }
     }
     .other_two_act {
@@ -852,7 +940,7 @@ page {
       display: flex;
       justify-content: center;
       align-items: center;
-      border-radius: 32rpx;
+      border-radius: 70rpx;
       background: #7354ff;
       color: #ffffff;
       font-size: 32rpx;

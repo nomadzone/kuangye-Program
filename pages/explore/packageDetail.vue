@@ -21,8 +21,7 @@
             >
               <image :src="item" mode="aspectFill"></image>
               <view class="swiper-item-title"
-                >限时{{ buyItem?.discount }}折</view
-              >
+                >限时{{ buyItem?.discount }}折</view>
             </swiper-item>
           </swiper>
         </view>
@@ -204,7 +203,7 @@ function getMaxPrice(price) {
 async function doApplyPopup() {
   let resPiao = await http.orderAdd({
     shopComboId: buyItem.value.id,
-    number: 2,
+    number: 1,
   });
   if (resPiao.code !== "200") {
     uni.showToast({
@@ -226,7 +225,9 @@ async function doApplyPopup() {
   });
   if (res.code === "200" && res.data) {
     const payParams = res.data?.jsapi;
-    const orderId = res.data?.orderId;
+    const settlementId = res.data?.settlementId;
+    const userConsumptionId = res.data?.userConsumptionId;
+    const id = res.data?.id;
     uni.requestPayment({
       provider: "wxpay",
       timeStamp: payParams.timeStamp,
@@ -239,7 +240,7 @@ async function doApplyPopup() {
           title: "支付成功",
           icon: "success",
         });
-        let resSuc = await http.orderPaySuccess({ orderId });
+        let resSuc = await http.orderPaySuccess({ id:id });
         if (resSuc.code !== "200") {
           uni.showToast({
             title: resSuc?.msg,
@@ -247,6 +248,9 @@ async function doApplyPopup() {
           });
         } else {
           // 跳转订单详情页面 目前还没写
+          uni.navigateTo({
+        	  url: "/pagesUserCenter/pages/order/detail?id=" + id,
+		      });
         }
       },
       fail: async (err) => {
@@ -254,7 +258,7 @@ async function doApplyPopup() {
           title: "支付失败",
           icon: "none",
         });
-        let resErr = await http.orderCancellation({ orderId });
+        let resErr = await http.orderCancellation({ settlementId: settlementId, userConsumptionId: userConsumptionId });
         if (resErr.code !== "200") {
           uni.showToast({
             title: resErr?.msg,
@@ -263,6 +267,9 @@ async function doApplyPopup() {
           return;
         } else {
           // 跳转订单详情页面 目前还没写
+          uni.navigateTo({
+        	  url: "/pagesUserCenter/pages/order/detail?id=" + id,
+		      });
         }
       },
     });
@@ -325,7 +332,7 @@ async function doApplyPopup() {
               font-size: 24rpx;
               color: #ffffff;
               padding: 4rpx 12rpx;
-              background: rgba(0, 0, 0, 0.5);
+              background: rgba(0, 0, 0, 0.4);
               position: absolute;
               top: 28rpx;
               left: 38rpx;

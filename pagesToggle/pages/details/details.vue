@@ -229,7 +229,6 @@
 					</view>
 					<view class="submit">
 						<button class="outline" hover-class="button-hover">
-							<image src="/static/images/wechat-fill-black.png" mode=""></image>
 							<text>继续撒野</text>
 						</button>
 						<button class="fill" hover-class="button-hover" @click="doCancel">
@@ -497,8 +496,8 @@ export default {
 				title: '加载中...', // 提示框标题
 				mask: true          // 是否显示透明蒙层，防止触摸穿透
 			});
-			let res = await http.activityRefund({
-				orderId: this.activityVo.id
+			let res = await http.orderRefundAct({
+				id: this.activityVo.id
 			})
 			uni.hideLoading();  // 隐藏加载提示框
 			this.applyPopup = false;

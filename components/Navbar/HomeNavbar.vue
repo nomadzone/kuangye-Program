@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import http from '../../utils/http'
 export default {
   props: {
     title: {
@@ -62,12 +63,29 @@ export default {
       let that = this
       wx.chooseLocation({
         success: function (res) {
-          const address = res.address
-          const latitude = res.latitude
-          const longitude = res.longitude
-          // uni.setStorageSync('selectLocation', res)
-          uni.setStorageSync('location', res)
-          that.$emit('selectLoaction')
+     
+          if(!res.address) {
+             http.getAddress({
+            longitude: res.longitude,
+            latitude: res.latitude,
+          }).then(val => {
+            let location = {
+              address: val.data,
+              latitude: res.latitude,
+              longitude: res.longitude
+              }
+              uni.setStorageSync('location', location)
+              that.$emit('selectLoaction')
+            })
+          } else {
+            const address = res.address
+            const latitude = res.latitude
+            const longitude = res.longitude
+            uni.setStorageSync('location', res)
+            that.$emit('selectLoaction')
+          }
+          console.log(res, '用户选择地址')
+         
         },
         fail: function (err) {
           console.log(err, '用户未选择地址');

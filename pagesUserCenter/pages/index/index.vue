@@ -63,7 +63,7 @@
         :activeTab="activeTab"
         @changeTab="handleSetActiveTab"
       ></UserCenterTab>
-      <view v-if="pageViewType === 1" class="self-nav-box">
+      <view v-if="pageViewType === 1 && activeTab === 0" class="self-nav-box">
         <view
           class="self-nav-box-list"
           :class="{ 'self-nav-box-listact': activeTabKey === 0 }"

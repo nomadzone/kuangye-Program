@@ -86,7 +86,7 @@
       <view class="icon_text">
         <image class="icon" src="/static/images/tk1.png"></image> 可用日期
       </view>
-      <view class="no_text"> 等真实数据 </view>
+      <view class="no_text"> {{buyItem?.shopCombo?.validTimeStart}}-{{ buyItem?.shopCombo?.validTimeEnd }} </view>
       <view class="icon_text">
         <image class="icon" src="/static/images/tk2.png"></image> 使用方式
       </view>
@@ -138,11 +138,11 @@
       <view class="btm_btn_right" @click="toTellphone"> 联系商家 </view>
     </view>
     <view class="btm_btn" v-if="buyItem?.orderStatus == 0">
-      <view class="btm_btn_left" @click="cancelOrder"> 再来一单 </view>
+      <view class="btm_btn_left" @click="toOrderDetail"> 再来一单 </view>
       <view class="btm_btn_right" @click="toTellphone"> 联系商家 </view>
     </view>
     <view class="btm_btn" v-if="buyItem?.orderStatus == 2">
-      <view class="btm_btn_left" @click="cancelOrder"> 退款 </view>
+      <view class="btm_btn_left" @click="cancelOrderTk"> 退款 </view>
       <view class="btm_btn_right" @click="toTellphone"> 联系商家 </view>
     </view>
     <view class="btm_btn" v-if="buyItem?.orderStatus == 4">
@@ -232,6 +232,11 @@ function cancelOrder() {
       }
     },
   });
+}
+function cancelOrderTk() {
+  uni.navigateTo({
+          url: "/pagesUserCenter/pages/orderRefund/index?id=" + id.value,
+        });
 }
 </script>
 <style lang="scss" scoped>

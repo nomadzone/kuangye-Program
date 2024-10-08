@@ -414,9 +414,21 @@ export default {
       wx.chooseLocation({
         success: function (res) {
           console.log(res);
-          that.activity.address = res.address
+          if (res.address) {
+            that.activity.address = res.address
           that.activity.latitude = res.latitude
           that.activity.longitude = res.longitude
+          } else {
+            http.getAddress({
+            longitude: res.longitude,
+            latitude: res.latitude,
+          }).then(val => {
+            that.activity.address = val.data
+            that.activity.latitude = res.latitude
+            that.activity.longitude = res.longitude
+            })
+          }
+         
         },
         fail: function (err) {
           console.log(err, '用户未选择地址');

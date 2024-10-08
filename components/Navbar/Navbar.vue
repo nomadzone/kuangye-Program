@@ -1,7 +1,7 @@
 <template>
   <view class="navbar" :style="{ paddingTop: StatusBar + 'px'}">
     <view class="left" @click="doBack">
-      <image :src="type==1?'/static/images/back_two.png' : '/static/images/back.png'" mode=""></image>
+      <image :src="type==1?'/static/images/Back_two.png' : '/static/images/back.png'" mode=""></image>
     </view>
 	<slot></slot>
 	<view class='center' :class="type==1?'center-white':''">
@@ -88,6 +88,10 @@ export default {
   z-index: 4;
   .center {
     text-align: center;
+    // 溢出省略号
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .center-white{
     color: #ffffff;

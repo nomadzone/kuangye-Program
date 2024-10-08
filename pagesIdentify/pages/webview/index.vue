@@ -18,8 +18,7 @@
 			key: 'identifyObj',
 			success:(data) => {
 				identifyObj.value = data.data
-				url.value = 'https://www.kuangyeonline.com/authentication.html?url=' + data.data.url
-				console.log('identifyObj.value==>', url.value)
+				url.value = data.data.url
 			}
 		})
 	})

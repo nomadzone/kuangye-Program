@@ -260,7 +260,7 @@ function doItem(item, index) {
 function queryList() {
 	list.value = []
   http
-    .homeActivity({
+    .homeActivitySelect({
       type: null,
       title: value.value,
       pageSize: 9999999,

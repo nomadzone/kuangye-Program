@@ -38,20 +38,20 @@
                 @tap="handleChangeCommentLikeStatus(commentItem, index)"
                 class="like-icon"
                 v-if="commentItem.isUp == 0"
-                src="@/static/images/comment-liked.svg"
+                src="@/static/icons/comment-likeds.svg"
               >
               </image>
               <image
                 @tap="handleChangeCommentLikeStatus(commentItem, index)"
                 class="like-icon"
                 v-else
-                src="@/static/images/comment-like.svg"
+                src="@/static/icons/comment-likes.svg"
               ></image>
               <text class="like-num">{{ commentItem.upCount }}</text>
             </view>
           </view>
   
-          <view class="back_list" v-for="(list, indexs) in commentItem?.hopCommentList || []" :key="indexs">
+          <view class="back_list" v-for="(list, indexs) in commentItem?.shopCommentList || []" :key="indexs">
             <view class="left">
               <image
                 class="avatar-img"
@@ -86,14 +86,14 @@
                     @tap="handleChangeCommentLikeStatus(list, index, indexs)"
                     class="like-icon"
                     v-if="list.isUp == 0"
-                    src="@/static/images/comment-liked.svg"
+                   src="@/static/icons/comment-likeds.svg"
                   >
                   </image>
                   <image
                     @tap="handleChangeCommentLikeStatus(list, index, indexs)"
                     class="like-icon"
                     v-else
-                    src="@/static/images/comment-like.svg"
+                    src="@/static/icons/comment-likeds.svg"
                   ></image>
                   <text class="like-num">{{ list.upCount }}</text>
                 </view>
@@ -134,13 +134,13 @@
     if (row.isUp == 0) {
       http.upDown(params).then((res) => {
         if (res && res.code === "200") {
-          if(indexs){
+          if(indexs || indexs === 0){
             let newItem = {
               ...row,
               isUp: 1,
               upCount: row.upCount - 1,
            }
-           props.commentList[index].hopCommentList.splice(indexs, 1, newItem);
+           props.commentList[index].shopCommentList.splice(indexs, 1, newItem);
           } else {
             let newItem = {
               ...row,
@@ -154,14 +154,13 @@
     } else {
       http.upUp(params).then((res) => {
         if (res && res.code === "200") {
-          if(indexs){
+          if(indexs || indexs === 0){
             let newItem = {
               ...row,
               isUp: 0,
               upCount: row.upCount + 1,
             }
-            console.log(props.commentList[index].hopCommentList)
-            props.commentList[index].hopCommentList.splice(indexs, 1, newItem);
+            props.commentList[index].shopCommentList.splice(indexs, 1, newItem);
           } else {
             let newItem = {
               ...row,

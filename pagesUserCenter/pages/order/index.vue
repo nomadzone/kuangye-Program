@@ -51,7 +51,9 @@
     <view v-if="list.length == 0 && !isInit">
       <Empty></Empty>
     </view>
-
+    <view class="total_view" v-if="list.length >= total">
+      没有更多数据~
+    </view>
     <view style="padding-bottom: 64rpx" v-if="loading">
       <ListLoading></ListLoading>
     </view>
@@ -78,6 +80,7 @@ export default {
         5: "退款完成",
       },
       list: [],
+      total: 0,
       page: 1,
       isInit: true,
       loading: false,
@@ -99,6 +102,10 @@ export default {
     this.loading = true;
     // 模拟上拉加载更多数据
     this.page = this.page + 1;
+    if(this.list.length >= this.total) {
+      this.loading = false;
+      return;
+    }
     this.loadData();
   },
   methods: {
@@ -122,6 +129,7 @@ export default {
         };
         http.orderList(params).then((res) => {
           this.list = this.list.concat(res.data.list);
+          this.total = res.data.total;
         });
         uni.stopPullDownRefresh(); // 停止下拉刷新动画
         this.isInit = false;
@@ -161,7 +169,9 @@ export default {
       });
       if (res.code === "200" && res.data) {
         const payParams = res.data?.jsapi;
-        const orderId = res.data?.orderId;
+        const settlementId = res.data?.settlementId;
+        const userConsumptionId = res.data?.userConsumptionId;
+        const id = res.data.id
         uni.requestPayment({
           provider: "wxpay",
           timeStamp: payParams.timeStamp,
@@ -174,7 +184,7 @@ export default {
               title: "支付成功",
               icon: "success",
             });
-            let resSuc = await http.orderPaySuccess({ orderId });
+            let resSuc = await http.orderPaySuccess({ id:id });
             if (resSuc.code !== "200") {
               uni.showToast({
                 title: resSuc?.msg,
@@ -189,7 +199,7 @@ export default {
               title: "支付失败",
               icon: "none",
             });
-            let resErr = await http.orderCancellation({ orderId });
+            let resErr = await http.orderCancellation({ settlementId: settlementId, userConsumptionId: userConsumptionId });
             if (resErr.code !== "200") {
               uni.showToast({
                 title: resErr?.msg,
@@ -343,5 +353,12 @@ export default {
   .hover {
     opacity: 0.8;
   }
+}
+.total_view{
+  text-align: center;
+  font-size: 28rpx;
+  color: #979797;
+  margin-top: 32rpx;
+  width: 100%;
 }
 </style>

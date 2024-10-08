@@ -40,22 +40,30 @@
 
 				<view class="search-row">
 					<image class="searc-icon" src="../../static/images/search.svg"></image>
-					<input class="search-input" placeholder="找找附近的好去处..."></input>
+					<input class="search-input" placeholder="找找附近的好去处..." v-model="searchText" @confirm="getSearchheaderList"></input>
 				</view>
 				<scroll-view scroll-x>
 					<view class="explore-type-row">
 						<view v-for="item in typeOptions" :key="item.id"
-							:class="choosenType == item.id ? 'filter-item filter-item-active' : 'filter-item'">
+							:class="choosenType == item.categoryName ? 'filter-item filter-item-active' : 'filter-item'" @click="seartchType(item.categoryName)">
 							<view class="type-img">
-								<image class="item-img" :src="item.img"></image>
+								<image class="item-img" :src="item.url" mode="widthFix"></image>
 							</view>
-							<view class="item-name">{{ item.name }}</view>
+							<view class="item-name">{{ item.categoryName }}</view>
 						</view>
 					</view>
 				</scroll-view>
 
 				<view class="shop-group">
 					<ExploreIndexShopCardGroup :list="shopList" />
+					<view class="total_view" v-if="total!== 0 &&(shopList.length >= total)">
+							没有更多数据~
+					</view>
+
+          <view class="total_empty" v-if=" !shopList ||shopList.length===0 ">
+            <image :src="emptyImg"></image>
+							附近没有店铺~
+					</view>
 				</view>
 
 			</view>
@@ -77,76 +85,100 @@ import { ref, onMounted } from "vue";
 import CustomTabbar from "@/components/Tabbar/Tabbar.vue";
 import http from "@/utils/http.js";
 import HomeNavbar from "@/components/Navbar/HomeNavbar.vue";
-import { onReachBottom } from '@dcloudio/uni-app';
-import Popup from './popup.vue'
+import { onReachBottom } from "@dcloudio/uni-app";
+import Popup from "./popup.vue";
+import emptyImg from "@/static/images/empty-my.png";
 
 import ExploreIndexShopCardGroup from "@/components/ExploreIndexShopCardGroup/index.vue";
 
 let navTitle = ref("西安交通大学博学楼");
 let statusBarHeight = ref("80rpx");
 let publicSuccessShow = ref(false);
-let shopList = ref([])
-let pageSize = ref(1)
-const images = ref([])
+let shopList = ref([]);
+const total = ref(0);
+let pageSize = ref(1);
+const searchText = ref("");
+const images = ref([]);
 onMounted(() => {
-	statusBarHeight.value = uni.getStorageSync("navBarHeight") * 2 + 30 + "rpx";
-	 http.homeNoticeList({
+  statusBarHeight.value = uni.getStorageSync("navBarHeight") * 2 + 30 + "rpx";
+  http
+    .homeNoticeList({
       type: 1,
-    }).then(res => {
-		images.value = res.data || []
-	})
+    })
+    .then((res) => {
+      images.value = res.data || [];
+    });
 });
 const doAction = () => {
-	let selectLocation = uni.getStorageSync('location')
-	userInfo.value = { ...userInfo.value, address: selectLocation.address }
+  let selectLocation = uni.getStorageSync("location");
+  userInfo.value = { ...userInfo.value, address: selectLocation.address };
+  getLocation()
 };
-async function getLocation () {
-		let location = uni.getStorageSync('location')
-		if (!location) return
-		let res = await http.getAddress({
-			longitude: location.longitude,
-			latitude: location.latitude,
-		})
-		userInfo.value = { ...userInfo.value, address: res.data }
-	}
-	getLocation()
+async function getLocation() {
+  let location = uni.getStorageSync("location");
+  if (!location) return;
+  let res = await http.getAddress({
+    longitude: location.longitude,
+    latitude: location.latitude,
+  });
+  userInfo.value = { ...userInfo.value, address: res.data };
+}
+getLocation();
 const userInfo = ref(uni.getStorageSync("userInfo"));
-console.log(userInfo.value);
-let choosenType = ref(0);
-let typeOptions = ref([
-	{ id: 0, name: "全部活动", img: "../../static/images/explore-all-type.svg" },
-]);
+let choosenType = ref('');
+let typeOptions = ref([]);
+function getShopTypeLists() {
+  http.headerFindCategoryName({ code: "shop_prodect_type" }).then((res) => {
+	typeOptions.value = res.data
+  choosenType.value = res.data[0].categoryName
+  getheaderList();
+
+  });
+}
+getShopTypeLists();
 
 function getheaderList() {
-	const location = uni.getStorageSync("location");
-	http.headerList({
-		"pageNum": "10",
-		"pageSize": pageSize.value,
-		"name": "",
-		longitude: location.longitude,
-      	dimension: location.latitude,
-
-	}).then(res=> {
-		shopList.value = shopList.value.concat(res.data.list || [])
-	})
+  const location = uni.getStorageSync("location");
+  http
+    .headerList({
+      pageNum: pageSize.value,
+      pageSize: 10,
+      name: searchText.value,
+      longitude: location.longitude,
+      dimension: location.latitude,
+      categoryName: choosenType.value,
+    })
+    .then((res) => {
+      shopList.value = shopList.value.concat(res.data.list || []);
+	  total.value = res.data.total;
+    });
 }
-getheaderList()
+function getSearchheaderList() {
+  pageSize.value = 1;
+  shopList.value = [];
+  getheaderList();
+}
+function seartchType(item) {
+  choosenType.value = item
+  shopList.value = [];
+  getheaderList();
+}
 
 function showPopup() {
-	publicSuccessShow.value = true;
+  publicSuccessShow.value = true;
 }
 function doView() {
-	publicSuccessShow.value = false;
+  publicSuccessShow.value = false;
 }
 function publicSuccessClose() {
-	publicSuccessShow.value = false;
+  publicSuccessShow.value = false;
 }
- // 下拉刷新
+// 下拉刷新
 onReachBottom(() => {
-	console.log('下拉刷新')
-	pageSize.value += 1
-	getheaderList()
-})
+  pageSize.value += 1;
+  if (shopList.value.length >= total.value) return;
+  getheaderList();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -154,156 +186,181 @@ onReachBottom(() => {
 /* 页面样式 */
 
 .page-body {
-	.banner-box {
-		margin: 0rpx 36rpx 0rpx 28rpx;
-		height: 252rpx;
-		border-radius: 16rpx;
-		background-color: $Color-B-5;
-		margin-bottom: 2rpx;
-		.swiper{
-			width: 100%;
-			height: 100%;
-			.swiper-image{
-				width: 100%;
-				height: 100%;
-				border-radius: 16rpx;
-			}
-		}
-	}
+  .banner-box {
+    margin: 0rpx 36rpx 0rpx 28rpx;
+    height: 252rpx;
+    border-radius: 16rpx;
+    background-color: $Color-B-5;
+    margin-bottom: 2rpx;
+    .swiper {
+      width: 100%;
+      height: 100%;
+      .swiper-image {
+        width: 100%;
+        height: 100%;
+        border-radius: 16rpx;
+      }
+    }
+  }
 
-	.top-nav-box {
-		margin: 32rpx 30rpx;
+  .top-nav-box {
+    margin: 32rpx 30rpx;
 
-		.title {
-			font-size: 32rpx;
-			font-weight: 600;
-			text-align: left;
-			color: $Color-B-1;
-			margin-bottom: 32rpx;
-		}
+    .title {
+      font-size: 32rpx;
+      font-weight: 600;
+      text-align: left;
+      color: $Color-B-1;
+      margin-bottom: 32rpx;
+    }
 
-		.nav-row {
-			display: flex;
-			flex-direction: row;
-			justify-content: space-between;
-			align-items: center;
+    .nav-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
 
-			.nav-item {
-				width: 327rpx;
-				height: 164rpx;
-				border-radius: 24rpx;
+      .nav-item {
+        width: 327rpx;
+        height: 164rpx;
+        border-radius: 24rpx;
 
-				.nav-img {
-					width: 100%;
-					height: 100%;
-				}
-			}
-		}
-	}
+        .nav-img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
 
-	.page-content {
-		border-radius: 40rpx 40rpx 0rpx 0rpx;
-		padding: 40rpx 32rpx;
-		background-color: $Color-B-5;
-		min-height: calc(100vh - 600rpx);
+  .page-content {
+    border-radius: 40rpx 40rpx 0rpx 0rpx;
+    padding: 40rpx 32rpx;
+    background-color: $Color-B-5;
+    min-height: calc(100vh - 600rpx);
+    padding-bottom: 300rpx;
 
-		.title-row {
-			display: flex;
-			flex-direction: row;
-			justify-content: space-between;
-			align-items: center;
+    .title-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
 
-			.title {
-				font-size: 32rpx;
-				font-weight: 600;
-				text-align: left;
-				color: $Color-B-1;
-			}
+      .title {
+        font-size: 32rpx;
+        font-weight: 600;
+        text-align: left;
+        color: $Color-B-1;
+      }
 
-			.recommend-tag {
-				border-radius: 32rpx;
-				display: flex;
-				flex-direction: row;
-				justify-content: space-between;
-				align-items: center;
-				border: 2rpx solid #7354ff;
-				padding: 10rpx 20rpx;
+      .recommend-tag {
+        border-radius: 32rpx;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        border: 2rpx solid #7354ff;
+        padding: 10rpx 20rpx;
 
-				.prev-icon {
-					width: 34rpx;
-					height: 34rpx;
-					margin-right: 8rpx;
-				}
-			}
-		}
+        .prev-icon {
+          width: 34rpx;
+          height: 34rpx;
+          margin-right: 8rpx;
+        }
+      }
+    }
 
-		.search-row {
-			margin-top: 32rpx;
-			margin-bottom: 32rpx;
-			height: 72rpx;
-			background-color: #fff;
-			border: 2rpx solid rgba(151, 151, 151, 0.2);
-			border-radius: 100rpx;
-			display: flex;
-			flex-direction: row;
-			justify-content: flex-start;
-			align-items: center;
-			padding: 0rpx 32rpx;
+    .search-row {
+      margin-top: 32rpx;
+      margin-bottom: 32rpx;
+      height: 72rpx;
+      background-color: #fff;
+      border: 2rpx solid rgba(151, 151, 151, 0.2);
+      border-radius: 100rpx;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 0rpx 32rpx;
 
-			.searc-icon {
-				width: 28rpx;
-				height: 28rpx;
-				margin-right: 16rpx;
-			}
+      .searc-icon {
+        width: 28rpx;
+        height: 28rpx;
+        margin-right: 16rpx;
+      }
 
-			.search-input {}
-		}
+      .search-input {
+      }
+    }
 
-		.explore-type-row {
-			display: flex;
-			flex-direction: row;
-			justify-content: flex-start;
-			align-items: center;
+    .explore-type-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
 
-			.filter-item {
-				width: 136rpx;
-				height: 136rpx;
-				border-radius: 28rpx;
-				overflow: hidden;
-				padding: 4rpx;
-				background-color: rgba(235, 231, 253, 1);
-				margin-right: 16rpx;
+      .filter-item {
+        width: 136rpx;
+        height: 136rpx;
+        border-radius: 28rpx;
+        overflow: hidden;
+        padding: 4rpx;
+        background-color: rgba(235, 231, 253, 1);
+        margin-right: 16rpx;
 
-				.type-img {
-					width: 100%;
-					height: 88rpx;
-					border-radius: 28rpx 28rpx 0rpx 0rpx;
-					overflow: hidden;
+        .type-img {
+          width: 100%;
+          height: 88rpx;
+          border-radius: 28rpx 28rpx 0rpx 0rpx;
+          overflow: hidden;
 
-					.item-img {
-						width: 100%;
-						height: 100%;
-					}
-				}
+          .item-img {
+            width: 100%;
+            height: 100%;
+          }
+        }
 
-				.item-name {
-					height: 48rpx;
-					font-size: 24rpx;
-					font-weight: 600;
-					text-align: center;
-					color: $Color-B-1;
-					line-height: 40rpx;
-				}
-			}
+        .item-name {
+          height: 48rpx;
+          font-size: 24rpx;
+          font-weight: 600;
+          text-align: center;
+          color: $Color-B-1;
+          line-height: 40rpx;
+        }
+      }
 
-			.filter-item-active {
-				background-color: rgba(115, 84, 255, 1);
+      .filter-item-active {
+        background-color: rgba(115, 84, 255, 1);
 
-				.item-name {
-					color: #ffffff;
-				}
-			}
-		}
-	}
+        .item-name {
+          color: #ffffff;
+        }
+      }
+    }
+  }
+}
+.total_view{
+  text-align: center;
+  font-size: 28rpx;
+  color: #979797;
+  margin-top: 32rpx;
+  width: 100%;
+}
+.total_empty{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 28rpx;
+  color: #979797;
+  flex-direction: column;
+  image{
+    width: 256rpx;
+    height: 256rpx;
+    margin-bottom: 20rpx;
+  }
 }
 </style>

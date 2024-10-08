@@ -11,7 +11,7 @@
 					indicator-active-color="#007aff"
 				>
 					<swiper-item v-for="(list, index) in item.profilePhotoUrl?.split(',')" :key="index">
-						<image :src="list.images" mode="aspectFill" class="swiper-image"></image>
+						<image :src="list" mode="aspectFill" class="swiper-image"></image>
 					</swiper-item>
 				</swiper>
 			</view> 
@@ -23,7 +23,7 @@
 					</view>
 					<view class="recommed-info">{{item.recommendText}}</view>
 				</view>
-				<view class="shop_memo">{{ category || '暂无' }}</view>
+				<view class="shop_memo">{{ item.name || '暂无' }}</view>
 				<view class="shop-info">
 					<view class="left">
 						<view class="shop-star">

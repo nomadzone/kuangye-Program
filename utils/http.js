@@ -10,6 +10,7 @@ const http = {
 		getUserInfo: ()=> get(`/user/getUserInfo`),
 		homeActivityMap: (data)=> get(`/activity/homeActivityMap`, data),
 		homeActivity: (data)=> post(`/activity/homeActivity`, data),
+		homeActivitySelect: (data)=> post(`/activity/homeActivitySelect`, data),
 		homeNoticeList: (data)=> get(`/notice/list`, data),
 		selectWildTogether: (data)=> get(`/activity/selectWildTogether`, data),
 		upUserDown: (data)=> get(`/up/userDown`, data),
@@ -26,7 +27,7 @@ const http = {
 		activityRefund:(data) => get('/order/refund', data), // 个人取消活动
 		userActivity:(data) => get('/userActivity/add', data), // 用户报名添加票夹
 		balanceInfo: (data) => get('/balance/info', data), // 个人钱包
-		getAddress: (data) => get('/activity/getAddress', data), // 个人钱包
+		getAddress: (data) => get('/activity/getAddress', data), // 获取地址
 		useActivity: (data) => post('/activity/useActivity', data), // 个人参加的活动
 		selectUserInfoActivity: (data) => post('/activity/selectUserInfoActivity', data), // 个人发起的活动
 		updateUserInfo: (data) => post('/user/update', data), // 修改个人信息
@@ -66,7 +67,12 @@ const http = {
 		orderCancel: (data) => get('/system/order/cancel', data), // 订单取消
 		// /system/order/refund
 		orderRefund: (data) => get('/system/order/refund', data), // 订单退款
-
+		// /system/header/findDictListByCode
+		headerFindDictListByCode: (data) => get('/system/header/findDictListByCode', data), // 首页轮播图1.
+		// /web/order/refundAct
+		orderRefundAct: (data) => get('/order/refundAct', data), // 订单退款
+		// /system/header/findCategoryName
+		headerFindCategoryName: (data) => get('/system/header/findCategoryName', data), // 店铺分类
 	}
 
 
