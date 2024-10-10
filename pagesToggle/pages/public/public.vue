@@ -633,6 +633,8 @@ export default {
           tip = '最多人数不能小于1'
         }  else if (params.minpeople > params.maxpeople) {
           tip = '最少人数不能大于最多人数'
+        } else if (this.activity.contactphoto &&this.activity.contactphoto.length == 0) {
+          tip = '请上传联系人照片'
         }
         // else if (!params.number) {
         //   tip = '请输入微信号'

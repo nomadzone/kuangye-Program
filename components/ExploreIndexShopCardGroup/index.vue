@@ -14,6 +14,9 @@
 						<image :src="list" mode="aspectFill" class="swiper-image"></image>
 					</swiper-item>
 				</swiper>
+				<div class="shop_name">
+					<image src="/static//images/explore_address.png"></image> {{ item.name }}
+				</div>
 			</view> 
 			<view class="shop-info-box">
 				<view class="desc-recommend">
@@ -23,7 +26,7 @@
 					</view>
 					<view class="recommed-info">{{item.recommendText}}</view>
 				</view>
-				<view class="shop_memo">{{ item.name || '暂无' }}</view>
+				<view class="shop_memo">{{ item.shopRemark || '暂无' }}</view>
 				<view class="shop-info">
 					<view class="left">
 						<view class="shop-star">
@@ -76,6 +79,24 @@
 		.show-img-box {
 			height: 340rpx;
 			background-color: #ccc;
+			position: relative;
+			.shop_name{
+				position: absolute;
+				left: 24rpx;
+				bottom: 12rpx;
+				color: #fff;
+				background: rgba(0,0,0,0.55);
+				display: flex;
+				align-items: center;
+				padding: 4rpx 20rpx 4px 15rpx;
+				border-radius: 30rpx;
+				font-size: 24rpx;
+				font-weight: 600;
+				image{
+					width: 28rpx;
+					height: 28rpx;
+				}
+			}
 			.swiper{
 				width: 100%;
 				height: 100%;

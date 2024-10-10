@@ -25,7 +25,6 @@
                         <button open-type="contact" class="chart-btn" plain></button>
 						<image class="wechat" src="/static/images/wechat-fill.png" mode=""></image>
 						<text>联系客服</text>
-						<image @click="doCopy" class="copy" src="/static/images/copy.png" mode=""></image>
 					</view>
 				</view>
 				<view class="view">

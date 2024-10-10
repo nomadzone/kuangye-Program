@@ -8,7 +8,7 @@
 			</view>
 			<text @click="toInfo" class="author-name">{{info.nickname}}</text>
 		</view>
-		<view class="right" @tap="handleChangeFollowStatus()">
+		<view class="right" v-if="info?.userLaunchStatus!=1" @tap="handleChangeFollowStatus()">
 			<view v-if="info.userStatus" class="followed">已关注</view>
 			<view v-else class="unfollow">
 				<image class="add-follow-icon" src="../../static/images/top-nav-follow.svg"></image>
@@ -104,13 +104,17 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		background-color: transparent;
+		background-color: #E1FFF8;
 		/* 导航栏背景色 */
 		color: #fff;
 		/* 文字颜色 */
 		padding: 0 16px;
 		box-sizing: border-box;
-
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 999;
 		.left {
 			display: flex;
 			flex-direction: row;

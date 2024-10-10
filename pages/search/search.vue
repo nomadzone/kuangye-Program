@@ -9,7 +9,6 @@
     :loading-more-enabled="false"
     :empty-view-img-style="{ width: '256rpx', height: '256rpx' }"
     :empty-view-error-img="emptyImg"
-    :show-empty-view-reload="true"
     empty-view-text="暂无活动"
   >
     <template #top>

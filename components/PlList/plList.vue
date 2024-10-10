@@ -102,6 +102,10 @@
           </view>
         </view>
       </view>
+      <view class="empty-view" v-if="commentList && commentList.length === 0">
+      <image class="empty-img" src="@/static/images/empty_pl.png"></image>
+      <text>还没人评论, 快来评论吧~</text>
+    </view>
     </view>
   </template>
   
@@ -300,4 +304,21 @@
           }
       }
   }
+  .empty-view{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+  color: #b8b8b8;
+  font-size: 28rpx;
+  margin-top: 24rpx;
+
+  .empty-img{
+    width: 110rpx;
+    height: 80rpx;
+    margin-bottom: 24rpx;
+  }
+}
   </style>

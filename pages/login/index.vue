@@ -132,7 +132,7 @@ const handleWxLogin = async({ target }) => {
     let userRes = await http.getUserInfo()
     if (userRes.code === '200') {
       uni.setStorageSync('userInfo', userRes.data)
-      if (res.data.status!=1) {
+      if (userRes.data.isLabel!=1) {
       uni.navigateTo({
         url: "/pagesUserPreferences/pages/tags/index"
       });

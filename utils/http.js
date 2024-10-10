@@ -38,7 +38,7 @@ const http = {
 		// user/getUserInfoOther
 		getUserInfoOther: (data) => get('/user/getUserInfoOther', data), // 其他用户信息
 		// /system/header/list
-		headerList: (data) => post('/system/header/list', data), // 首页轮播图0.
+		headerList: (data) => post('/system/header/list', data), // 
 		// /system/header/findByld
 		headerFindByld: (data) => post('/system/header/findById', data), // 详情
 		// /system/order/add

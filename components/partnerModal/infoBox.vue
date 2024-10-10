@@ -48,8 +48,8 @@
 
 			</view>
 			<view class="info-bottom">
-				<view class="avatar-box">
-					<image class="avatar-img" :src="info.initiatorUrl"></image>11
+				<view class="avatar-box" @click="$emit('toDetail')">
+					<image class="avatar-img" :src="info.initiatorUrl"></image>
 				</view>
 				<view class="author-info">
 					<view class="name-sex">
@@ -64,7 +64,7 @@
 
 </template>
 
-<script>
+<script >
 	export default {
 		props: {
 			info: {
@@ -72,6 +72,12 @@
 				default: () => {
 					return {}
 				}
+			}
+		},
+		methods: {
+			toD(info) {
+				console.log(info)
+				this.$emit('toDetail')
 			}
 		}
 	}
@@ -249,6 +255,7 @@
 					.avatar-img {
 						width: 100%;
 						height: 100%;
+						border-radius: 50%;
 					}
 				}
 				.author-info{

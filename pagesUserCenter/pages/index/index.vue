@@ -77,7 +77,7 @@
           >已参加</view
         >
       </view>
-      <view class="no_rz" v-if="userInfo?.status != 1">
+      <view class="no_rz" v-if="userInfo?.status != 1  && activeTab === 0 && activeTabKey === 0 ">
         <image src="../../static/images/no_rz.png"></image>
         <view class="rz_box">
           <view class="rz_left">实名认证后集合发布活动</view>
@@ -85,7 +85,7 @@
         </view>
       </view>
 
-      <view class="activity-list-box" v-show="userInfo?.status == 1">
+      <view class="activity-list-box" v-else>
         <z-paging
           :fixed="false"
           ref="paging"
@@ -95,7 +95,6 @@
           :empty-view-img="emptyImg"
           :empty-view-img-style="{ width: '256rpx', height: '256rpx' }"
           :empty-view-error-img="emptyImg"
-          :show-empty-view-reload="true"
           safe-area-inset-bottom
           empty-view-text="暂未发起或参加活动"
         >
@@ -315,11 +314,12 @@ function getUserInfo() {
 // 设置激活tab
 const handleSetActiveTab = (val) => {
   activeTab.value = val;
+  list.value = [];
   paging.value.reload();
 };
 function chooseTabKey(key) {
   activeTabKey.value = key;
-  paging.value.reload();
+  paging.value?.reload();
 }
 function loaded(e) {
   console.log("loaded", e);
@@ -554,7 +554,6 @@ useZPaging(paging, queryList);
 }
 .no_rz {
   width: 100%;
-  background: #f5f5f5;
   padding: 16rpx;
   height: calc(100vh - 780rpx);
   box-sizing: border-box;
@@ -595,7 +594,6 @@ useZPaging(paging, queryList);
 }
 .activity-list-box {
   width: 100%;
-  background: #f5f5f5;
   padding: 16rpx;
   height: calc(100vh - 780rpx);
   box-sizing: border-box;
@@ -768,7 +766,7 @@ useZPaging(paging, queryList);
     .thr_content {
       width: 100%;
       min-height: 180rpx;
-      background: #e1fff8;
+      background: #00c4ef40;
       border-radius: 24rpx;
       overflow: hidden;
       padding: 16rpx;

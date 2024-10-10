@@ -11,7 +11,7 @@
 				</view>
 			</view>
 		</Navbar>
-		<Gradual :background="'linear-gradient(to bottom, #fefbda, #f5f5f5)'" :height="'100vh'" :zIndex="'-1'" />
+		<Gradual  :background="'linear-gradient(to bottom, #fefbda, #f5f5f5)'" :height="'100vh'" :zIndex="'-1'" />
 		<view style="z-index: 6; margin-top: 64rpx">
 			<view :style="{ height: StatusBar + 'px' }"></view>
 			<view style="height: 32rpx"></view>
@@ -327,7 +327,8 @@ export default {
 			popupTypeApply: '0', // 0是报名  1是取消
 			viewPopup: false,
 			applyPopup: false,
-			delta: 1
+			delta: 1,
+			height: ''
 		}
 	},
 	onLoad(options) {
@@ -335,6 +336,7 @@ export default {
 		if (options.delta) {
 			this.delta = Number(options.delta)
 		}
+
 	},
 	created() {
 		this.StatusBar = uni.getStorageSync('statusBarHeight')
@@ -378,7 +380,6 @@ export default {
 		},
 		// 跳转个人信息
 		toInfo() {
-			console.log('this.info.userLaunchStatus', this.info)
 			if (this.info.userLaunchStatus != 1) {
 				uni.navigateTo({
 					url: '/pagesUserCenter/pages/thirdInfo/index?userId=' + this.activityVo.userId

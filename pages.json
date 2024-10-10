@@ -83,7 +83,8 @@
 				"path": "pages/index/index",
 				"style": {
 					"navigationStyle": "custom"
-				}
+				},
+				"needLogin": true
 			},
 			{
 				"path": "pages/thirdInfo/index",

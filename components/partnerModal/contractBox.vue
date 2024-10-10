@@ -8,9 +8,9 @@
 			<view class="name-text">{{info.initiatorName}}</view>
 			<view class="sex-box"></view>
 		</view>
-		<view class="wx-info">
+		<view class="wx-info" @click="copyDetail">
 			<image class="wx-icon" src="../../static/images/partner-modal-wx-icon.png"></image>
-			<view class="wx-name">Wade_Warren</view>
+			<view class="wx-name">{{info?.number || '-'}}</view>
 			<image class="wx-copy" src="../../static/images/partner-modal-wx-copy.png"></image>
 		</view>
 		<view class="wx-qrcode">
@@ -32,6 +32,26 @@
 		data() {
 			return {
 
+			}
+		},
+		methods:{
+			copyDetail(){
+				if(!this.info.number){
+					uni.showToast({
+						title: '联系方式为空',
+						icon: 'none'
+					});
+					return;
+				}
+				uni.setClipboardData({
+					data: this.info.number,
+					success: function() {
+						uni.showToast({
+							title: '复制成功',
+							icon: 'none'
+						});
+					}
+				});
 			}
 		}
 	}

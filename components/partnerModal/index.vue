@@ -5,7 +5,7 @@
 				<image class="close-icon"  src="../../static/images/partnerModalCloseIcon.svg" @tap="handleClose"></image>
 				<image class="top-icon" src="../../static/images/partnerTopIcon.svg"></image>
 				
-				<InfoBox v-if="infoType === 1" :info="infoData"></InfoBox>
+				<InfoBox v-if="infoType === 1" :info="infoData" @toDetail="toDetail"></InfoBox>
 				<ContractBox v-else :info="infoData"></ContractBox>
 				<view class="footer-actions" @tap="handleChangeAction()">
 					<view class="contract-action" v-if="infoType === 1">
@@ -37,6 +37,17 @@
 			}
 		},
 		methods:{
+			toDetail(){
+				if (this.infoData.userLaunchStatus != 1) {
+						uni.navigateTo({
+							url: '/pagesUserCenter/pages/thirdInfo/index?userId=' + infoData.userId
+						})
+					} else {
+						uni.navigateTo({
+							url: '/pagesUserCenter/pages/index/index'
+						})
+					}
+			},
 			show(info) {
 				this.infoData = info
 				this.infoType = 1

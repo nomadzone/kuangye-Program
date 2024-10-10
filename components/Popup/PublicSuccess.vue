@@ -13,7 +13,7 @@
 				<image class="qing" src="/static/images/qing.png" mode=""></image>
 				<view class="title">发布成功！</view>
 				<view>
-					复制下方微信号添加小助手
+					联系客服
 				</view>
 				<view>
 					参与创作者计划，获取更多奖励！
@@ -22,8 +22,7 @@
 					<view>
 						<button open-type="contact" class="chart-btn" plain></button>
 						<image class="wechat" src="/static/images/wechat-fill.png" mode=""></image>
-						<text>{{fabuParams?.number}}</text>
-						<image @click="doCopy" class="copy" src="/static/images/copy.png" mode=""></image>
+						<text>联系客服</text>
 					</view>
 				</view>
 				<view class="view">

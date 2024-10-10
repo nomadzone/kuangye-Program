@@ -18,7 +18,8 @@ const freshNewsService = {
 		
 		// 修改点赞状态
 		cancelLike:(data) => post('/up/userDown', data),
-		
+		// 删除 /activity/del
+		deleteFreshNews: (data) => get('/activity/del', data),
 		
 }
 

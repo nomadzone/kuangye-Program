@@ -108,7 +108,7 @@ export default {
   padding: 0 32rpx;
   height: 80rpx;
   box-sizing: border-box;
-  z-index: 100;
+  z-index: 4;
 }
 
 .icon-left {

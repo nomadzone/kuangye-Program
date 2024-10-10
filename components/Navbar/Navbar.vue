@@ -1,5 +1,5 @@
 <template>
-  <view class="navbar" :style="{ paddingTop: StatusBar + 'px'}">
+  <view class="navbar" :style="{ paddingTop: StatusBar + 'px', height:(StatusBar+40)+'px', background: background }">
     <view class="left" @click="doBack">
       <image :src="type==1?'/static/images/Back_two.png' : '/static/images/back.png'" mode=""></image>
     </view>
@@ -33,6 +33,10 @@ export default {
       type: String,
       default: "",
     },
+    background: {
+      type: String,
+      default: "",
+    }
   },
   data() {
     return {
@@ -82,10 +86,10 @@ export default {
   padding: 0 32rpx;
   height: 80rpx;
   box-sizing: border-box;
+  z-index: 30;
   > view {
     flex: 1;
   }
-  z-index: 4;
   .center {
     text-align: center;
     // 溢出省略号

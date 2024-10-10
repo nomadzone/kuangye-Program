@@ -125,7 +125,7 @@ function handleSubmit() {
       });
 	  setTimeout(() => {
 		showloading.value = true;
-		setInterval(() => {
+		setTimeout(() => {
 			showloading.value = false;
 			if (toBack.value) {
 				uni.navigateBack({ delta: 1 });

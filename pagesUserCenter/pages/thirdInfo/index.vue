@@ -88,7 +88,6 @@
           :empty-view-img="emptyImg"
           :empty-view-img-style="{ width: '256rpx', height: '256rpx' }"
           :empty-view-error-img="emptyImg"
-          :show-empty-view-reload="true"
           safe-area-inset-bottom
           empty-view-text="暂未发起或参加活动"
         >
@@ -543,7 +542,6 @@ useZPaging(paging, queryList);
 }
 .activity-list-box {
   width: 100%;
-  background: #f5f5f5;
   padding: 16rpx;
   height: calc(100vh - 780rpx);
   box-sizing: border-box;

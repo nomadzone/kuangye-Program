@@ -19,7 +19,7 @@
 	</view>
 	<view style="height: 200rpx;"></view>
     <!-- 页面内容 -->
-    <CustomTabbar :status='userInfo.stauts'/>
+    <CustomTabbar :userInfo='userInfo'/>
 	<PartnerModal ref="partnerModalRef"/>
   </view>
 </template>
@@ -72,13 +72,24 @@ export default {
 	  this.statusBarHeight = uni.getStorageSync('statusBarHeight')
   },
   async onShow() {
+	console.log('onShow')
 	this.sortIndex = Number(uni.getStorageSync('sortIndex') || 0)
+	let userInfo = uni.getStorageSync('userInfo')
+	this.userInfo = { ...this.userInfo, ...userInfo }
+	console.log(this.userInfo)
+	await this.getUserInfo()
 	await this.getHomeList()
   },
   onUnload() {
 	uni.removeStorageSync('sortIndex')
   },
   methods: {
+	getUserInfo() {
+		http.getUserInfo().then(res => {
+			this.userInfo = { ...this.userInfo, ...res.data }
+			uni.setStorageSync('userInfo', this.userInfo)
+		})
+	},
 	showPointClick() {
             if (this.showPointList) {
                 setTimeout(() => {
@@ -150,6 +161,7 @@ export default {
 					})
 					let userInfo = uni.getStorageSync('userInfo')
 					this.userInfo = { ...this.userInfo, ...userInfo }
+					console.log(this.userInfo)
 					resolve()
 				} catch (err) {
 					reject(err)

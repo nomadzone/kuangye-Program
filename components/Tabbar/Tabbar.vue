@@ -14,7 +14,7 @@
 			<view class="popup-top"  @click="doPath('/pagesToggle/pages/public/public', 1)">
 				<view class="popup-title">一起野</view>
 				<view class="popup-desc">我是活动主理人，发起付费活动</view>
-				<view class="popup-tag" v-if="status !== 0">未认证</view>
+				<view class="popup-tag" v-if="userInfo?.status == 0">未认证</view>
 				<view class="popup-tag" v-else>已认证</view>
 				<image src="../../static/images/popu-1.png" mode=""></image>
 			</view>
@@ -57,7 +57,7 @@
 	import http from '../../utils/http'
 	export default {
 		props: {
-			status: {
+			userInfo: {
 				type: Number,
 				default: 0
 			}
@@ -87,6 +87,7 @@
 								})
 							}
 						})
+						return
 					}
 				}
 				this.visible = false;

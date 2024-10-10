@@ -6,7 +6,7 @@
       v-for="commentItem in commentList"
       :key="commentItem.id"
     >
-      <view class="left">
+      <view class="left" @click="handleToDetail(commentItem)">
         <image
           class="avatar-img"
           v-if="commentItem.url"
@@ -52,7 +52,7 @@
         </view>
 
         <view class="back_list" v-for="(list, index) in commentItem.list" :key="index">
-          <view class="left">
+          <view class="left" @click="handleToDetail(list)">
             <image
               class="avatar-img"
               v-if="list.url"
@@ -102,6 +102,10 @@
         </view>
       </view>
     </view>
+    <view class="empty-view" v-if="commentList && commentList.length === 0">
+      <image class="empty-img" src="@/static/images/empty_pl.png"></image>
+      <text>还没人评论, 快来评论吧~</text>
+    </view>
   </view>
 </template>
 
@@ -132,6 +136,17 @@ const fetchCommentList = ( id,page) => {
     }
   });
 };
+function handleToDetail(row) {
+  if (row.userLaunchStatus != 1) {
+				uni.navigateTo({
+					url: '/pagesUserCenter/pages/thirdInfo/index?userId=' + row.userId
+				})
+			} else {
+				uni.navigateTo({
+					url: '/pagesUserCenter/pages/index/index'
+				})
+			}
+}
 
 const commentList = ref([]);
 
@@ -307,5 +322,22 @@ defineExpose({
 			border-bottom: none !important;
 		}
 	}
+}
+.empty-view{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+  color: #b8b8b8;
+  font-size: 28rpx;
+  margin-top: 24rpx;
+
+  .empty-img{
+    width: 110rpx;
+    height: 80rpx;
+    margin-bottom: 24rpx;
+  }
 }
 </style>

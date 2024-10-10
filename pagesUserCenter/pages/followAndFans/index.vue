@@ -76,6 +76,7 @@ function toDetai(item) {
 
 onLoad((options) => {
   type.value = options.type || 0;
+  actIndex.value = options.type || 0;
   if (options.id) {
     userId.value = options.id;
   } else {
@@ -91,7 +92,8 @@ function queryList(pageNo, pageSize) {
   };
   const api = actIndex.value == 1 ? http.fansFans : http.fansFollow;
   api( data ).then((res) => {
-    paging.value.complete(res.data.list || []);
+    res.data = null
+    paging.value.complete(res.data?.list || []);
   });
 }
 function gzClick(item) {

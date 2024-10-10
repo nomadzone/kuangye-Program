@@ -123,6 +123,27 @@
 
 	// 表单提交
 	const handleSubmit = (e) => {
+		if(e.detail.value.describe.trim() === '') {
+			uni.showToast({
+					title: '请输入内容',
+					icon: 'none'
+			})
+			return
+		}
+		if(partnerImgs.value.length === 0) {
+			uni.showToast({
+					title: '请上传图片',
+					icon: 'none'
+			})
+			return
+		}
+		if(contractImgs.value.length === 0) {
+			uni.showToast({
+					title: '请上传联系方式',
+					icon: 'none'
+			})
+			return
+		}
 		let params = {
 			...e.detail.value,
 			...location.value,

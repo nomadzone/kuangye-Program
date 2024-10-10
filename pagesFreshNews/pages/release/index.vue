@@ -4,15 +4,15 @@
 			<custom-nav-bar title="发布新鲜事" :navBarStyle="navBarStyle" theme="dark"></custom-nav-bar>
 			<image class="corner-img" src="../../static/images/release-corner-icon.svg"></image>
 			<view class="release-form-box">
-				<Upload :limit="9" @upload="doUpload"/>
+				<Upload :limit="9" @upload="doUpload" :images="imgList" />
 				<!-- 	<view class="imgs-box">
 				<view class="item img-upload-btn">
 					<image class="add-img-icon" src="../../static/images/add-img-icon.svg"></image>
 					<text class="add-img-text">添加图片</text>
 				</view>
 			</view> -->
-				<input class="title-input" name="title" placeholder="标题" />
-				<textarea class="content-textarea" name="describe" auto-height placeholder="介绍一下你周边好玩的事情吧" />
+				<input class="title-input" v-model="detailInfo.title" name="title" placeholder="标题" />
+				<textarea class="content-textarea" v-model="detailInfo.describe" name="describe"  placeholder="介绍一下你周边好玩的事情吧" />
 
 				<view class="location-row"  @tap="handleSelectLocation()">
 					<image class="map-icon" src="../../static/images/release-location-icon.svg"></image>
@@ -39,13 +39,17 @@
 	} from 'vue'
 	import FreshNewsService from '@/pagesFreshNews/service/service.js'
 	import Upload from "@/components/Upload/Upload.vue";
+	import {
+		onLoad
+	} from '@dcloudio/uni-app'
 	const navBarStyle = {
 		position: 'relative',
 		color: 'rgba(34, 34, 34, 1)'
 	}
 
-
 	let imgList = ref([]) // 图片
+	const initId = ref(null) // 新鲜事id
+	const detailInfo = ref({}) // 详情信息
 
 	let location = ref({
 		longitude: null,
@@ -53,14 +57,37 @@
 		address: null
 	})
 
+	onLoad((options) => {
+
+		initId.value = options.id
+		getDetailInfo()
+	
+		})
 	const doUpload = (imgs) => {
 		console.log('imgs====》》》》》', imgs)
 		imgList.value = imgs
 		
 	}
-
+	const getDetailInfo = () => {
+		let params = {
+			id: initId.value
+		}
+		FreshNewsService.detailInfo(params).then(res => {
+			console.log('res====', res)
+			if (res && res.code === '200') {
+				detailInfo.value = res.data
+				imgList.value = res.data.images.split(',')
+				location.value = {
+					address: res.data.address,
+					longitude: res.data.longitude,
+					latitude: res.data.latitude
+				}
+			}
+		})
+	}
 	// 选择定位
 	const handleSelectLocation = () => {
+		console.log('选择定位')
 		uni.chooseLocation({
 			success: function(res) {
 				location.value = {
@@ -83,6 +110,9 @@
 			...location.value,
 			type: 2,
 			images: imgList.value.join(','),
+		}
+		if (initId.value) {
+			params.id = initId.value
 		}
 
 		FreshNewsService.add(params).then(res => {
@@ -178,7 +208,6 @@
 
 			.content-textarea {
 				//styleName: 正文-普通;
-				font-family: PingFang SC;
 				font-size: 28rpx;
 				font-weight: 400;
 				text-align: left;
@@ -191,7 +220,7 @@
 				flex-direction: row;
 				justify-content: flex-start;
 				align-items: center;
-
+				height: 80rpx;
 				.map-icon {
 					width: 32rpx;
 					height: 32rpx;

@@ -9,7 +9,6 @@
       :empty-view-img="emptyImg"
       :empty-view-img-style="{ width: '256rpx', height: '256rpx' }"
       :empty-view-error-img="emptyImg"
-      :show-empty-view-reload="true"
       :empty-view-text="!token?'未登录，请先登录':'暂未发起或参加活动'"
       :paging-style="{'margin-bottom':'400rpx'}"
     >

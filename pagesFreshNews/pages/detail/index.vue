@@ -1,7 +1,7 @@
 <template>
 	<view class="fresh-news-detail-page">
 		<DetailTopNav :info="detailInfo" @inToInfo="handleInToInfo" @refreshFollowStatus="handleRefreshFollowStatus"></DetailTopNav>
-		<view class="top-swipper-box">
+		<view class="top-swipper-box" :style="{marginTop: height}">
 			<swiper class="swiper" circular :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval"
 				:duration="duration" indicator-color="rgba(221, 221, 221, 1)"
 				indicator-active-color="rgba(111, 223, 176, 1)">
@@ -18,8 +18,15 @@
 			<view class="content-text">{{detailInfo.describe}}</view>
 			<view class="time-text">{{detailInfo.createTime}}</view>
 		</view>
+		<view class="bj_del" v-if="detailInfo.userLaunchStatus === 1">
+			<view  class="bj_img" @click="toDetail()"><image src="../../static/images/bianji.png"></image>编辑</view>
+			<view  class="bj_img" @click="handleDelete()"><image src="../../static/images/shanchu.png"></image>删除</view>
+		</view>
+		<!-- <view class="ca_day">
+			<view class="ca_day_text">前发布</view>
+		</view> -->
 		<view class="comment-num-row">
-			评论 <text class="comment-num-text">{{detailInfo.commentNum || 0}}</text>
+			评论 <text class="comment-num-text">{{detailInfo.commentNumber || 0}}</text>
 		</view>
 		<Comments ref="commentsRef" :dataId="initId" @replyComment="replyComment"  />
 		<view class="bottom-comment-box">
@@ -49,7 +56,7 @@
 		onMounted,
 	} from 'vue'
 	import {
-		onLoad
+		onLoad, onShow
 	} from '@dcloudio/uni-app'
 	import DetailTopNav from '../../components/detailTopNav/index.vue'
 	import Comments from '../../components/comments/index.vue'
@@ -61,11 +68,23 @@
 
 	const initId = ref('')
 	const rebackDetail = ref(null) // 评论回复id
+	const height = ref('0')
 
 	onLoad((options) => {
 
 		initId.value = options.id
 		getDetailInfo()
+		uni.getSystemInfo().then(res => {
+
+			height.value =(res.statusBarHeight + 61) * 2 + 'rpx'
+
+			})
+	})
+	onShow(() => {
+		if (initId.value) {
+		getDetailInfo()
+
+		}
 	})
 	const indicatorDots = ref(true)
 	const autoplay = ref(true)
@@ -103,6 +122,7 @@
 	}
 	function replyComment(item) {
 		rebackDetail.value = item
+		
 	}
 	// 提交评论
 	const submitComment = debounce(() => {
@@ -125,6 +145,7 @@
 				commentInputValue.value = ''
 				commentsRef.value.fetchCommentList(initId.value, 1)
 				rebackId.value = null
+				getDetailInfo()
 			}
 		})
 		. catch(err => {
@@ -152,6 +173,54 @@
 					url: '/pagesUserCenter/pages/index/index'
 				})
 			}
+	}
+	function toDetail() {
+		uni.navigateTo({
+			url: '/pagesFreshNews/pages/release/index?id=' + initId.value
+		})
+	}
+	function handleDelete() {
+		uni.showModal({
+			title: '提示',
+			content: '确定删除该条新鲜事吗？',
+			success: (res) => {
+				if (res.confirm) {
+					uni.showLoading({
+						title: '删除中...'
+					})
+					freshNewsService.deleteFreshNews({
+						id: initId.value
+					}).then(res => {
+						if (res && res.code === '200') {
+							uni.showToast({
+								title: '删除成功',
+								icon: 'success',
+								duration: 2000
+							})
+							setTimeout(() => {
+								uni.navigateBack()
+							}, 2000)
+						} else {
+							uni.showToast({
+								title:res.msg || '删除失败',
+								icon: 'none',
+								duration: 2000
+							})
+						}
+					})
+					.catch(err => {
+						uni.showToast({
+							title: '删除失败',
+							icon: 'none',
+							duration: 2000
+						})
+					})
+					.finally(() => {
+						uni.hideLoading()
+					})
+				}
+			}
+		})
 	}
 	//  修改点赞状态
 	const handleChangeLike  = () => {
@@ -197,6 +266,7 @@
 		min-height: 100vh;
 		padding-bottom: 200rpx;
 		background: linear-gradient(180deg, #E1FFF8 0%, #E1FFF8 17%, #FFFFFF 33%);
+		overflow: hidden;
 
 		.top-swipper-box {
 			height: 774rpx;
@@ -259,6 +329,33 @@
 				margin-bottom: 18rpx;
 
 			}
+		}
+		.bj_del{
+			width: 100%;
+			display: flex;
+			margin-top: 32rpx;
+			padding: 0 24rpx;
+			box-sizing: border-box;
+			font-size: 28rpx;
+			color: #004F99;
+			margin-bottom: 12rpx;
+			.bj_img{
+				margin-right: 32rpx;
+				image{
+				width: 28rpx;
+				height: 28rpx;
+				}
+			}
+			
+		}
+		.ca_day{
+			color: #A3A3A3;
+			font-size: 24rpx;
+			font-weight: 400;
+			margin-top: 32rpx;
+			margin-bottom: 16rpx;
+			padding: 0 24rpx;
+			box-sizing: border-box;
 		}
 
 		.comment-num-row {

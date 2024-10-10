@@ -88,7 +88,7 @@ import HomeNavbar from "@/components/Navbar/HomeNavbar.vue";
 import { onReachBottom } from "@dcloudio/uni-app";
 import Popup from "./popup.vue";
 import emptyImg from "@/static/images/empty-my.png";
-
+import { onShow } from "@dcloudio/uni-app";
 import ExploreIndexShopCardGroup from "@/components/ExploreIndexShopCardGroup/index.vue";
 
 let navTitle = ref("西安交通大学博学楼");
@@ -99,6 +99,8 @@ const total = ref(0);
 let pageSize = ref(1);
 const searchText = ref("");
 const images = ref([]);
+const userInfo = ref(uni.getStorageSync("userInfo"));
+
 onMounted(() => {
   statusBarHeight.value = uni.getStorageSync("navBarHeight") * 2 + 30 + "rpx";
   http
@@ -114,6 +116,10 @@ const doAction = () => {
   userInfo.value = { ...userInfo.value, address: selectLocation.address };
   getLocation()
 };
+onShow(() => {
+  userInfo.value  = uni.getStorageSync("userInfo");
+  getLocation();
+})
 async function getLocation() {
   let location = uni.getStorageSync("location");
   if (!location) return;
@@ -124,7 +130,6 @@ async function getLocation() {
   userInfo.value = { ...userInfo.value, address: res.data };
 }
 getLocation();
-const userInfo = ref(uni.getStorageSync("userInfo"));
 let choosenType = ref('');
 let typeOptions = ref([]);
 function getShopTypeLists() {
