@@ -9,7 +9,7 @@
       :empty-view-img="emptyImg"
       :empty-view-img-style="{ width: '256rpx', height: '256rpx' }"
       :empty-view-error-img="emptyImg"
-      :empty-view-text="!token?'未登录，请先登录':'暂未发起或参加活动'"
+      :empty-view-text="!token?'暂无内容':'暂无内容'"
       :paging-style="{'margin-bottom':'400rpx'}"
     >
       <block v-if="props.sortIndex === 0">
@@ -60,7 +60,9 @@
                 </view>
               </view>
               <view class="content_bottom">
-                <view class="btm_title">{{ item.title }}</view>
+                <view class="btm_title">
+                  <view class="btm_titles">{{ item.title }}</view>
+                </view>
                 <view class="btm_createby">
                   <image :src="item?.initiatorUrl"></image>
                   <view class="name">{{ item.initiatorName }}</view>
@@ -86,7 +88,7 @@
                   <view v-else class="all_img_item" >
                     <view
                       class="all_img_item_list">
-                      <image src="/static/images/title-logo.svg" mode="aspectFill"></image>
+                      <image v-if="headerPhotos?.length > 0" :src="getSjHeader()" mode="aspectFill"></image>
                     </view>
                   </view>
                   <view class="num"
@@ -125,16 +127,17 @@
                       <view
                         class="right_info"
                       >
-                        <image
-                          src="@/static/images/Vector.png"
-                          v-if="item.upUserStatus == 0"
-                        >
-                        </image>
-                        <image
+                      <image
                           src="@/static/images/like-s.png"
                           v-if="item.upUserStatus == 1"
                         >
                         </image>
+                        <image
+                          src="@/static/images/Vector.png"
+                          v-else
+                        >
+                        </image>
+                        
                         <view class="right_num">{{ item.orderNumber }}</view>
                       </view>
                     </view>
@@ -178,7 +181,7 @@
               </view>
             </view>
             <view class="content_bottom">
-              <view class="btm_title">{{ item.title }}</view>
+              <view class="btm_title"><view class="btm_titles">{{ item.title }}</view></view>
               <view class="btm_createby">
                 <image :src="item?.initiatorUrl"></image>
                 <view class="name">{{ item.initiatorName }}</view>
@@ -201,7 +204,7 @@
                 <view v-else class="all_img_item">
                   <view
                     class="all_img_item_list">
-                    <image  src="/static/images/title-logo.svg" mode="aspectFill"></image>
+                    <image  v-if="headerPhotos?.length > 0" :src="getSjHeader()" mode="aspectFill"></image>
                     </view>
                   </view>
                 
@@ -241,11 +244,12 @@
                     <view class="left_name">{{ item?.initiatorName }}</view>
                   </view>
                   <view class="right_info">
-                    <image src="@/static/images/Vector.png"></image>
                     <image
                       src="@/static/images/like-s.png"
                       v-if="item.upUserStatus == 1"
                     ></image>
+                    <image v-else src="@/static/images/Vector.png"></image>
+                    
                     <view class="right_num">{{ item.orderNumber }}</view>
                   </view>
                 </view>
@@ -306,6 +310,7 @@ const partnerModalRef = ref(null);
 const token = uni.getStorageSync("token");
 
 const emit = defineEmits(['partnerModalShow'])
+const headerPhotos = ref(null)
 const props = defineProps({
   sortIndex: {
     type: Number,
@@ -348,7 +353,7 @@ async function queryList(current, size) {
     // if (!list.value.find(item => item.type === 4)) {
     //     res.data.list.unshift(unShift)
     // }
-    res.data.list.unshift(unShift);
+    // res.data.list.unshift(unShift);
   }
   res.data.list = res.data.list.map((item) => {
     return {
@@ -369,9 +374,27 @@ async function queryList(current, size) {
     paging.value.complete([]);
   }
 }
+function headerPhoto() {
+  http.noticeSelectOne().then(res => {
+    headerPhotos.value = res.data
+  })
+}
+headerPhoto()
+function getSjHeader() {
+  if(headerPhotos.value) {
+    // 随机取一张
+    let index = Math.floor(Math.random() * headerPhotos.value.length)
+    console.log(index, '22')
+    return headerPhotos.value[index]
+  } else {
+    return ''
+  }
+}
 function toRold() {
   list.value = []
-  paging.value.reload();
+  setTimeout(() => {
+    paging.value.reload();
+  }, 100);
 }
 async function doLike(item, index) {
   let title = "";
@@ -566,6 +589,12 @@ defineExpose({
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      .btm_titles{
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
+      }
     }
 
     .btm_createby {

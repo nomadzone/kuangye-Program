@@ -33,12 +33,11 @@ const httpRequest = (url, method = 'GET', data = null, headers = {}) => {
                     resolve(res.data);
                 } else if (res.statusCode == 401){
                     // showModal()
+                    uni.clearStorage() // 清除缓存
                     reject(res)
                     return
                 } {
                     if (res?.data?.msg?.indexOf('重新登录') > -1) {
-                        showModal()
-                        return
                     }
                     reject(res);
                 }

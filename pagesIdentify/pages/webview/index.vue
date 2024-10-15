@@ -7,7 +7,6 @@
 
 <script setup>
 	import { onMounted, ref, onUnmounted } from 'vue';
-	import identifyService from '../../service/service';
 	import http from "@/utils/http.js";
 	let webUrl = ref('')
 	
@@ -24,15 +23,6 @@
 		})
 	})
 	
-	onUnmounted(() => {
-		let params = {
-			verifyToken: identifyObj.value.verifyToken,
-			accessToken: identifyObj.value.accessToken
-		}
-		identifyService.getIdentifyInfo(params).then(res => {
-			console.log('res===1111', res)
-		})
-	})
 	function onWebViewMessage (event) {
        const data = event.detail.data[0];
        if (data.action === 'navigateBack') {

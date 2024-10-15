@@ -92,7 +92,6 @@ function queryList(pageNo, pageSize) {
   };
   const api = actIndex.value == 1 ? http.fansFans : http.fansFollow;
   api( data ).then((res) => {
-    res.data = null
     paging.value.complete(res.data?.list || []);
   });
 }

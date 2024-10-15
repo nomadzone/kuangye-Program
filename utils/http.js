@@ -73,6 +73,8 @@ const http = {
 		orderRefundAct: (data) => get('/order/refundAct', data), // 订单退款
 		// /system/header/findCategoryName
 		headerFindCategoryName: (data) => get('/system/header/findCategoryName', data), // 店铺分类
+		// 随机获取一个系统头像
+		noticeSelectOne: (data) => get('/notice/selectList', data), // 随机获取一个系统通知
 	}
 
 

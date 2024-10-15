@@ -13,10 +13,12 @@
 				<Gradual :styles="{position: 'absolute', width: '100%', zIndex: -1, borderRadius: '12px'}" :background="'linear-gradient(to bottom, #fde279, #fefbdb)'" :height="'686rpx'" :zIndex="'98'"/>
 				<image class="avator" :src="activityVo?.initiatorUrl" mode="aspectFill"></image>
 				<view class="name">
-					<text>{{activityVo?.initiatorName }}</text>
-					<image v-if="activityVo?.gender == 0" src="/static/images/man-icon.png" mode=""></image>
-					<image v-if="activityVo?.gender == 1" src="/static/images/woman-icon.png" mode=""></image>
-					<image v-if="activityVo?.isUserStatus == 1" src="/static/images/badge.png" mode=""></image>
+					<text>{{activityVo?.initiatorName }}
+					</text>
+					<image class="sexs_avatar" v-if="activityVo.gender == 0" src="/static/images/male.png"></image>
+					<image class="sexs_avatar" v-if="activityVo.gender == 1" src="/static/images/female.png" mode=""></image>
+
+					<image v-if="activityVo?.isUserStatus == 1" src="/static/images/badge.svg" mode=""></image>
 					<!-- <image src="/static/images/female.png" mode=""></image> -->
 				</view>
 				<view class="chart">
@@ -205,10 +207,20 @@
 		.name {
 			display: flex;
 			padding: 10rpx 0 40rpx 0;
+			align-items: center;
 			image {
 				width: 40rpx;
 				height: 40rpx;
 				margin-left: 4rpx;
+			}
+			.gender_1{
+				margin-left: 10rpx;
+				font-size: 28rpx;
+				color: #5BB0FF;
+				font-weight: bold;
+				// 旋转45度
+				transform: rotate(-18deg);
+				
 			}
 		}
 		.chart {

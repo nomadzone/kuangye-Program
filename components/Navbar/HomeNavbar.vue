@@ -9,8 +9,8 @@
     </view>
 	<view class='right'>
 		<view class="top" @tap="handleGoUserCenter">
-			<!-- <image src="/static/images/title-logo.png" class="icon-logo" /> -->
-		  <text class="title" style="font-size: 28rpx;">{{ userInfo.nickname || '' }}</text>
+			<image src="/static/images/logo_text.svg" class="logo_text" />
+		  <!-- <text class="title" style="font-size: 28rpx;">{{ userInfo.nickname || '' }}</text> -->
 		</view>
 		<view class="bottom" @click="handleRightAction" >
 		  <text class="title" style="font-size: 24rpx;">{{ userInfo.address || '' }}</text>
@@ -49,6 +49,8 @@ export default {
 	  const sys = wx.getSystemInfoSync()
 	  this.StatusBar = sys.statusBarHeight
 	  this.CustomBar = sys.platform == 'android' ? sys.statusBarHeight + 50 : sys.statusBarHeight + 45
+    const loaction = uni.getStorageSync('location')
+    
   },
   computed: {
   },
@@ -63,29 +65,19 @@ export default {
       let that = this
       wx.chooseLocation({
         success: function (res) {
-     
-          if(!res.address) {
              http.getAddress({
             longitude: res.longitude,
             latitude: res.latitude,
-          }).then(val => {
-            let location = {
-              address: val.data,
-              latitude: res.latitude,
-              longitude: res.longitude
-              }
-              uni.setStorageSync('location', location)
-              that.$emit('selectLoaction')
-            })
-          } else {
-            const address = res.address
-            const latitude = res.latitude
-            const longitude = res.longitude
-            uni.setStorageSync('location', res)
-            that.$emit('selectLoaction')
-          }
-          console.log(res, '用户选择地址')
-         
+            }).then(val => {
+              let location = {
+                address: val.data,
+                latitude: res.latitude,
+                longitude: res.longitude
+                }
+                console.log(res,'res')
+                uni.setStorageSync('location', location)
+                that.$emit('selectLoaction', location)
+              })
         },
         fail: function (err) {
           console.log(err, '用户未选择地址');
@@ -144,6 +136,10 @@ export default {
   .title{
     font-weight: 600;
     color: #121212;
+  }
+  .logo_text{
+    width: 64rpx;
+    height: 32rpx;
   }
 }
 .icon {

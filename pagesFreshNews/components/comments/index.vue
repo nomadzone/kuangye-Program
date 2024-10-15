@@ -137,7 +137,7 @@ const fetchCommentList = ( id,page) => {
   });
 };
 function handleToDetail(row) {
-  if (row.userLaunchStatus != 1) {
+  if (row.userStatus != 1) {
 				uni.navigateTo({
 					url: '/pagesUserCenter/pages/thirdInfo/index?userId=' + row.userId
 				})
@@ -166,7 +166,9 @@ const handleChangeCommentLikeStatus = (row) => {
     commentId: row.id,
     type: 2,
   };
-
+  uni.showLoading({
+    title: "加载中",
+  });
   if (row.userUpStatus === 1) {
     freshNewsService.cancelLike(params).then((res) => {
       if (res && res.code === "200") {
@@ -178,6 +180,9 @@ const handleChangeCommentLikeStatus = (row) => {
         let index = commentList.value.findIndex((item) => item.id === row.id);
         commentList.value.splice(index, 1, newItem);
       }
+    })
+    .finally(() => {
+      uni.hideLoading();
     });
   } else {
     freshNewsService.addLike(params).then((res) => {
@@ -190,8 +195,12 @@ const handleChangeCommentLikeStatus = (row) => {
         let index = commentList.value.findIndex((item) => item.id === row.id);
         commentList.value.splice(index, 1, newItem);
       }
-    });
+    })
+    .finally(() => {
+      uni.hideLoading();
+    })
   }
+  
 };
 defineExpose({
   fetchCommentList,

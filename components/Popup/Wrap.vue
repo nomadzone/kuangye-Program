@@ -3,7 +3,7 @@
 		<view class="popup-overlay" v-if="show" @click="handleOverlayClick">
 		</view>
 		<view class="popup-content" :class="[show ? 'fade-enter' : 'fade-leave']" v-show="show">
-			<Gradual :styles="{position: 'absolute', width: '100%', zIndex: -1}" :background="'linear-gradient(to bottom, #E3F7FF, #fff)'" :height="'120rpx'" :zIndex="'98'"/>
+			<Gradual :styles="{position: 'absolute', width: '100%', zIndex: -1}" style="border-radius: 16rpx;" :background="'linear-gradient(to bottom, #E3F7FF, #fff)'" :height="'120rpx'" :zIndex="'98'"/>
 			<view class="header">
 				<view class="close" @click="handleOverlayClick">
 					 <view v-if="isLeft">
@@ -117,6 +117,7 @@
 		padding-bottom: 80rpx;
 		border-radius: 10px;
 		transition: transform 0.3s;
+		border-radius: 32rpx;
 	}
 	.header {
 		display: flex;

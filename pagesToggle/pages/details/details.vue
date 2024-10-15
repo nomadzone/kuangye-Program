@@ -1,6 +1,6 @@
 <template>
 	<view class="page details">
-		<Navbar :delta="delta">
+		<Navbar :delta="delta" :scrollType="scrollType">
 			<view class="navbar">
 				<image :src="activityVo?.initiatorUrl" mode="" @click="toInfo"></image>
 				<text @click="toInfo">{{ activityVo?.initiatorName }}</text>
@@ -12,8 +12,8 @@
 			</view>
 		</Navbar>
 		<Gradual  :background="'linear-gradient(to bottom, #fefbda, #f5f5f5)'" :height="'100vh'" :zIndex="'-1'" />
-		<view style="z-index: 6; margin-top: 64rpx">
-			<view :style="{ height: StatusBar + 'px' }"></view>
+		<view style="z-index: 6" :style="{ marginTop: CustomBar + 'px' }">
+			<!-- <view :style="{ height: StatusBar + 'px' }"></view> -->
 			<view style="height: 32rpx"></view>
 			<image class="popu-icon" src="/static/images/details-icon.png" mode=""></image>
 			<view class="module">
@@ -124,7 +124,7 @@
 					<image src="/static/images/wechat-fill-black.png" mode=""></image>
 					<text style="word-break: break-all">联系发起人</text>
 				</button>
-				<button class="fill" hover-class="button-hover" @click="doApply" v-if="info.userLaunchStatus != 1">
+				<button class="fill" hover-class="button-hover" @click="doApply" v-if="info.userLaunchStatus != 1 && info.userStatus == 0">
 					<text style="margin-right: 32rpx">¥{{ activityVo?.price }}/人</text>
 					<text>报名</text>
 				</button>
@@ -186,7 +186,7 @@
 			<view class="view-apply-people">
 				<view v-for="(item, index) in userActivityUpVo" :key="index">
 					<image class="avator" :src="item.images" mode=""></image>
-					<text>{{ item.name }}</text>
+					<text>{{ item.nickname }}</text>
 					<image class="sex" v-if="item.gender == 0" src="/static/images/male.png"></image>
 					<image class="sex" v-if="item.gender == 1" src="/static/images/female.png" mode=""></image>
 				</view>
@@ -323,12 +323,14 @@ export default {
 			publicSuccessShow: false,
 			StatusBar: 0,
 			navHeight: 0,
+			CustomBar: 0,
 			isReady: false,
 			popupTypeApply: '0', // 0是报名  1是取消
 			viewPopup: false,
 			applyPopup: false,
 			delta: 1,
-			height: ''
+			height: '',
+			scrollType: false,
 		}
 	},
 	onLoad(options) {
@@ -336,7 +338,8 @@ export default {
 		if (options.delta) {
 			this.delta = Number(options.delta)
 		}
-
+		const sys = wx.getSystemInfoSync();
+	  this.CustomBar = sys.platform == 'android' ? sys.statusBarHeight + 50 : sys.statusBarHeight + 45
 	},
 	created() {
 		this.StatusBar = uni.getStorageSync('statusBarHeight')
@@ -347,6 +350,14 @@ export default {
 			this.getDetails()
 		}
 	},
+	onPageScroll(res) { 
+    if (res.scrollTop > 1) {
+		// 显示顶部导航栏
+		this.scrollType = true
+	} else {
+		this.scrollType= false
+	}
+  },
 	methods: {
 		goMap() {
 			const { longitude, latitude } = this.activityVo

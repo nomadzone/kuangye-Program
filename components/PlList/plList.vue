@@ -134,7 +134,9 @@
     let params = {
       commentId: row.id,
     };
-  
+    uni.showLoading({
+      title: "加载中",
+    });
     if (row.isUp == 0) {
       http.upDown(params).then((res) => {
         if (res && res.code === "200") {
@@ -154,7 +156,10 @@
             props.commentList.splice(index, 1, newItem);
           }
         }
-      });
+      })
+      .finally(() => {
+         uni.hideLoading();
+       });
     } else {
       http.upUp(params).then((res) => {
         if (res && res.code === "200") {
@@ -174,6 +179,8 @@
             props.commentList.splice(index, 1, newItem);
           }
         }
+      }).finally(() => {
+        uni.hideLoading();
       });
     }
   };

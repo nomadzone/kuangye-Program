@@ -1,6 +1,6 @@
 <template>
   <view class="container">
-    <Navbar type="1" :title="info?.name"></Navbar>
+    <Navbar type="1" :title="info?.name" :scrollTypeTwo="true"></Navbar>
     <view class="show-image">
       <view class="image_container">
         <swiper

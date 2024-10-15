@@ -164,7 +164,7 @@ function showBirDay() {
 	pickerStart.value.open();
 }
 const doUploadContractImgs = (imgs) => {
-	form.value.contactphoto = imgs
+	form.value.contactphoto = imgs[0]
 }
 function activeConfirm(e) {
 	console.log(e.indexs[0]);

@@ -96,7 +96,7 @@
           :empty-view-img-style="{ width: '256rpx', height: '256rpx' }"
           :empty-view-error-img="emptyImg"
           safe-area-inset-bottom
-          empty-view-text="暂未发起或参加活动"
+          empty-view-text="暂无内容"
         >
           <block v-if="activeTab === 0">
             <view

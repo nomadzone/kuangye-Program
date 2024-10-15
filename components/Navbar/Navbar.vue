@@ -1,20 +1,22 @@
 <template>
-  <view class="navbar" :style="{ paddingTop: StatusBar + 'px', height:(StatusBar+40)+'px', background: background }">
+  <view class="navbar" :class="{ 'navbar-scroll': scrollType, 'navbar-scroll-two': scrollTypeTwo }" :style="{
+    paddingTop: StatusBar + 'px',
+    height: StatusBar + 40 + 'px',
+    background: background,
+  }">
     <view class="left" @click="doBack">
-      <image :src="type==1?'/static/images/Back_two.png' : '/static/images/back.png'" mode=""></image>
+      <image :src="type == 1 ? '/static/images/Back_two.png' : '/static/images/back.png'
+        " mode=""></image>
     </view>
-	<slot></slot>
-	<view class='center' :class="type==1?'center-white':''">
-		{{ title }}
-	</view>
-	<view class='right'>
-	</view>
+    <slot></slot>
+    <view class="center" :class="type == 1 ? 'center-white' : ''">
+      {{ title }}
+    </view>
+    <view class="right"> </view>
   </view>
 </template>
 
 <script>
-
-
 export default {
   props: {
     title: {
@@ -36,13 +38,21 @@ export default {
     background: {
       type: String,
       default: "",
+    },
+    scrollType: {
+      type: Boolean,
+      default: false,
+    },
+    scrollTypeTwo: {
+      type: Boolean,
+      default: false,
     }
   },
   data() {
     return {
       StatusBar: 0,
       scrollHeight: 0,
-      scrollBg: false
+      scrollBg: false,
     };
   },
   created() {
@@ -60,15 +70,15 @@ export default {
     },
     onScroll() {
       const that = this;
-      wx.onWindowScroll(function(res) {
+      wx.onWindowScroll(function (res) {
         that.scrollHeight = res.scrollTop;
         console.log(that.scrollHeight);
         if (that.scrollHeight > 100) {
-          that.scrollBg = true
+          that.scrollBg = true;
         }
       });
-  }
-}
+    },
+  },
 };
 </script>
 
@@ -87,9 +97,11 @@ export default {
   height: 80rpx;
   box-sizing: border-box;
   z-index: 30;
-  > view {
+
+  >view {
     flex: 1;
   }
+
   .center {
     text-align: center;
     // 溢出省略号
@@ -97,15 +109,28 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .center-white{
+
+  .center-white {
     color: #ffffff;
   }
+
   .left {
     display: flex;
+
     image {
       width: 40rpx;
       height: 40rpx;
     }
   }
 }
+.navbar-scroll{
+		background: rgba(255, 255, 255, 0.5) !important;
+		// 模糊blur 效果
+		backdrop-filter: blur(10px);
+	}
+  .navbar-scroll-two{
+    // 线性渐变
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)) !important;
+    backdrop-filter: blur(13px);
+  }
 </style>

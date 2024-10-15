@@ -111,7 +111,7 @@
           <view class="item_right">
             <view class="right_text">{{ info?.name }}</view>
             <view class="right_address"
-              >{{ info?.distanceMeters }} | {{ info?.address }}</view
+              >{{ info?.distanceMeters }}km | {{ info?.address }}</view
             >
           </view>
         </view>
@@ -536,7 +536,6 @@ async function doApplyPopup() {
           height: 100%;
           display: flex;
           justify-content: space-around;
-          align-items: center;
           flex-direction: column;
           color: #646464;
           font-size: 28rpx;

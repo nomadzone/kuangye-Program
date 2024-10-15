@@ -261,6 +261,7 @@
 		onShow() {
 			this.getList(); // 重新加载数据
 		},
+
 		created() {
 			this.StatusBar = uni.getStorageSync('statusBarHeight')
 			this.navHeight = uni.getStorageSync('navBarHeight')
@@ -307,105 +308,6 @@
 				if (res.code === '200') {
 					let list = [
 						...res.data,
-						// {
-						// 	"title":"大雁塔飞盘挑战赛",
-						// 	"status":1,
-						// 	"address":"广东省深圳市宝安区创业一路",
-						// 	"buinssType":0,
-						// 	"business_id":null,
-						// 	"id":"6a66e7c5-b6ba-4272-b09b-5023a3a6a57a",
-						// 	"images":"http://120.26.208.147:19000/ky-images/1726836110420.png",
-						// 	"startdate":"2024-09-23 00:00:00",
-						// 	"payEndTime":null
-						// },
-						// {
-						// 	"title":"大雁塔飞盘挑战赛",
-						// 	"status":2,
-						// 	"address":"广东省深圳市宝安区创业一路",
-						// 	"buinssType":0,
-						// 	"business_id":null,
-						// 	"id":"6a66e7c5-b6ba-4272-b09b-5023a3a6a57a",
-						// 	"images":"http://120.26.208.147:19000/ky-images/1726836110420.png",
-						// 	"startdate":"2024-09-23 00:00:00",
-						// 	"payEndTime":null
-						// },
-						// {
-						// 	"title":"大雁塔飞盘挑战赛",
-						// 	"status":3,
-						// 	"address":"广东省深圳市宝安区创业一路",
-						// 	"buinssType":0,
-						// 	"business_id":null,
-						// 	"id":"6a66e7c5-b6ba-4272-b09b-5023a3a6a57a",
-						// 	"images":"http://120.26.208.147:19000/ky-images/1726836110420.png",
-						// 	"startdate":"2024-09-23 00:00:00",
-						// 	"payEndTime":null
-						// },
-						// {
-						// 	"title":"大雁塔飞盘挑战赛",
-						// 	"status":4,
-						// 	"address":"广东省深圳市宝安区创业一路",
-						// 	"buinssType":0,
-						// 	"business_id":null,
-						// 	"id":"6a66e7c5-b6ba-4272-b09b-5023a3a6a57a",
-						// 	"images":"http://120.26.208.147:19000/ky-images/1726836110420.png",
-						// 	"startdate":"2024-09-23 00:00:00",
-						// 	"payEndTime":null
-						// },
-						// {
-						// 	"title":"大雁塔飞盘挑战赛",
-						// 	"status":5,
-						// 	"address":"广东省深圳市宝安区创业一路",
-						// 	"buinssType":0,
-						// 	"business_id":null,
-						// 	"id":"6a66e7c5-b6ba-4272-b09b-5023a3a6a57a",
-						// 	"images":"http://120.26.208.147:19000/ky-images/1726836110420.png",
-						// 	"startdate":"2024-09-23 00:00:00",
-						// 	"payEndTime":null
-						// },
-						// {
-						// 	"title":"大雁塔飞盘挑战赛",
-						// 	"status":2,
-						// 	"address":"广东省深圳市宝安区创业一路",
-						// 	"buinssType":0,
-						// 	"business_id":null,
-						// 	"id":"6a66e7c5-b6ba-4272-b09b-5023a3a6a57a",
-						// 	"images":"http://120.26.208.147:19000/ky-images/1726836110420.png",
-						// 	"startdate":"2024-09-23 00:00:00",
-						// 	"payEndTime":null
-						// },
-						// {
-						// 	"title":"大雁塔飞盘挑战赛",
-						// 	"status":3,
-						// 	"address":"广东省深圳市宝安区创业一路",
-						// 	"buinssType":0,
-						// 	"business_id":null,
-						// 	"id":"6a66e7c5-b6ba-4272-b09b-5023a3a6a57a",
-						// 	"images":"http://120.26.208.147:19000/ky-images/1726836110420.png",
-						// 	"startdate":"2024-09-23 00:00:00",
-						// 	"payEndTime":null
-						// },
-						// {
-						// 	"title":"大雁塔飞盘挑战赛",
-						// 	"status":4,
-						// 	"address":"广东省深圳市宝安区创业一路",
-						// 	"buinssType":0,
-						// 	"business_id":null,
-						// 	"id":"6a66e7c5-b6ba-4272-b09b-5023a3a6a57a",
-						// 	"images":"http://120.26.208.147:19000/ky-images/1726836110420.png",
-						// 	"startdate":"2024-09-23 00:00:00",
-						// 	"payEndTime":null
-						// },
-						// {
-						// 	"title":"大雁塔飞盘挑战赛",
-						// 	"status":5,
-						// 	"address":"广东省深圳市宝安区创业一路",
-						// 	"buinssType":0,
-						// 	"business_id":null,
-						// 	"id":"6a66e7c5-b6ba-4272-b09b-5023a3a6a57a",
-						// 	"images":"http://120.26.208.147:19000/ky-images/1726836110420.png",
-						// 	"startdate":"2024-09-23 00:00:00",
-						// 	"payEndTime":null
-						// }
 					];
 					let firstList = []
 					let lastList = []

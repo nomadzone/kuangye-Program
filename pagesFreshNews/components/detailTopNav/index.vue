@@ -1,6 +1,7 @@
 <!-- components/CustomNavBar.vue -->
 <template>
-	<view class="nav-bar" :style="navBarStyleObj">
+	<view class="nav-bar" :class="scrollType? 'nav-bar-scroll' : ''" :style="navBarStyleObj">
+		<image v-if="!scrollType" class="bar_tops" src="../../static//images//bar_top.png"></image>
 		<view class="left">
 			<image class="back-icon"  @click="onBack" src="@/static/images/back.png"></image>
 			<view class="author-avatar" @click="toInfo">
@@ -9,7 +10,7 @@
 			<text @click="toInfo" class="author-name">{{info.nickname}}</text>
 		</view>
 		<view class="right" v-if="info?.userLaunchStatus!=1" @tap="handleChangeFollowStatus()">
-			<view v-if="info.userStatus" class="followed">已关注</view>
+			<view v-if="info.userFollowStatus" class="followed">已关注</view>
 			<view v-else class="unfollow">
 				<image class="add-follow-icon" src="../../static/images/top-nav-follow.svg"></image>
 				<text class="follow-text">关注</text>
@@ -42,6 +43,10 @@
 				return {}
 			}
 		},
+		scrollType: {
+			type: Boolean,
+			default: false
+		}
 
 
 	});
@@ -77,7 +82,7 @@
 			if(res && res.code === '200') {
 				uni.showToast({
 					icon: 'none',
-					title: props.info.userStatus ?'已取消关注':'关注成功'
+					title: props.info.userFollowStatus ?'已取消关注':'关注成功'
 				})
 				emitFn('refreshFollowStatus')
 				
@@ -115,6 +120,13 @@
 		left: 0;
 		right: 0;
 		z-index: 999;
+		.bar_tops{
+			width: 128rpx;
+			height: 128rpx;
+			position: absolute;
+			top: 0;
+			right: 250rpx;
+		}
 		.left {
 			display: flex;
 			flex-direction: row;
@@ -194,5 +206,10 @@
 				line-height: 50rpx;
 			}
 		}
+	}
+	.nav-bar-scroll{
+		background: rgba(255, 255, 255, 0.5);
+		// 模糊blur 效果
+		backdrop-filter: blur(10px);
 	}
 </style>

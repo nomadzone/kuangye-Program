@@ -33,7 +33,7 @@
         <button @tap="doSearch">搜索</button>
       </view>
       <view style="height: 136rpx"></view>
-      <view class="history" v-if="history?.length !== 0 && !isSearch">
+      <view class="history" v-if="!isSearch">
         <view class="history-title">历史搜索</view>
         <view class="history-list">
           <view
@@ -258,15 +258,17 @@ function doItem(item, index) {
 }
 function queryList() {
 	list.value = []
+  const loacation = uni.getStorageSync("loacation") || "";
   http
     .homeActivitySelect({
       type: null,
       title: value.value,
       pageSize: 9999999,
       pageType: "init",
+      latitude: loacation.latitude,
+      longitude: loacation.longitude
     })
     .then((res) => {
-		
       res.data.list = res.data.list.map((item) => {
         return {
           ...item,

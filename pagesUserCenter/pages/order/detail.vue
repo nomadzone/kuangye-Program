@@ -5,7 +5,9 @@
       :class="buyItem?.orderStatus == 2? 'order_header_cs' :buyItem?.orderStatus == 3? 'order_header_zs':''"
     >
       <view class="order_header_content">
-        <view class="order_header_title">{{ buyItem?.orderStatusName }}</view>
+        <view class="order_header_title">
+          {{ buyItem?.orderStatusName }} <text v-if="buyItem?.orderStatus == 3">{{ timeValue }}</text>
+          </view>
         <view class="tao_item">
           <view class="tao_list">
             <view class="tao_list_left">
@@ -74,14 +76,28 @@
       </view>
 
       <view class="bottom_title" style="margin: 30rpx 0"> 图片详情 </view>
-      <view
+      <block  v-for="(item, index) in buyItem?.shopCombo?.comboPhotoUrl.split(',')"
+      :key="index">
+        <view
         class="image_detail"
-        v-for="(item, index) in buyItem?.shopCombo?.comboPhotoUrl.split(',')"
-        :key="index"
+       
+        v-if="showTc ? true : index < 2"
       >
         <image mode="aspectFill" :src="item"></image>
       </view>
-
+      </block>
+      
+      <view
+          class="other_tao"
+          v-if=" buyItem?.shopCombo?.comboPhotoUrl.split(',')?.length > 2"
+          :class="{ showTc: 'other_two_act' }"
+          @click="showTc = !showTc"
+          >{{
+            showTc
+              ? "收起"
+              : "查看其他" + (buyItem?.shopCombo?.comboPhotoUrl.split(',')?.length - 2) + "个"
+          }} <image :class="showTc? 'down_iamge' : ''" src="/static/images/down.png"></image
+        ></view>
       <view class="bottom_title" style="margin: 30rpx 0"> 购买须知 </view>
       <view class="icon_text">
         <image class="icon" src="/static/images/tk1.png"></image> 可用日期
@@ -158,18 +174,68 @@
 <script setup>
 import { ref } from "vue";
 import http from "@/utils/http";
-import { onLoad } from "@dcloudio/uni-app";
+import { onLoad, onHide } from "@dcloudio/uni-app";
+import { onPullDownRefresh } from "@dcloudio/uni-app";
 
 const buyItem = ref({});
 const id = ref("");
+const timeValue = ref("");
+const showTc = ref(false);
 onLoad((options) => {
   id.value = options.id;
   getDetail();
 });
+onHide(() => {
+  if(timer.value){
+    clearInterval(timer.value)
+  }
+})
+
+// 刷新
+onPullDownRefresh(() => {
+  getDetail();
+  uni.stopPullDownRefresh();
+})
 function toTellphone() {
   uni.makePhoneCall({
     phoneNumber: buyItem.value.shopHeader.phone,
   });
+}
+let timer= ref(null)
+function showOrderTime(time) {
+  // 30分钟 距离 time 差了多少秒
+
+  if(timer.value.indexOf("00:00")>-1){
+    if(timer.value) {
+      clearInterval(timer.value)
+      timer.value = null
+    }
+    timeValue.value = "已过期"
+    getDetail()
+    return
+  }
+  if (time) {
+  timer.value = setInterval(() => {
+    const now = new Date(time.replace(/-/g, "/")).getTime();
+    console.log(now)
+  // 拿到30分钟后的时间
+  const diff = 30 * 60 * 1000;
+  const future = now + diff;
+  // 计算差了多少分钟
+  const diff2 = (future - new Date().getTime()) / 1000 / 60;
+
+  const minute = Math.floor(diff2) >= 10? Math.floor(diff2) : "0" + Math.floor(diff2);
+  const second = Math.floor((diff2 - minute) * 60) >= 10? Math.floor((diff2 - minute) * 60) : "0" + Math.floor((diff2 - minute) * 60);
+  const str = `${minute}:${second}`;
+  if(str.indexOf("00:00")>-1){
+    clearInterval(timer.value)
+    timeValue.value = "已过期"
+    getDetail()
+    return
+  }
+  timeValue.value = str;
+  }, 1000)
+}
 }
 
 function getDetail() {
@@ -182,6 +248,9 @@ function getDetail() {
     })
     .then((res) => {
       buyItem.value = res.data;
+      if (res.data.orderStatus == 3) {
+        showOrderTime(res.data.createTime);
+      }
       // 修改 navBar 颜色
       if (res.data.orderStatus == 2) {
         uni.setNavigationBarColor({
@@ -422,7 +491,30 @@ function cancelOrderTk() {
         border-radius: 20rpx;
       }
     }
-
+    .other_tao {
+      width: 100%;
+      height: 104rpx;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #004f99;
+      font-size: 24rpx;
+      image {
+        width: 28rpx;
+        height: 28rpx;
+        margin-left: 16rpx;
+      }
+      .down_iamge{
+        // 旋转180度
+        transform: rotate(180deg);
+      }
+    }
+    .other_two_act {
+      image {
+        // 旋转180度
+        transform: rotate(180deg);
+      }
+    }
     .bottom_content {
       width: 100%;
 

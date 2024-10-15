@@ -114,11 +114,15 @@ onMounted(() => {
 const doAction = () => {
   let selectLocation = uni.getStorageSync("location");
   userInfo.value = { ...userInfo.value, address: selectLocation.address };
-  getLocation()
+  uni.setStorageSync("userInfo", userInfo.value);
+  getheaderList()
 };
 onShow(() => {
   userInfo.value  = uni.getStorageSync("userInfo");
-  getLocation();
+  console.log("没有定位信息，获取定位信息", userInfo.value);
+  if (!userInfo.value.address) {
+    getLocation();
+  }
 })
 async function getLocation() {
   let location = uni.getStorageSync("location");
@@ -127,9 +131,10 @@ async function getLocation() {
     longitude: location.longitude,
     latitude: location.latitude,
   });
+
   userInfo.value = { ...userInfo.value, address: res.data };
+  uni.setStorageSync("userInfo", userInfo.value);
 }
-getLocation();
 let choosenType = ref('');
 let typeOptions = ref([]);
 function getShopTypeLists() {
@@ -144,13 +149,14 @@ getShopTypeLists();
 
 function getheaderList() {
   const location = uni.getStorageSync("location");
+
   http
     .headerList({
       pageNum: pageSize.value,
       pageSize: 10,
       name: searchText.value,
-      longitude: location.longitude,
-      dimension: location.latitude,
+      longitude: '100.18901783342115',
+      dimension: '25.642070595753054',
       categoryName: choosenType.value,
     })
     .then((res) => {

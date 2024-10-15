@@ -1,13 +1,12 @@
 <template>
   <view class="page">
-    <Navbar :title="'发布一起野'" />
+    <Navbar :title="'发布一起野'" :scrollType="scrollType" />
     <Gradual
       :background="'linear-gradient(to bottom, #FFF7E2, #f5f5f5)'"
       :height="'100vh'"
       :zIndex="'-1'"
     />
-    <view style="z-index: 6; margin-top: 64rpx">
-      <view :style="{ height: StatusBar + 'px' }"></view>
+    <view style="z-index: 6;" :style="{ marginTop: CustomBar + 'px' }">
       <view style="height: 32rpx"></view>
       <image
         class="popu-icon"
@@ -54,7 +53,22 @@
             </view>
             <view></view>
           </view>
-
+          <view class="opt" @click="timeStartSignOpen">
+            <view>
+              <image src="/static/images/time-line.png" mode=""></image>
+              <text v-if="!activity.signUpStartDate || !activity.signUpEndDateShow">报名时间</text>
+              <view class="time" v-if="activity.signDateShow && activity.signUpStartDate && activity.signUpEndDateShow"
+                >报名时间: {{ activity.signDateShow  }}</view
+              >
+              <view class="time" v-if="!activity.signDateShow && activity.signUpStartDate && activity.signUpEndDateShow"
+                >报名时间: {{ activity.signUpStartDateShow }} - {{ activity.signUpEndDateShow  }}</view
+              >
+              <image
+                src="/static/images/arrow-right-s-line_gray.png"
+                mode=""
+              ></image>
+            </view>
+          </view>
           <view class="opt" @click="timeStartOpen">
             <view>
               <image src="/static/images/time-line.png" mode=""></image>
@@ -83,22 +97,7 @@
             </view>
           </view> -->
 
-          <view class="opt" @click="timeStartSignOpen">
-            <view>
-              <image src="/static/images/time-line.png" mode=""></image>
-              <text v-if="!activity.signUpStartDate || !activity.signUpEndDateShow">报名时间</text>
-              <view class="time" v-if="activity.signDateShow && activity.signUpStartDate && activity.signUpEndDateShow"
-                >报名时间: {{ activity.signDateShow  }}</view
-              >
-              <view class="time" v-if="!activity.signDateShow && activity.signUpStartDate && activity.signUpEndDateShow"
-                >报名时间: {{ activity.signUpStartDateShow }} - {{ activity.signUpEndDateShow  }}</view
-              >
-              <image
-                src="/static/images/arrow-right-s-line_gray.png"
-                mode=""
-              ></image>
-            </view>
-          </view>
+          
           <!-- <view class="opt" @click="timeEndSignOpen">
             <view>
               <image src="/static/images/time-line.png" mode=""></image>
@@ -330,6 +329,8 @@ export default {
       zcShow: false,
       numShow: false,
       zcIndex: -1,
+      scrollType: false,
+      CustomBar: 0,
       zcList: [
         {
           title: "活动开始前24小时全额退",
@@ -343,9 +344,20 @@ export default {
       timeList: [getDatesAndWeeks(false), getDayHours(), getDayMin()],
     };
   },
+  onPageScroll(res) { 
+    console.log(res)
+    if (res.scrollTop > 1) {
+    // 显示顶部导航栏
+    this.scrollType = true
+  } else {
+    this.scrollType= false
+  }
+  },
   onLoad(options) {
     this.id = options.id
     this.getDetails()
+    const sys = wx.getSystemInfoSync();
+	  this.CustomBar = sys.platform == 'android' ? sys.statusBarHeight + 50 : sys.statusBarHeight + 45
   },
   created() {
     this.StatusBar = uni.getStorageSync("statusBarHeight");
@@ -413,7 +425,6 @@ export default {
       let that = this
       wx.chooseLocation({
         success: function (res) {
-          console.log(res);
           if (res.address) {
             that.activity.address = res.address
           that.activity.latitude = res.latitude

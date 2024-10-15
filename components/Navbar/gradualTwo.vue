@@ -11,11 +11,11 @@
 			},
 			background: {
 				type: String,
-				default: 'linear-gradient(to bottom, #90f2ff, rgba(130, 240, 255, 0.01))'
+				default: 'linear-gradient(to bottom, #90f2ff, rgba(130, 240, 255, 0.31))'
 			},
 			height: {
 				type: String,
-				default: '176rpx'
+				default: '20rpx'
 			},
 			styles: {
 				type: Object,
@@ -35,11 +35,10 @@
 <style scoped lang="scss">
 	.gradual {
 		position: fixed;
-		top: 0;
+		top: 176rpx;
 		left: 0;
 		width: 100vw;
-		height: 176rpx;
-		background-image: linear-gradient(to bottom, #90f2ff, rgba(130, 240, 255, 0.11));
-		border-radius: 24rpx 24rpx 0 0;
+		height: 20rpx;
+		background-image: linear-gradient(to bottom, #90f2ff10, rgba(130, 240, 255, 0.01));
 	}
 </style>
