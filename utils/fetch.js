@@ -32,12 +32,16 @@ const httpRequest = (url, method = 'GET', data = null, headers = {}) => {
                 if (res.statusCode === 200) {
                     resolve(res.data);
                 } else if (res.statusCode == 401){
-                    // showModal()
-                    uni.clearStorage() // 清除缓存
+                    // 清除token
+                    uni.removeStorageSync('token')
+                    uni.removeStorageSync('userInfo')
                     reject(res)
                     return
                 } {
                     if (res?.data?.msg?.indexOf('重新登录') > -1) {
+                        // uni.clearStorage() // 清除缓存
+                        uni.removeStorageSync('token')
+                        uni.removeStorageSync('userInfo')
                     }
                     reject(res);
                 }

@@ -1,20 +1,20 @@
 <template>
   <view class="partner-modal-contract-box">
     <image
-      src="../../static/images/partner-modal-default-bk.png"
+      src="/static/images/partner-modal-default-bk.png"
       class="default-bk-icon"
     ></image>
     <view class="avatar-box">
       <image
         class="avatar-img"
-        v-if="info.initiatorUrl"
-        :src="info.initiatorUrl"
+        v-if="info.avatarUrl"
+        :src="info.avatarUrl"
       ></image>
       <image class="avatar-img" v-else :src="headerPhotos"></image>
     </view>
     <view class="name-sex">
       <view class="name-text">
-        {{ info.initiatorName }}
+        {{ info.nickname }}
         <image
           class="gender_avatar"
           v-if="info.gender == 0"
@@ -32,12 +32,12 @@
     <view class="wx-info" @click="copyDetail">
       <image
         class="wx-icon"
-        src="../../static/images/partner-modal-wx-icon.svg"
+        src="/static/images/partner-modal-wx-icon.svg"
       ></image>
-      <view class="wx-name">{{ info?.number || "-" }}</view>
+      <view class="wx-name">{{ info?.phoneNumber || "-" }}</view>
       <image
         class="wx-copy"
-        src="../../static/images/partner-modal-wx-copy.svg"
+        src="/static/images/partner-modal-wx-copy.svg"
       ></image>
     </view>
     <view class="wx-qrcode">

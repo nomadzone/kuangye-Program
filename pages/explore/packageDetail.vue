@@ -1,6 +1,5 @@
 <template>
   <view class="container">
-    <Navbar type="1"></Navbar>
     <view class="packageDetail">
       <view class="packageDetail_top">
         <view class="top_title"> {{ detail?.comboName }} </view>
@@ -20,8 +19,7 @@
               :key="index"
             >
               <image :src="item" mode="aspectFill"></image>
-              <view class="swiper-item-title"
-                >限时{{ buyItem?.discount }}折</view>
+         
             </swiper-item>
           </swiper>
         </view>
@@ -31,11 +29,11 @@
             <text class="price_num">￥{{ buyItem?.comboPrice }}</text>
             <text class="price_unit">￥{{ buyItem?.shopPrice }}</text>
           </view>
-          <view class="price_right">已售10W</view>
+          <view class="price_right">已售{{ buyItem?.number }}</view>
         </view>
         <view class="xz_box">
           <view class="xz_text"> 须知</view>
-          <view class="xz_content">Z周一至周日</view>
+          <view class="xz_content">{{getMemo(buyItem)}}</view>
         </view>
         <view class="xz_box">
           <view class="xz_text"> 门店 </view>
@@ -71,7 +69,7 @@
         <view class="icon_text">
           <image class="icon" src="/static/images/tk1.png"></image> 可用日期
         </view>
-        <view class="no_text"> 等真实数据 </view>
+        <view class="no_text"> {{buyItem?.validTimeStart?.split(' ')[0]}}-{{ buyItem?.validTimeEnd?.split(' ')[0] }} </view>
         <view class="icon_text">
           <image class="icon" src="/static/images/tk2.png"></image> 使用方式
         </view>
@@ -86,7 +84,7 @@
           其他规则
         </view>
         <view class="no_text no_padd"
-          ><text>· </text> 不能在包间消费时使用</view
+          >· 不能在包间消费时使用</view
         >
         <view class="no_text no_padd">· 不能和其他优惠同享</view>
         <view class="no_text no_padd">· 发票问题请询问商家</view>
@@ -97,28 +95,28 @@
         <view class="no_text no_padd"
           >· 本单发票由商家提供，具体请咨询商家</view
         >
-        <view class="icon_text">
+        <view class="icon_text" style="margin-top: 30rpx;">
           <image class="icon" src="/static/images/tk5.png"></image>
           适用门店
         </view>
-        <view class="popup_content_item">
+        <view class="popup_content_item" @click="toBack">
           <view class="item_left">
             <image
-              :src="info?.profilePhotoUrl?.split('?')[0] || ''"
+              :src="info?.profilePhotoUrl?.split(',')[0] || ''"
               mode="aspectFill"
             ></image>
           </view>
           <view class="item_right">
             <view class="right_text">{{ info?.name }}</view>
             <view class="right_address"
-              >{{ info?.distanceMeters }}km | {{ info?.address }}</view
+              >{{ info?.distanceMeters }}km | {{ filterAndRemoveBefore(info?.address) }}</view
             >
           </view>
         </view>
       </view>
     </view>
     <view class="btm_btn">
-      <view class="btm_btn_right" @click="todapplyPopupPl"> 我要评价 </view>
+      <view class="btm_btn_right" @click="todapplyPopupPl"> 立即购买 </view>
     </view>
     <PoupWrap
       :show="applyPopup"
@@ -131,7 +129,7 @@
         <view class="popup_content_item">
           <view class="item_left">
             <image
-              :src="buyItem?.comboPhotoUrl?.split('?')[0] || ''"
+              :src="buyItem?.comboPhotoUrl?.split(',')[0] || ''"
               mode="aspectFill"
             ></image>
           </view>
@@ -142,7 +140,6 @@
           <view class="number_right">
             <view
               class="right_btn"
-              :class="{ active: buyNumber === 1 }"
               @click="changeNumber(1)"
               >-</view
             >
@@ -153,7 +150,7 @@
         <view class="icon_text">
           <image class="icon" src="/static/images/tk1.png"></image> 可用日期
         </view>
-        <view class="no_text"> 等真实数据 </view>
+        <view class="no_text"> {{buyItem?.validTimeStart?.split(' ')[0]}}-{{ buyItem?.validTimeEnd?.split(' ')[0] }}  </view>
         <view class="icon_text">
           <image class="icon" src="/static/images/tk2.png"></image> 使用方式
         </view>
@@ -181,6 +178,8 @@ import Navbar from "@/components/Navbar/Navbar.vue";
 import PoupWrap from "@/components/Popup/Wrap.vue";
 import http from "@/utils/http.js";
 import { ref, onMounted } from "vue";
+import {filterAndRemoveBefore} from "@/utils/index.js";
+
 import Decimal from "decimal.js";
 const images = ref([]);
 const applyPopup = ref(false);
@@ -199,7 +198,50 @@ function getMaxPrice(price) {
   if (!price) return "";
   return new Decimal(price).mul(new Decimal(buyNumber.value));
 }
+function todapplyPopupPl() {
+  applyPopup.value = true;
+}
+function getMemo(item) {
+  if(item.allDayStatus==='true' && item.legalHolidayStatus==='true') {
+    return "全部日期可用，包含法定节假日";
+  } else if(item.allDayStatus==='true' && item.legalHolidayStatus ==='false') {
+    return "全部日期可用，不包含法定节假日"
+  }
+ return getAvailability(item.monday, item.tuesday, item.wednesday, item.thursday, item.friday, item.saturday, item.sunday, item.legalHolidayStatus)
+}
+function getAvailability(monday, tuesday, wednesday, thursday, friday, saturday, sunday, legalHolidayStatus) {
+    // 将每一天的可用性放入一个数组中
+    const days = [
+        { name: '周一', available: monday==='true' },
+        { name: '周二', available: tuesday ==='true' },
+        { name: '周三', available: wednesday ==='true' },
+        { name: '周四', available: thursday ==='true' },
+        { name: '周五', available: friday ==='true' },
+        { name: '周六', available: saturday ==='true' },
+        { name: '周日', available: sunday ==='true' },
+    ];
 
+    // 筛选不可用的日子
+    const unavailableDays = days.filter((day) => {
+        return !day.available;
+    });
+    console.log(unavailableDays);
+    // 如果没有不可用的日子，则返回全部日期可用
+    if (unavailableDays.length === 0) {
+        return "全部日期可用，" + (legalHolidayStatus==='true' ? "包含法定节假日" : "不包含法定节假日")
+    }
+
+    // 如果有不可用的日子，则返回不可用日期
+    const unavailableDate = unavailableDays.map((day) => {
+        return day.name;
+    }).join("、");
+
+    return unavailableDate + "不可用" + (legalHolidayStatus==='false' ? "，法定节假日不可用" : "")
+}
+// 返回
+function toBack() {
+  uni.navigateBack();
+}
 async function doApplyPopup() {
   let resPiao = await http.orderAdd({
     shopComboId: buyItem.value.id,
@@ -248,6 +290,7 @@ async function doApplyPopup() {
           });
         } else {
           // 跳转订单详情页面 目前还没写
+          buyItem.value.number = buyItem.value.number + 1;
           uni.navigateTo({
         	  url: "/pagesUserCenter/pages/order/detail?id=" + id,
 		      });
@@ -387,11 +430,13 @@ async function doApplyPopup() {
           color: #a3a3a3;
           font-size: 24rpx;
           margin-right: 32rpx;
+          flex-shrink: 0;
         }
 
         .xz_content {
           color: #222222;
           font-size: 28rpx;
+          flex-shrink: 0;
         }
       }
 
@@ -651,8 +696,8 @@ async function doApplyPopup() {
         justify-content: center;
         align-items: center;
         border-radius: 20rpx;
-        background: #a0a0a0;
-        color: #222222;
+        background: #F5F5F5;
+        color: #A3A3A3;
         font-size: 24rpx;
         margin-right: 32rpx;
       }

@@ -45,7 +45,7 @@
             <view>
               <image src="/static/images/map-pin-line.png" mode=""></image>
               <text v-if="!activity.address">集合地点</text>
-              <text v-else style="text-overflow: ellipsis; overflow: hidden;  color: #1b1b1b;">{{ activity.address }}</text>
+              <text v-else style="text-overflow: ellipsis; overflow: hidden;  color: #1b1b1b;">{{ filterAndRemoveBefore(activity?.address) }}</text>
               <image
                 src="/static/images/arrow-right-s-line_gray.png"
                 mode=""
@@ -345,7 +345,6 @@ export default {
     };
   },
   onPageScroll(res) { 
-    console.log(res)
     if (res.scrollTop > 1) {
     // 显示顶部导航栏
     this.scrollType = true
@@ -355,9 +354,18 @@ export default {
   },
   onLoad(options) {
     this.id = options.id
-    this.getDetails()
+    this.getDatas()
     const sys = wx.getSystemInfoSync();
 	  this.CustomBar = sys.platform == 'android' ? sys.statusBarHeight + 50 : sys.statusBarHeight + 45
+    if (this.id) {
+      this.getDetails()
+
+    } else {
+      const userInfo = uni.getStorageSync("userInfo");
+      this.activity.number = userInfo?.phoneNumber;
+      this.activity.contactphoto = [userInfo?.contactphoto]
+      console.log(this.activity.contactphoto)
+    }
   },
   created() {
     this.StatusBar = uni.getStorageSync("statusBarHeight");
@@ -371,6 +379,27 @@ export default {
     }
   },
   methods: {
+    filterAndRemoveBefore(address) {
+      if (!address) return '';
+      let result = address;
+      const patterns = ['省', '市', '县', '自治区' ];
+      for (const pattern of patterns) {
+        const regex = new RegExp(`.*?${pattern}`);
+        const match = result.match(regex);
+        if (match) {
+        result = result.slice(match.index + match[0].length).trim();
+        }
+      }
+      return result;
+      },
+     getDatas() {
+      http.userHomeLabel({dictType: 'activity_label'}).then(res => {
+        this.activeList = [res.data[0]?.sysDictDataList.map(item => {
+          return item.dictValue
+        })]
+        console.log(this.activeList, '2222222222')
+      })
+    },
 			async getDetails() {
         if (!this.id) return;
 				let location = uni.getStorageSync('location')

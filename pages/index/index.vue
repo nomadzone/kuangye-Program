@@ -125,12 +125,19 @@ export default {
   async onShow() {
     this.sortIndex = Number(uni.getStorageSync("sortIndex") || 0);
     let userInfo = uni.getStorageSync("userInfo");
-    if (userInfo.address) {
+    if (userInfo) {
+      if (userInfo.address) {
       this.address = userInfo.address
     }
     this.userInfo = { ...this.userInfo, ...userInfo, address: this.address };
     await this.getUserInfo();
-    await this.getHomeList();
+    // await this.getHomeList();
+    } else {
+      let location = uni.getStorageSync("location");
+      this.userInfo = { ...this.userInfo, address: location.address };
+      // await this.getHomeList();
+    }
+   
   },
   onUnload() {
     uni.removeStorageSync("sortIndex");
@@ -193,6 +200,8 @@ export default {
 	  this.address = res.data
     this.userInfo = { ...this.userInfo, address: res.data };
     uni.setStorageSync("userInfo", this.userInfo);
+
+    this.getHomeList()
     },
     handleDeleteReload() {
       this.$refs.WaterfallsRef.toRold();
@@ -202,6 +211,7 @@ export default {
       // 	title: '加载中...',
       // 	mask: true
       // })
+      console.log(type, 'typesssssssssssssssssssssssssssssssssss');
       this.sortIndex = type;
       this.isAd = type !== null && type === 0;
       this.$refs.WaterfallsRef.toRold();
@@ -215,22 +225,11 @@ export default {
       // }
     },
     getHomeList() {
-      const _this = this;
-      return new Promise(async (resolve, reject) => {
-        try {
-          await _this.$refs?.HomeWaterfalls?.getList({
-            type: this.sortIndex,
-          });
-          let userInfo = uni.getStorageSync("userInfo");
-          this.userInfo = { ...this.userInfo, ...userInfo, address: this.address };
-          resolve();
-        } catch (err) {
-          reject(err);
-        }
-      });
+      this.$refs.WaterfallsRef.toRold();
     },
     async doAction() {
       let selectLocation = uni.getStorageSync("location");
+      console.log(selectLocation, 'selectLocation');
 	    this.address = selectLocation.address
       this.userInfo = { ...this.userInfo, address: selectLocation.address };
       uni.setStorageSync("userInfo", this.userInfo);

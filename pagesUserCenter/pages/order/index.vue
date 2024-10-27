@@ -1,6 +1,16 @@
 <template>
-  <view class="order">
-    <view v-for="(order, index) in list" :key="index" class="order-item" @click.stop="toDetail(order)">
+  <z-paging
+      ref="paging"
+      v-model="list"
+      @query="loadData"
+      show-refresher-when-reload
+      :empty-view-img="emptyImg"
+      :empty-view-img-style="{ width: '256rpx', height: '256rpx' }"
+      :empty-view-error-img="emptyImg"
+      empty-view-text="暂无订单"
+      >
+      <view class="order">
+        <view v-for="(order, index) in list" :key="index" class="order-item" @click.stop="toDetail(order)">
       <view class="items">
         <view class="order-title">
           <view class="order-title_right">
@@ -48,95 +58,48 @@
         </view>
       </view>
     </view>
-    <view v-if="list.length == 0 && !isInit">
-      <Empty></Empty>
-    </view>
-    <view class="total_view" v-if="list.length >= total">
-      没有更多数据~
-    </view>
-    <view style="padding-bottom: 64rpx" v-if="loading">
-      <ListLoading></ListLoading>
-    </view>
-  </view>
+      </view>
+    
+  </z-paging>
 </template>
 
-<script>
-import ListLoading from "@/components/Loading/ListLoading.vue";
-import Empty from "@/components/Empty/index.vue";
+<script setup>
 import http from "@/utils/http";
-export default {
-  components: {
-    Empty,
-    ListLoading,
-  },
-  data() {
-    return {
-      statusText: {
-        0: "已完成",
-        1: "已取消",
-        2: "待使用",
-        3: "待付款",
-        4: "退款中",
-        5: "退款完成",
-      },
-      list: [],
-      total: 0,
-      page: 1,
-      isInit: true,
-      loading: false,
-    };
-  },
-  onLoad(options) {
-    this.id = options.id;
-    this.loadData(); // 重新加载数据
-  },
-  onPullDownRefresh() {
-    // 模拟下拉刷新数据
-    this.page = 1;
-    this.loading = false;
-    this.isInit = true;
-    this.list = []; // 清空列表数据
-    this.loadData(); // 重新加载数据
-  },
-  onReachBottom() {
-    this.loading = true;
-    // 模拟上拉加载更多数据
-    this.page = this.page + 1;
-    if(this.list.length >= this.total) {
-      this.loading = false;
-      return;
-    }
-    this.loadData();
-  },
-  methods: {
-	toDetail(item) {
+import emptyImg from "@/static/images/empty-my.png";
+import { ref } from "vue";
+import { onShow, onLoad } from "@dcloudio/uni-app";
+const list = ref([]);
+const id = ref(null);
+
+const paging = ref(null);
+ onLoad ((options) => {
+  id.value = options.id;
+ })
+
+ function toDetail(item) {
 		uni.navigateTo({
         	url: "/pagesUserCenter/pages/order/detail?id=" + item.id,
 		});
-	},
-    doSubmit(item) {
-
+	}
+  function doSubmit(item) {
 		uni.navigateTo({
           url: "/pagesUserCenter/pages/orderRefund/index?id=" + item.id,
         });
-    },
-    loadData() {
-      // 模拟请求数据
-      setTimeout(() => {
+    }
+
+    function loadData(current, size) {
         let params = {
-          pageNum: this.page,
-          pageSize: 10,
+          pageNum: current,
+          pageSize: size,
         };
         http.orderList(params).then((res) => {
-          this.list = this.list.concat(res.data.list);
-          this.total = res.data.total;
-        });
-        uni.stopPullDownRefresh(); // 停止下拉刷新动画
-        this.isInit = false;
-      }, 500);
-    },
+          paging.value.complete(res.data?.list || []);
+        })
+        .finally(() => {
+        })
+    }
     // 取消
-    async doCancle(id) {
+    async function doCancle(id) {
       uni.showModal({
         title: "提示",
         content: "确定取消订单吗？",
@@ -148,7 +111,7 @@ export default {
                 title: "取消成功",
                 icon: "success",
               });
-              this.loadData();
+              paging.value.refresh();
             } else {
               uni.showToast({
                 title: res.msg || "取消失败",
@@ -160,10 +123,10 @@ export default {
           }
         },
       });
-    },
+    }
 
     // 购买
-    async doApplyPopup(id) {
+    async function  doApplyPopup(id) {
       let res = await http.orderPaySys({
         id: id,
       });
@@ -191,7 +154,7 @@ export default {
                 icon: "none",
               });
             } else {
-              this.loadData();
+              paging.value.refresh();
             }
           },
           fail: async (err) => {
@@ -217,19 +180,22 @@ export default {
           icon: "none",
         });
       }
-    },
-  },
-};
+    }
 </script>
 
+<style>
+  page{
+    background-color: #f5f5f5;
+  }
+</style>
 <style lang="scss" scoped>
 .order {
-  min-height: 100vh;
-  background-color: #f5f5f5;
+ 
   padding: 32rpx;
 
   .items {
     width: 100%;
+  }
   }
 
   .order-item {
@@ -353,7 +319,6 @@ export default {
   .hover {
     opacity: 0.8;
   }
-}
 .total_view{
   text-align: center;
   font-size: 28rpx;

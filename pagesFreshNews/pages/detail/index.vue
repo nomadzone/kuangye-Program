@@ -204,7 +204,7 @@ function handleInToInfo() {
   if (detailInfo.value.userLaunchStatus != 1) {
     uni.navigateTo({
       url:
-        "/pagesUserCenter/pages/index/index?userId=" + detailInfo.value.userId,
+        "/pagesUserCenter/pages/thirdInfo/index?userId=" + detailInfo.value.userId,
     });
   } else {
     uni.navigateTo({

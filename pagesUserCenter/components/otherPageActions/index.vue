@@ -1,7 +1,7 @@
 <!-- 他人用户界面操作 -->
 <template>
 	<view class="other-user-page-actions-comp">
-		<view class="action-item">联系TA</view>
+		<view class="action-item" @click="toConcatenate()">联系TA</view>
 		<view :class="follstatus==1 || props.followStatus == 1 ? 'action-item action-item-active': 'action-item'" @click="doFllow" >
 		{{ follstatus==1 || props.followStatus == 1? '已关注' : '关注' }}
 		</view>
@@ -12,6 +12,7 @@
 	import {defineProps} from 'vue'
 	import http from "@/utils/http.js";
 	import {ref, watch} from 'vue'
+	const emit = defineEmits(['toConcatenates'])
 	let props = defineProps({
 		followStatus: {
 			type: Number,
@@ -28,6 +29,10 @@
 		console.log('ww', watch)
 		follstatus.value = newVal
 		})
+
+		function toConcatenate() {
+			emit('toConcatenates')
+		}
 
 	async function doFllow() {
 			if (follstatus.value.userFollowStatus == 1) {

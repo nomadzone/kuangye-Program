@@ -6,7 +6,7 @@
       theme="dark"
     ></custom-nav-bar>
     <image class="corner-img" src="../../static/images/corner-icon.svg"></image>
-    <form style="display: block; zindex: 11" @submit="handleSubmit">
+    <form class="form_class" @submit="handleSubmit">
       <view class="release-form-box">
         <textarea
           class="content-textarea"
@@ -27,7 +27,7 @@
             <text class="location-text">{{
               location.longitude && location.latitude
                 ? location.address
-                : "面基地点（选填）"
+                : "面基地点"
             }}</text>
             <image
               class="location-select-icon"
@@ -40,7 +40,7 @@
 
           <view class="location">
             <text class="location-text">{{
-              meetingTime ? meetingTime : "面基时间（选填）"
+              meetingTime ? meetingTime : "面基时间"
             }}</text>
             <image
               class="location-select-icon"
@@ -139,6 +139,10 @@ onLoad((options) => {
       };
       meetingTime.value = res.data.expectdate;
     });
+  } else {
+    const userInfo = uni.getStorageSync("userInfo");
+    form.value.number = userInfo?.phoneNumber;
+    contractImgs.value = [userInfo?.contactphoto]
   }
 });
 // 选择面基地点
@@ -159,7 +163,7 @@ const handleSelectLocation = () => {
           })
           .then((val) => {
             location.value = {
-              address: res.address + res.name,
+              address: val.data,
               longitude: res.longitude,
               latitude: res.latitude,
             };
@@ -174,7 +178,7 @@ const handleSelectLocation = () => {
 let meetingTime = ref(null);
 let meetingTimeRef = ref();
 
-let timeList = ref([getDatesAndWeeks(true), getDayHours(), getDayMin()]);
+let timeList = ref([getDatesAndWeeks(false), getDayHours(), getDayMin()]);
 
 // 选择面基时间
 const handleOpenMeetingTime = () => {
@@ -215,6 +219,20 @@ const handleSubmit = (e) => {
     });
     return;
   }
+  if (!location.value.address) {
+    uni.showToast({
+      title: "请选择面基地点",
+      icon: "none",
+    });
+    return;
+  }
+  if (!meetingTime.value) {
+    uni.showToast({
+      title: "请选择面基时间",
+      icon: "none",
+    });
+    return;
+    }
   let params = {
     ...e.detail.value,
     ...location.value,
@@ -258,6 +276,11 @@ const handleSubmit = (e) => {
     left: 78rpx;
     z-index: 10;
     position: absolute;
+  }
+  .form_class{
+    display: block; position: relative;
+    z-index: 11;
+    padding-bottom: 280rpx;
   }
 
   .release-form-box {
@@ -372,6 +395,7 @@ const handleSubmit = (e) => {
     background-color: #ffffff;
     padding: 32rpx;
     box-sizing: border-box;
+    z-index: 13;
 
     .submit-btn {
       background-color: rgba(34, 34, 34, 1);

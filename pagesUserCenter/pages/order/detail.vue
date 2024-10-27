@@ -102,7 +102,7 @@
       <view class="icon_text">
         <image class="icon" src="/static/images/tk1.png"></image> 可用日期
       </view>
-      <view class="no_text"> {{buyItem?.shopCombo?.validTimeStart}}-{{ buyItem?.shopCombo?.validTimeEnd }} </view>
+      <view class="no_text"> {{buyItem?.shopCombo?.validTimeStart?.split(' ')[0]}}-{{ buyItem?.shopCombo?.validTimeEnd?.split(' ')[0] }} </view>
       <view class="icon_text">
         <image class="icon" src="/static/images/tk2.png"></image> 使用方式
       </view>
@@ -116,7 +116,7 @@
         <image class="icon" src="/static/images/tk4.png"></image>
         其他规则
       </view>
-      <view class="no_text no_padd"><text>· </text> 不能在包间消费时使用</view>
+      <view class="no_text no_padd">· 不能在包间消费时使用</view>
       <view class="no_text no_padd">· 不能和其他优惠同享</view>
       <view class="no_text no_padd">· 发票问题请询问商家</view>
       <view class="no_text no_padd">· 消费高峰期到店可能需要等位</view>
@@ -128,10 +128,10 @@
         <image class="icon" src="/static/images/tk5.png"></image>
         适用门店
       </view>
-      <view class="popup_content_item">
+      <view class="popup_content_item" @click="tomendianDetail(buyItem?.shopHeader?.id)">
         <view class="item_left">
           <image
-            :src="buyItem?.shopHeader?.profilePhotoUrl?.split('?')[0] || ''"
+            :src="buyItem?.shopHeader?.profilePhotoUrl?.split(',')[0] || ''"
             mode="aspectFill"
           ></image>
         </view>
@@ -140,7 +140,7 @@
           <view class="right_address">
             <image src="../../static/images/address_black.png"></image>
             {{ buyItem?.shopHeader?.distanceMeters }}km |
-            {{ buyItem?.shopHeader?.address }}</view
+            {{ filterAndRemoveBefore(buyItem?.shopHeader?.address) }}</view
           >
         </view>
       </view>
@@ -176,6 +176,8 @@ import { ref } from "vue";
 import http from "@/utils/http";
 import { onLoad, onHide } from "@dcloudio/uni-app";
 import { onPullDownRefresh } from "@dcloudio/uni-app";
+import {filterAndRemoveBefore} from "@/utils/index.js";
+
 
 const buyItem = ref({});
 const id = ref("");
@@ -236,6 +238,11 @@ function showOrderTime(time) {
   timeValue.value = str;
   }, 1000)
 }
+}
+function tomendianDetail(id) {
+  uni.navigateTo({ 
+			url: `/pages/explore/detail?id=${id}`
+			})
 }
 
 function getDetail() {

@@ -76,25 +76,39 @@ console.log(getCurrentInstance())
     const mapList = ref([])
     onMounted(() => {
       nextTick(() => {
-        resetLocation()
+        // console.log('22222222222222222222222,', location)
+        // resetLocation('no')
       })
     })
     onShow(() => {
       nextTick(() => {
         const location = uni.getStorageSync('location')
-        if(!location) {
+        if(!location ) {
+          resetLocation()
+        } else if (location.address === '西安钟楼') {
           resetLocation()
         } else {
           const mapCtx = uni.createMapContext("map", ctx);
+          position.value.latitude = location.latitude
+          position.value.longitude = location.longitude
           mapCtx.moveToLocation({
           longitude: location.longitude,
           latitude: location.latitude,
         });
           getDataList()
+          emit("getLocation")
         }
       })
     })
-    function doItem(item, index) {
+    function doItem(items, index) {
+      if (!uni.getStorageSync("token")) {
+					uni.navigateTo({
+						url: '/pages/login/index'
+					})
+					return
+				}
+        const item = JSON.parse(JSON.stringify(items))
+        item.id = item.infoId
       if (item.type === 1) {
         uni.navigateTo({
           url: `/pagesToggle/pages/details/details?id=${item.infoId}`,
@@ -111,7 +125,7 @@ console.log(getCurrentInstance())
         emit('partnerModalShow', item)
       }
     }
-    function resetLocation() {
+    function resetLocation(type) {
       if (!uni.getStorageSync("token")) return
       const mapCtx = uni.createMapContext("map", ctx);
 
@@ -126,7 +140,9 @@ console.log(getCurrentInstance())
           longitude: position.value.longitude,
           latitude: position.value.latitude,
         });
-      emit("getLocation")
+        if (!type) {
+          emit("getLocation")
+        }
         getDataList()
       })
     }
@@ -158,6 +174,26 @@ console.log(getCurrentInstance())
           latitude: options?.latitude || position.value.latitude || location.longitude,
         });	
         let data = res.data
+        // 
+        const uniqueData = [];
+        const seenCoords = new Set();
+
+        data.forEach(item => {
+          // 经纬度保留四位小数
+          item.latitude = Number(item.latitude).toFixed(4);
+          item.longitude = Number(item.longitude).toFixed(4);
+          const coord = `${item.longitude},${item.latitude}`;
+          if (!seenCoords.has(coord)) {
+            seenCoords.add(coord);
+            uniqueData.push(item);
+          } else {
+            const existingItemIndex = uniqueData.findIndex(existingItem => `${existingItem.longitude},${existingItem.latitude}` === coord);
+            if (existingItemIndex!== -1 && new Date(item.createTime?.replace(/-/g, "/"))?.getTime() > new Date(uniqueData[existingItemIndex]?.createTime?.replace(/-/g, "/"))?.getTime()) {
+              uniqueData[existingItemIndex] = item;
+            }
+          }
+        });
+        console.log(uniqueData,' 222222222')
         let markerData = [];
         this.mapList = res.data;
         let color = {
@@ -181,22 +217,23 @@ console.log(getCurrentInstance())
           display: "ALWAYS"//常显
           // padding: 10
         };
-        for (let i = 0; i < data.length; i++) {
-          let item = data[i]
+        for (let i = 0; i < uniqueData.length; i++) {
+          let item = uniqueData[i]
           markerData.push({
-            id: i,
             infoId: item.id,
             latitude: Number(item.latitude),
             longitude: Number(item.longitude),
             width: 1,
             height: 1,
-            iconPath: '../../static/images/smass_yell_jt.png',
+            iconPath: uniqueData[i].type === 1 ? '../../static/images/smass_yell_jt.png' :uniqueData[i].type === 2 ? '../../static/images/smass_green_jt.png' : '../../static/images/smass_blue_jt.png',
             joinCluster: true,
-            title: data[i].title,
-            image: data[i].images?.split(",")[0] || '',
-            avatarUrl: data[i].avatarUrl,
-            type: data[i].type,
-            customCallout: callout
+            title: uniqueData[i].title,
+            image: uniqueData[i].images?.split(",")[0] || '',
+            avatarUrl: uniqueData[i].avatarUrl,
+            type: uniqueData[i].type,
+            customCallout: callout,
+            ...uniqueData[i],
+            id: i,
           });
         }
         markers.value = markerData;

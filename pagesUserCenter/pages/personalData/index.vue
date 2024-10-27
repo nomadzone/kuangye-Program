@@ -69,14 +69,14 @@
 			</view>
 		</view>
 		<view class="block-info">
-			<view class="block-info-item">
+			<view class="block-info-item" @click="toAgreement(1)">
 				<view class="item-label">用户协议</view>
 				<view class="item-control">
 					<view class="control-text"></view>
 					<image class="more-icon" src="../../static/icons/more.svg"></image>
 				</view>
 			</view>
-			<view class="block-info-item">
+			<view class="block-info-item" @click="toAgreement(2)">
 				<view class="item-label">隐私协议</view>
 				<view class="item-control">
 					<view class="control-text"></view>
@@ -103,16 +103,22 @@
 						<input type="text" placeholder="请输入简介" v-model="form.introduce" />
 					</view>
 				</view>
-				<view class="body-content body_content_three" v-if="formAct === 3">
-					<Upload :limit="1" @upload="doUploadContractImgs" />
+			</view>
+		</uni-popup>
+
+		<uni-popup ref="popupThree" type="bottom" border-radius="10px 10px 0 0" :safe-area="false">
+			<view class="body">
+				<image class="close-icon" src="@/static/images/partnerModalCloseIcon.svg" @click="handleClose"></image>
+				<view class="title">{{ editText }}</view>
+				<view class="sure-btn" @click="handleSure">确定</view>
+				<view class="body-content body_content_three">
+					<Upload :limit="1" @upload="doUploadContractImgs" :images="formcontactphoto" />
 					<view class="input" style="margin-top: 32rpx;">
 						<input type="number" placeholder="请输入手机号" v-model="form.phoneNumber" />
 					</view>
 				</view>
 			</view>
 		</uni-popup>
-
-
 		<uni-popup ref="popupheader" type="bottom" border-radius="10px 10px 0 0" :safe-area="false">
 			<view class="body">
 				<image class="close-icon" src="@/static/images/partnerModalCloseIcon.svg" @click="handleClose"></image>
@@ -142,9 +148,11 @@ import { prefixUrl } from "@/utils/fetch.js";
 import Upload from "@/components/Upload/Upload.vue";
 
 const popup = ref(null);
+const popupThree = ref(null);
 const pickerActive = ref(null);
 const pickerStart = ref(null);
 const popupheader = ref(null);
+const formcontactphoto = ref([])
 const activeList = [["男", "女"]];
 
 const userInfo = ref({});
@@ -158,6 +166,11 @@ onShow(() => {
 function getUserInfo() {
 	http.getUserInfo().then((res) => {
 		userInfo.value = res.data;
+	});
+}
+function toAgreement (type) {
+	uni.navigateTo({
+		url: "/pages/agreement/index?type=" + type
 	});
 }
 function showBirDay() {
@@ -205,11 +218,22 @@ function showPopup(type, text) {
 	formAct.value = type;
 	editText.value = text;
 	form.value = {};
-	popup.value.open();
+	formcontactphoto.value = []
+	if (type === 3) {
+		form.value.phoneNumber = userInfo.value.phoneNumber;
+		form.value.contactphoto = userInfo.value.contactphoto;
+		formcontactphoto.value = [userInfo.value.contactphoto]
+	}
+	if (type === 3) {
+		popupThree.value.open();
+	} else {
+		popup.value.open();
+	}
 }
 function handleClose() {
 	popup.value?.close();
 	popupheader.value?.close();
+	popupThree.value?.close();
 }
 
 async function onChooseAvatar(e) {
@@ -281,23 +305,23 @@ function handleSure() {
 			return;
 		}
 	}
-	if (formAct.value === 3) {
-		if (form.value.phoneNumber === "") {
-			uni.showToast({
-				title: "联系方式不能为空",
-				icon: "none",
-			});
-			return;
-		}
-		// 正则
-		if (!/^1[1-9]\d{9}$/.test(form.value.phoneNumber)) {
-			uni.showToast({
-				title: "请输入正确的手机号",
-				icon: "none",
-			});
-			return;
-		}
-	}
+	// if (formAct.value === 3) {
+	// 	if (form.value.phoneNumber === "") {
+	// 		uni.showToast({
+	// 			title: "联系方式不能为空",
+	// 			icon: "none",
+	// 		});
+	// 		return;
+	// 	}
+	// 	// 正则
+	// 	if (!/^1[1-9]\d{9}$/.test(form.value.phoneNumber)) {
+	// 		uni.showToast({
+	// 			title: "请输入正确的手机号",
+	// 			icon: "none",
+	// 		});
+	// 		return;
+	// 	}
+	// }
 	http.updateUserInfo(form.value).then((res) => {
 		if (res.code === "200") {
 			uni.showToast({
@@ -379,7 +403,7 @@ function toSettingTag() {
 
 	.page-bottom {
 		position: fixed;
-		height: 220rpx;
+		height: 174rpx;
 		background-color: #ffffff;
 		left: 0;
 		right: 0;

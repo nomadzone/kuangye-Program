@@ -70,6 +70,12 @@
 		},
 		methods: {
 			doPath(url, type = 0) {
+				if (!uni.getStorageSync("token")) {
+					uni.navigateTo({
+						url: '/pages/login/index'
+					})
+					return
+				}
 				if (!url) return 
 				if (type === 1) {
 					let userInfo = uni.getStorageSync('userInfo')

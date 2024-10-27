@@ -9,37 +9,21 @@
       <view class="body">
         <image
           class="close-icon"
-          src="../../static/images/partnerModalCloseIcon.svg"
+          src="/static/images/partnerModalCloseIcon.svg"
           @tap="handleClose"
         ></image>
         <image
           class="top-icon"
-          src="../../static/images/partnerTopIcon.svg"
+          src="/static/images/partnerTopIcon.svg"
         ></image>
 
-        <InfoBox
-          v-if="infoType === 1"
-          :info="infoData"
-          @toDetail="toDetail"
-        ></InfoBox>
-        <ContractBox v-else :info="infoData"></ContractBox>
+
+        <ContractBox :info="infoData"></ContractBox>
         <view
           class="footer-actions"
-          v-if="infoData.userStatus != 1"
-          @click.stop="handleChangeAction()"
         >
-          <view class="contract-action" v-if="infoType === 1">
-            <view class="contract-btn">获取联系</view>
-          </view>
-          <view class="info-btn" v-else-if="infoType === 2">
-            <view class="detail-btn">查看详情</view>
+          <view class="info-btn" >
             <view class="save-pic-btn" @click.stop="doView">保存到相册</view>
-          </view>
-        </view>
-        <view class="footer-actions" v-else>
-          <view class="info-btn">
-            <view class="detail-btn" @click.stop="deleteOne">删除</view>
-            <view class="save-pic-btn" @click.stop="toEdit">修改</view>
           </view>
         </view>
       </view>
@@ -50,7 +34,6 @@
 <script>
 import InfoBox from "./infoBox.vue";
 import ContractBox from "./contractBox.vue";
-import freshNewsService from "../service/service";
 export default {
   components: {
     InfoBox,
@@ -59,74 +42,12 @@ export default {
 
   data() {
     return {
-      infoType: 1, // 1-详情 2-联系方式
+      infoType: 2, // 1-详情 2-联系方式
       infoData: {},
     };
   },
   methods: {
-    deleteOne() {
-      uni.showModal({
-        title: "提示",
-        content: "确定删除该条找搭子吗？",
-        success: (res) => {
-          if (res.confirm) {
-            uni.showLoading({
-              title: "删除中...",
-            });
-            freshNewsService
-              .deleteFreshNews({
-                id: this.infoData.id,
-              })
-              .then((res) => {
-                if (res && res.code === "200") {
-                  uni.showToast({
-                    title: "删除成功",
-                    icon: "success",
-                    duration: 2000,
-                  });
-                  setTimeout(() => {
-                    this.$refs.popup.close();
-					this.$emit("getDetail");
-                  }, 1000);
-                } else {
-                  uni.showToast({
-                    title: res.msg || "删除失败",
-                    icon: "none",
-                    duration: 2000,
-                  });
-                }
-              })
-              .catch((err) => {
-                uni.showToast({
-                  title: "删除失败",
-                  icon: "none",
-                  duration: 2000,
-                });
-              })
-              .finally(() => {
-                uni.hideLoading();
-              });
-          }
-        },
-      });
-    },
-	toEdit() {
-		uni.navigateTo({
-			url: '/pagesPartner/pages/add/index?id=' + this.infoData.id,
-		})
-	},
-    toDetail() {
-      if (this.infoData.userLaunchStatus != 1) {
-        uni.navigateTo({
-          url:
-            "/pagesUserCenter/pages/thirdInfo/index?userId=" + infoData.userId,
-        });
-      } else {
-        uni.navigateTo({
-          url: "/pagesUserCenter/pages/index/index",
-        });
-      }
-    },
+
     show(info) {
       this.infoData = info;
       console.log(this.infoData);
@@ -236,7 +157,7 @@ export default {
           margin-right: 16rpx;
         }
         .save-pic-btn {
-          width: 50%;
+          width: 100%;
           height: 88rpx;
           line-height: 88rpx;
           text-align: center;

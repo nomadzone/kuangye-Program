@@ -73,11 +73,10 @@ export const formatDateString = (dateString) => {
 
 export const getCode = ()=> {
 	return new Promise((resolve, inject)=> {
-			wx.login({
+			uni.login({
 			  success: (res) => {
 			    if (res.code) {
 			      // 成功获取 code
-			      console.log('Login code:', res.code);
 				  resolve(res.code)
 			    } else {
 			      console.error('登录失败！' + res.errMsg);
@@ -203,6 +202,7 @@ export const formatDateText = (dateString) => {
 	// 拼接成最终的字符串
 	return `${formattedMonth}-${formattedDay}(${weekDay}) ${formattedHours}:${formattedMinutes}`;
   }
+
   
   /**
    * @description: 判断用户是否开启定位权限
@@ -267,4 +267,17 @@ export const formatDateText = (dateString) => {
         }
       })
     })
+  }
+ export function filterAndRemoveBefore(address) {
+	if (!address) return "";
+	let result = address;
+	const patterns = ['省', '市', '县', '自治区' ];
+	for (const pattern of patterns) {
+	  const regex = new RegExp(`.*?${pattern}`);
+	  const match = result.match(regex);
+	  if (match) {
+		result = result.slice(match.index + match[0].length).trim();
+	  }
+	}
+	return result;
   }

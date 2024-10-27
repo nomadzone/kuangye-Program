@@ -10,11 +10,11 @@
           <view class="address-info">
             <image
               class="address-icon"
-              src="../../static/images/address.png"
+              src="/static/images/address.png"
             ></image>
             <view class="distance-text">{{ info?.distanceMeters }}km</view>
             <view class="split-line"></view>
-            <view class="address-text">{{ filterAndRemoveBefore(info.address) }}</view>
+            <view class="address-text">{{ filterAndRemoveBefore(info?.address) }}</view>
           </view>
           <view class="guide-link">
             <!-- <view class="guide-text">导航</view> -->
@@ -24,11 +24,11 @@
           <view class="address-info">
             <image
               class="address-icon"
-              src="../../static/images/address.png"
+              src="/static/images/address.png"
             ></image>
             <view class="distance-text">{{ info?.distanceMeters }}km</view>
             <view class="split-line"></view>
-            <view class="address-text">{{ filterAndRemoveBefore(info.address) }}</view>
+            <view class="address-text">{{ filterAndRemoveBefore(info?.address) }}</view>
           </view>
           <view class="guide-link">
             <!-- <view class="guide-text">导航</view> -->
@@ -39,7 +39,7 @@
           <view class="date-info">
             <image
               class="date-icon"
-              src="../../static/images/dates.png"
+              src="/static/images/dates.png"
             ></image>
             <view class="date-text"
               >{{ formatDateMonthDay(info?.expectdate) }}
@@ -55,7 +55,7 @@
           <view class="date-info">
             <image
               class="date-icon"
-              src="../../static/images/dates.png"
+              src="/static/images/dates.png"
             ></image>
             <view class="date-text"
               >{{ formatDateMonthDay(info?.expectdate) }}
@@ -139,23 +139,23 @@ export default {
         this.headerPhotos = res.data[0];
       });
     },
+    filterAndRemoveBefore(address) {
+      if (!address) return "";
+	let result = address;
+	const patterns = ['省', '市', '县', '自治区' ];
+	for (const pattern of patterns) {
+	  const regex = new RegExp(`.*?${pattern}`);
+	  const match = result.match(regex);
+	  if (match) {
+		result = result.slice(match.index + match[0].length).trim();
+	  }
+	}
+	return result;
+  },
     toD(info) {
       console.log(info);
       this.$emit("toDetail");
     },
-    filterAndRemoveBefore(address) {
-      if (!address) return "";
-      let result = address;
-      const patterns = ['省', '市', '县', '自治区' ];
-      for (const pattern of patterns) {
-        const regex = new RegExp(`.*?${pattern}`);
-        const match = result.match(regex);
-        if (match) {
-        result = result.slice(match.index + match[0].length).trim();
-        }
-      }
-      return result;
-      },
     // 日期转 月日
     formatDateMonthDay(dates) {
       if (!dates) return "";
@@ -260,6 +260,7 @@ export default {
         color: #000000;
         font-size: 28rpx;
         margin-bottom: 8rpx;
+        height: 40rpx;
 
         .address-info {
           display: flex;

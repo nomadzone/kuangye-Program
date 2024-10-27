@@ -60,8 +60,9 @@
           <view class="disagree" v-else></view>
         </view>
         <view class="access-text"
-          >我已阅读并同意<text class="link-text">《用户协议》</text>和<text
+          >我已阅读并同意<text class="link-text" @click="toAgreement(1)">《用户协议》</text>和<text
             class="link-text"
+            @click="toAgreement(2)"
             >《隐私政策》</text
           ></view
         >
@@ -75,24 +76,47 @@ import {ref, onMounted} from 'vue';
 import http from '@/utils/http'
 import { getCode, getUserProfile } from '@/utils/index'
 
-
+import { onUnload } from "@dcloudio/uni-app";
 let accessStatus = ref(false)
+let codes = ref('')
+let timer = ref(null)
+onMounted(async () => {
+	const code = await getCode()
+  codes.value = code
+  if (timer.value) {
+    clearInterval(timer.value)
+    timer.value = null
+  }
+  timer.value = setInterval(async() => {
+    const code = await getCode()
+    codes.value = code
+  }, 60000)
+})
+onUnload(() => {
+  if (timer.value) {
+    clearInterval(timer.value)
+    timer.value = null
+  }
+})
 
 const handleChangeAgreeStatus = () => {
 	accessStatus.value = !accessStatus.value
 }
-
+function toAgreement (type) {
+	uni.navigateTo({
+		url: "/pages/agreement/index?type=" + type
+	});
+}
 const handleGetUserProfile = async() => {
 	uni.showLoading({
 		title: '加载中',
 		mask: true
 	})
 	let target = await getUserProfile()
-	const code = await getCode()
 	console.log(target, 'userInfo')
 	const params = {
 		encryptedData: target.encryptedData,
-		code,
+		code:codes.value,
 		iv: target.iv,
 	}
 	let res = await http.userLogin(params)
@@ -119,10 +143,9 @@ const handleWxLogin = async({ target }) => {
 		title: '加载中',
 		mask: true
 	})
-	const code = await getCode()
 	const params = {
 		encryptedData: target.encryptedData,
-		code,
+		code:codes.value,
 		iv: target.iv,
 	}
 	let res = await http.userLogin(params)

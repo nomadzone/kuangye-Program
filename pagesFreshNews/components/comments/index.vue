@@ -102,7 +102,7 @@
         </view>
       </view>
     </view>
-    <view class="empty-view" v-if="commentList && commentList.length === 0">
+    <view class="empty-view" v-if="!commentList || ( commentList && commentList.length === 0)">
       <image class="empty-img" src="@/static/images/empty_pl.png"></image>
       <text>还没人评论, 快来评论吧~</text>
     </view>

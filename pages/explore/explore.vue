@@ -1,7 +1,8 @@
 <template>
 	<view class="explore-page">
 		<!-- 页面内容 -->
-		<home-navbar @selectLoaction='doAction' :title="navTitle" :userInfo="userInfo" />
+		<home-navbar @selectLoaction='doAction' :title="navTitle" :userInfo="userInfo"  />
+    <GradualTwo :height="statusBarHeight"></GradualTwo>
 		<view class="page-body" :style="{ marginTop: statusBarHeight }">
 			<view class="banner-box">
 				<swiper
@@ -42,8 +43,8 @@
 					<image class="searc-icon" src="../../static/images/search.svg"></image>
 					<input class="search-input" placeholder="找找附近的好去处..." v-model="searchText" @confirm="getSearchheaderList"></input>
 				</view>
-				<scroll-view scroll-x>
-					<view class="explore-type-row">
+				<view >
+					<scroll-view scroll-x class="explore-type-row">
 						<view v-for="item in typeOptions" :key="item.id"
 							:class="choosenType == item.categoryName ? 'filter-item filter-item-active' : 'filter-item'" @click="seartchType(item.categoryName)">
 							<view class="type-img">
@@ -51,8 +52,8 @@
 							</view>
 							<view class="item-name">{{ item.categoryName }}</view>
 						</view>
-					</view>
-				</scroll-view>
+					</scroll-view>
+				</view>
 
 				<view class="shop-group">
 					<ExploreIndexShopCardGroup :list="shopList" />
@@ -88,9 +89,9 @@ import HomeNavbar from "@/components/Navbar/HomeNavbar.vue";
 import { onReachBottom } from "@dcloudio/uni-app";
 import Popup from "./popup.vue";
 import emptyImg from "@/static/images/empty-my.png";
-import { onShow } from "@dcloudio/uni-app";
+import { onShow, onPageScroll } from "@dcloudio/uni-app";
 import ExploreIndexShopCardGroup from "@/components/ExploreIndexShopCardGroup/index.vue";
-
+import GradualTwo from "@/components/Navbar/GradualTwo.vue";
 let navTitle = ref("西安交通大学博学楼");
 let statusBarHeight = ref("80rpx");
 let publicSuccessShow = ref(false);
@@ -100,7 +101,6 @@ let pageSize = ref(1);
 const searchText = ref("");
 const images = ref([]);
 const userInfo = ref(uni.getStorageSync("userInfo"));
-
 onMounted(() => {
   statusBarHeight.value = uni.getStorageSync("navBarHeight") * 2 + 30 + "rpx";
   http
@@ -111,6 +111,7 @@ onMounted(() => {
       images.value = res.data || [];
     });
 });
+
 const doAction = () => {
   let selectLocation = uni.getStorageSync("location");
   userInfo.value = { ...userInfo.value, address: selectLocation.address };
@@ -149,19 +150,25 @@ getShopTypeLists();
 
 function getheaderList() {
   const location = uni.getStorageSync("location");
-
+  uni.showLoading({
+    title: "加载中",
+    mask: true,
+  });
   http
     .headerList({
       pageNum: pageSize.value,
       pageSize: 10,
       name: searchText.value,
-      longitude: '100.18901783342115',
-      dimension: '25.642070595753054',
+      longitude: location.longitude,
+      dimension: location.latitude,
       categoryName: choosenType.value,
     })
     .then((res) => {
       shopList.value = shopList.value.concat(res.data.list || []);
 	  total.value = res.data.total;
+    })
+    .finally(() => {
+      uni.hideLoading();
     });
 }
 function getSearchheaderList() {
@@ -309,6 +316,8 @@ onReachBottom(() => {
       flex-direction: row;
       justify-content: flex-start;
       align-items: center;
+      width: 100%;
+      white-space: nowrap;
 
       .filter-item {
         width: 136rpx;
@@ -318,6 +327,7 @@ onReachBottom(() => {
         padding: 4rpx;
         background-color: rgba(235, 231, 253, 1);
         margin-right: 16rpx;
+        display: inline-block;
 
         .type-img {
           width: 100%;

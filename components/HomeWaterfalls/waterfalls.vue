@@ -25,7 +25,7 @@
             slot="slot{{ index }}"
             @click="doItem(item, index)"
           >
-            <view v-if="item.type === 4 && index === 0" class="active">
+            <view v-if="item.type === 4" class="active">
               <text class="tags">平台活动</text>
               <swiper
                 class="swiper"
@@ -45,7 +45,7 @@
                   ></image>
                 </swiper-item>
               </swiper>
-            </view>
+            </view> 
             <view v-if="item.type === 1" class="activity-item-content" style="width: 100%;">
               <view class="content_top">
                 <view class="top_img">
@@ -133,7 +133,7 @@
                         >
                         </image>
                         <image
-                          src="@/static/images/Vector.png"
+                          src="@/static/images/Vector.svg"
                           v-else
                         >
                         </image>
@@ -148,12 +148,13 @@
             <view v-if="item.type === 3" class="activity-item_thr" style="width: 100%;">
               <view class="thr_content">
                 <view class="content_thr_title">
-                  <text>找搭子</text> {{ item?.describe }}
+                  {{ item?.describe }}
                 </view>
+                <view class="zdz_content">找搭子</view>
                 <view class="content_thr_desc">
-                  <view class="dance">{{ item?.distanceMeters }}</view>
+                  <view class="dance">{{ item?.distanceMeters }}km</view>
                   <view class="line"></view>
-                  <view class="position">{{ item?.address }}</view>
+                  <view class="position">{{ filterAndRemoveBefore(item?.address) }}</view>
                 </view>
                 <view class="thr_header">
                   <image mode="aspectFill" :src="item?.initiatorUrl"></image>
@@ -248,7 +249,7 @@
                       src="@/static/images/like-s.png"
                       v-if="item.upUserStatus == 1"
                     ></image>
-                    <image v-else src="@/static/images/Vector.png"></image>
+                    <image v-else src="@/static/images/Vector.svg"></image>
                     
                     <view class="right_num">{{ item.orderNumber }}</view>
                   </view>
@@ -274,12 +275,13 @@
             <view class="activity-item_thr">
               <view class="thr_content">
                 <view class="content_thr_title">
-                  <text>找搭子</text> {{ item?.describe }}
+                   {{ item?.describe }}
                 </view>
+                <view class="zdz_content">找搭子</view>
                 <view class="content_thr_desc">
-                  <view class="dance">{{ item?.distanceMeters }}Km</view>
+                  <view class="dance">{{ item?.distanceMeters }}km</view>
                   <view class="line"></view>
-                  <view class="position">{{ item?.address }}</view>
+                  <view class="position">{{ filterAndRemoveBefore(item?.address) }}</view>
                 </view>
                 <view class="thr_header">
                   <image mode="aspectFill" :src="item?.initiatorUrl"></image>
@@ -300,9 +302,9 @@ import useZPaging from "@/uni_modules/z-paging/components/z-paging/js/hooks/useZ
 import constant from "@/utils/constant";
 import { formatDateTextTwo } from "@/utils/index.js";
 import emptyImg from "@/static/images/empty-my.png";
-
 import { onShow } from "@dcloudio/uni-app";
 import { ref } from "vue";
+import {filterAndRemoveBefore} from "@/utils/index.js";
 const paging = ref(null);
 const list = ref([]);
 const images = ref([]);
@@ -321,28 +323,42 @@ const props = defineProps({
 onShow(() => {
   if(paging.value) {
     list.value = [];
-    paging.value.reload();
+    // paging.value.reload();
   }
 })
 
+
 async function queryList(current, size) {
   try {
-      let location = uni.getStorageSync("location");
+  let location = uni.getStorageSync("location");
+  if (!location){
+    location = {};
+    location.latitude = '34.223';
+    location.longitude = '108.952';
+  }
   let params = {
     longitude: location.longitude,
     latitude: location.latitude,
     pageNum: current,
     pageSize: size,
     type: props.sortIndex,
+    authType: uni.getStorageSync('token')? 0 : 1
   };
-  if (props.sortIndex == 0) {
+  if (props.sortIndex == 0 && uni.getStorageSync('token') && current== 1 ) {
     let resImg = await http.homeNoticeList({
       type: 1,
     });
-    images.value = JSON.parse(JSON.stringify(resImg.data || []));
+    let newResImg = resImg.data.map((item) => {
+      return {
+        ...item,
+        type: 4
+          }
+        }
+      )
+    images.value = JSON.parse(JSON.stringify(newResImg|| []));
   }
   const res = await http.homeActivity(params);
-  if (props.sortIndex == 0) {
+  if (props.sortIndex == 0 && uni.getStorageSync('token') && current== 1) {
     let unShift = {};
     unShift = {
       type: 4,
@@ -350,10 +366,7 @@ async function queryList(current, size) {
       images: images.value.map((item) => item.images).join(","),
       title: "最新活动",
     };
-    // if (!list.value.find(item => item.type === 4)) {
-    //     res.data.list.unshift(unShift)
-    // }
-    // res.data.list.unshift(unShift);
+    res.data.list.unshift(unShift)
   }
   res.data.list = res.data.list.map((item) => {
     return {
@@ -383,8 +396,7 @@ headerPhoto()
 function getSjHeader() {
   if(headerPhotos.value) {
     // 随机取一张
-    let index = Math.floor(Math.random() * headerPhotos.value.length)
-    console.log(index, '22')
+    let index = Math.floor(Math.random() * headerPhotos.value?.length)
     return headerPhotos.value[index]
   } else {
     return ''
@@ -494,6 +506,7 @@ async function cancelPay(id) {
   }
 }
 function doItem(item, index) {
+
   if (item.type === 1) {
     uni.navigateTo({
       url: `/pagesToggle/pages/details/details?id=${item.id}`,
@@ -519,7 +532,7 @@ defineExpose({
   toRold,
 });
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .waterfalls_content {
   width: 100%;
   height: 100%;
@@ -735,6 +748,7 @@ defineExpose({
     overflow: hidden;
     padding: 16rpx;
     box-sizing: border-box;
+    position: relative;
 
     .content_thr_title {
       color: #121212;
@@ -744,14 +758,18 @@ defineExpose({
       line-height: 40rpx;
       // 两行溢出省略号
       display: -webkit-box;
-      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
       text-overflow: ellipsis;
-      margin-bottom: 16rpx;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      word-break: break-all;
+      // 开局空四个字
+      text-indent: 4em;
 
-      text {
-        display: inline-block;
+    }
+    .zdz_content {
+        display: block;
         width: 84rpx;
         height: 36rpx;
         background: #00c4ef;
@@ -762,9 +780,10 @@ defineExpose({
         font-size: 24rpx;
         font-weight: 500;
         margin-right: 16rpx;
+        position: absolute;
+        left: 18rpx;
+        top: 17rpx;
       }
-    }
-
     .content_thr_desc {
       width: 100%;
       height: 50rpx;
@@ -885,6 +904,7 @@ defineExpose({
               width: 32rpx;
               height: 32rpx;
               margin-right: 8rpx;
+              border-radius: 50%;
             }
 
             .left_name {
@@ -937,6 +957,7 @@ defineExpose({
 
 .active {
   position: relative;
+  width: calc(100% - 8rpx);
   margin-bottom: 16rpx;
 }
 

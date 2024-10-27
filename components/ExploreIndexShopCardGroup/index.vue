@@ -15,7 +15,7 @@
 					</swiper-item>
 				</swiper>
 				<div class="shop_name">
-					<image src="/static//images/explore_address.png"></image> {{ item.name }}
+					<image src="/static/images/explore_address.svg"></image> {{ item.name }}
 				</div>
 			</view> 
 			<view class="shop-info-box">
@@ -26,7 +26,7 @@
 					</view>
 					<view class="recommed-info">{{item.recommendText}}</view>
 				</view>
-				<view class="shop_memo">{{ item.shopRemark || '暂无' }}</view>
+				<view class="shop_memo">{{ item.category || '暂无' }}</view>
 				<view class="shop-info">
 					<view class="left">
 						<view class="shop-star">
@@ -40,7 +40,7 @@
 					</view>
 					<view class="right">
 						<view class="distance-text">{{item.distanceMeters}}km</view>
-						<view class="location-text">{{item.address}}</view>
+						<view class="location-text">{{filterAndRemoveBefore(item.address)}}</view>
 					</view>
 				</view>
 			</view>
@@ -52,11 +52,11 @@
 
 <script  setup>
 	import { defineProps } from 'vue'
+	import {filterAndRemoveBefore} from "@/utils/index.js";
 	const props = defineProps({
 		list: Array
 	});
 	function toDetail(item) {
-		console.log('12',item)
 		uni.navigateTo({ 
 			url: `/pages/explore/detail?id=${item.id}`
 			})
@@ -75,7 +75,7 @@
 		overflow: hidden;
 		background-color: #fff;
 		padding-bottom: 18rpx;
-
+		margin-bottom: 30rpx;
 		.show-img-box {
 			height: 340rpx;
 			background-color: #ccc;
@@ -169,6 +169,7 @@
 				align-items: center;
 				color:$Color-B-3;
 				font-size: 24rpx;
+				overflow: hidden;
 				.left {
 					padding-right: 18rpx;
 					display: flex;
@@ -181,7 +182,6 @@
 						.xing {
 							width: 24rpx;
             				height: 24rpx;
-							margin-right: 16rpx;
 						}
 					}
 					.price-text {

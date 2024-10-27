@@ -13,7 +13,7 @@
 		  <!-- <text class="title" style="font-size: 28rpx;">{{ userInfo.nickname || '' }}</text> -->
 		</view>
 		<view class="bottom" @click="handleRightAction" >
-		  <text class="title" style="font-size: 24rpx;">{{ userInfo.address || '' }}</text>
+		  <text class="title" style="font-size: 24rpx;">{{filterAndRemoveBefore(userInfo.address)  || '' }}</text>
 		  <image src="/static/images/arrow-right.png" v-if="userInfo.address" class="icon" />
 		</view>
 	</view>
@@ -23,6 +23,7 @@
 <script>
 import http from '../../utils/http'
 export default {
+  name: 'HomeNavbar',
   props: {
     title: {
       type: String,
@@ -55,6 +56,20 @@ export default {
   computed: {
   },
   methods: {
+
+   filterAndRemoveBefore(address) {
+      if (!address) return ''
+      let result = address;
+      const patterns = ['省', '市', '县', '自治区' ];
+      for (const pattern of patterns) {
+        const regex = new RegExp(`.*?${pattern}`);
+        const match = result.match(regex);
+        if (match) {
+        result = result.slice(match.index + match[0].length).trim();
+        }
+      }
+      return result;
+      },
     handleGoUserCenter() {
       uni.navigateTo({
         url: '/pagesUserCenter/pages/index/index'
@@ -65,19 +80,24 @@ export default {
       let that = this
       wx.chooseLocation({
         success: function (res) {
+          let location = {
+                  latitude: res.latitude,
+                  longitude: res.longitude
+                  }
+          uni.setStorageSync('location', location)
              http.getAddress({
             longitude: res.longitude,
             latitude: res.latitude,
-            }).then(val => {
-              let location = {
-                address: val.data,
-                latitude: res.latitude,
-                longitude: res.longitude
-                }
-                console.log(res,'res')
-                uni.setStorageSync('location', location)
-                that.$emit('selectLoaction', location)
-              })
+              }).then(val => {
+                let location = {
+                  address: val.data,
+                  latitude: res.latitude,
+                  longitude: res.longitude
+                  }
+                  console.log(res,'res=========>')
+                  uni.setStorageSync('location', location)
+                  that.$emit('selectLoaction', location)
+                })
         },
         fail: function (err) {
           console.log(err, '用户未选择地址');

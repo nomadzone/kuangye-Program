@@ -52,10 +52,10 @@
 							activityVo?.distanceMeters || activityVo?.distanceMeters === 0
 						">
 							{{ activityVo?.distanceMeters + "km" }} |
-							{{ activityVo?.address }}
+							{{ filterAndRemoveBefore(activityVo?.address) }}
 						</text>
 						<text v-else>
-							{{ activityVo?.address }}
+							{{ filterAndRemoveBefore(activityVo?.address) }}
 						</text>
 					</view>
 				</view>
@@ -75,7 +75,7 @@
 						@click="viewPopupLook">
 						仅剩{{ info.surplusNumber }}个名额 >
 					</view>
-					<view class="more gray" v-else>
+					<view class="more gray" v-else @click="viewPopupLook">
 						{{ yiqiyuan[activityVo?.status] }}
 					</view>
 				</view>
@@ -124,7 +124,13 @@
 					<image src="/static/images/wechat-fill-black.png" mode=""></image>
 					<text style="word-break: break-all">联系发起人</text>
 				</button>
-				<button class="fill" hover-class="button-hover" @click="doApply" v-if="info.userLaunchStatus != 1 && info.userStatus == 0">
+				<button class="fill_my" hover-class="button-hover"  v-if="info.userLaunchStatus != 1 && info.userStatus == 0 && activityVo.status == 103">
+					<text>已满员</text>
+				</button>
+				<button class="fill_my" hover-class="button-hover"  v-if="info.userLaunchStatus != 1 && info.userStatus == 0 && activityVo.status == 104">
+					<text>已结束</text>
+				</button>
+				<button class="fill" hover-class="button-hover" @click="doApply" v-if="info.userLaunchStatus != 1 && info.userStatus == 0 && activityVo.status != 103 && activityVo.status != 104">
 					<text style="margin-right: 32rpx">¥{{ activityVo?.price }}/人</text>
 					<text>报名</text>
 				</button>
@@ -132,7 +138,7 @@
 				<button @click="cancelBm" class="outline" hover-class="button-hover" v-if="
 					info.userLaunchStatus != 1 &&
 					info.userStatus == 1 &&
-					(activityVo?.status == 100 || activityVo?.status == 101)
+					(activityVo?.status == 100 || activityVo?.status == 101 || activityVo?.status == 103)
 				">
 					<text>取消报名</text>
 				</button>
@@ -140,7 +146,6 @@
 					info.userLaunchStatus != 1 &&
 					info.userStatus == 1 &&
 					(activityVo?.status == 102 ||
-						activityVo?.status == 103 ||
 						activityVo?.status == 104 ||
 						activityVo?.status == 105 ||
 						activityVo?.status == 106 ||
@@ -209,7 +214,7 @@
 							<image src="/static/images/map-pin-line.png" mode=""></image>
 							<text>
 								{{ activityVo?.distanceMeters + "km" }} |
-								{{ activityVo.address }}
+								{{ filterAndRemoveBefore(activityVo?.address) }}
 							</text>
 						</view>
 						<view class="date">
@@ -223,9 +228,9 @@
 					<view class="apply-popup-line">
 						<view>
 							<text> 退款</text>
-							<text class="big">¥{{ activityVo?.price }}</text>
+							<text class="big">¥{{ getPrices(activityVo?.price)  }}</text>
 						</view>
-						<view class="gray"> 活动开始24小时前取消，可全额退款 </view>
+						<view class="gray">{{ info?.refundStatus == 1?'活动开始前24小时～开始前申请，退款50%':'活动开始24小时前取消，可全额退款' }}  </view>
 					</view>
 					<view class="submit">
 						<button class="outline" hover-class="button-hover">
@@ -286,6 +291,7 @@ import Toast from '@/components/Toast/Toast.vue';
 import http from '@/utils/http.js';
 import { formatDateText } from '@/utils/index.js'
 import constant from '@/utils/constant.js'
+import Decimal from "decimal.js";
 import {
 	getDayHours,
 	getDayMin,
@@ -359,6 +365,28 @@ export default {
 	}
   },
 	methods: {
+		getPrices(prices) {
+			if (prices) {
+				if (this.info.refundStatus == 1) {
+					return Decimal(prices).mul(0.5).toNumber()
+				} else {
+					return prices
+				}
+			}
+		},
+		filterAndRemoveBefore(address) {
+			if (!address) return "";
+			let result = address;
+			const patterns = ['省', '市', '县', '自治区' ];
+			for (const pattern of patterns) {
+				const regex = new RegExp(`.*?${pattern}`);
+				const match = result.match(regex);
+				if (match) {
+				result = result.slice(match.index + match[0].length).trim();
+				}
+			}
+			return result;
+			},
 		goMap() {
 			const { longitude, latitude } = this.activityVo
 			wx.getLocation({
@@ -471,6 +499,7 @@ export default {
 				this.activityVo = res?.data.activityVo
 				this.userActivityUpVo = res?.data.userActivityUpVo
 				this.info = res.data
+				console.log('this.info', this.info)
 			} else {
 				uni.showToast({
 					title: res?.msg,
@@ -1020,7 +1049,11 @@ export default {
 			border: 1px solid #a3a3a3;
 			color: #a3a3a3;
 		}
-
+		button.fill_my{
+			background: #F5F5F5;
+			border: none;
+			color: #A8A8A8;
+		}
 		button.disabled,
 		button.gray {
 			background-color: #f5f5f5;

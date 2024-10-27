@@ -132,7 +132,7 @@
                     </view>
                     <view class="right_info">
                       <image
-                        src="@/static/images/Vector.png"
+                        src="@/static/images/Vector.svg"
                         v-if="item.upUserStatus == 0"
                       >
                       </image>
@@ -156,7 +156,7 @@
               <view class="content_thr_desc">
                 <view class="dance">{{ item?.distanceMeters }}</view>
                 <view class="line"></view>
-                <view class="position">{{ item?.address }}</view>
+                <view class="position">{{ filterAndRemoveBefore(item?.address) }}</view>
               </view>
               <view class="thr_header">
                 <image mode="aspectFill" :src="item?.initiatorUrl"></image>
@@ -179,6 +179,8 @@ import { formatDateTextTwo } from "@/utils/index.js";
 import constant from "@/utils/constant";
 import emptyImg from "@/static/images/empty-my.png";
 import PartnerModal from '@/components/PartnerModal/index.vue'
+import {filterAndRemoveBefore} from "@/utils/index.js";
+
 import { ref } from "vue";
 const value = ref("");
 const result = ref([]);
@@ -258,7 +260,7 @@ function doItem(item, index) {
 }
 function queryList() {
 	list.value = []
-  const loacation = uni.getStorageSync("loacation") || "";
+  const loacation = uni.getStorageSync("location") || "";
   http
     .homeActivitySelect({
       type: null,
@@ -584,6 +586,7 @@ function queryList() {
       overflow: hidden;
       text-overflow: ellipsis;
       margin-bottom: 16rpx;
+      word-break: break-all;
 
       text {
         display: inline-block;

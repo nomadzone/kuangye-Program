@@ -14,7 +14,7 @@
 
     <view class="nav_box_loading" v-if="showloading">
       <view class="nav_box_loading_inner">
-        <image src="@/static/images/kuangye.png"></image>
+        <image src="../../static/images/kuangyeqqq.png"></image>
         <view class="nav_box_loading_text"> 正在探索适合你的生活 </view>
         <view class="nav_box_loading_text">稍等哦</view>
         <view class="loadings"></view>
@@ -97,14 +97,14 @@ const handleChangeChartTag = (val, index) => {
 
   if (index === 0 || index === 1) {
     let data = {
-      type: index + 1,
+      type: val.dictType,
       code: val.dictCode,
       name: val.dictLabel,
     };
     choosenCharacter.value[index] = data;
   } else {
     let data = {
-      type: index + 1,
+      type: val.dictType,
       code: val.dictCode,
       name: val.dictLabel,
     };
@@ -214,6 +214,7 @@ function handleSubmit() {
         flex-wrap: wrap;
         position: relative;
         .tag-item {
+        margin-right: 20rpx;
           margin-bottom: 24rpx;
           width: 182rpx;
           height: 50rpx;

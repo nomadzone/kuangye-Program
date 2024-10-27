@@ -1,7 +1,7 @@
 <template>
 	<view class="wallet">
 		 <view class="cark">
-			 <button class="btn" hover-class="hover" @click="doFunds">提现</button>
+			 <!-- <button class="btn" hover-class="hover" @click="doFunds">提现</button> -->
 			 <image class="bg" src="../../static/images/walet-bg.png" mode=""></image>
 			<view>
 				<view>余额</view>

@@ -57,7 +57,7 @@
     </view>
     <view class="self-nav-container">
       <SelfNav v-if="pageViewType === 1" />
-      <OtherPageActions :info="userInfo" :followStatus="userInfo?.isFans" v-else />
+      <OtherPageActions :info="userInfo" @toConcatenates="toConcatenates" :followStatus="userInfo?.isFans" v-else />
       <UserCenterTab
         :tabs="tabs"
         :activeTab="activeTab"
@@ -175,7 +175,7 @@
                         <view class="left_name">{{ item?.initiatorName }}</view>
                       </view>
                       <view class="right_info">
-                        <image src="@/static/images/Vector.png"></image>
+                        <image src="@/static/images/Vector.svg"></image>
                         <view class="right_num">{{ item.orderNumber }}</view>
                       </view>
                     </view>
@@ -206,7 +206,7 @@
                     <view class="content_thr_desc">
                       <view class="dance">{{ item?.distanceMeters }}</view>
                       <view class="line"></view>
-                      <view class="position">{{ item?.address }}</view>
+                      <view class="position">{{ filterAndRemoveBefore(details?.address) }}</view>
                     </view>
                     <view class="thr_header">
                       <image
@@ -225,6 +225,10 @@
         </z-paging>
       </view>
     </view>
+
+
+
+    <Partner ref="partnerModalRef"/>
   </view>
 </template>
   
@@ -240,11 +244,14 @@ import constant from "@/utils/constant";
 import { formatDateText } from "@/utils/index.js";
 import emptyImg from "@/static/images/empty-my.png";
 import { onShow, onLoad } from "@dcloudio/uni-app";
+import Partner from './partents/index.vue'
+import {filterAndRemoveBefore} from "@/utils/index.js";
+
 
 let pageViewType = ref(0); // 页面视角 1 自己 0 他人
 const paging = ref(null);
 const waterfallsFlowRef = ref(null);
-
+const partnerModalRef = ref();
 const userInfo = ref(uni.getStorageSync("userInfo"));
 const list = ref([]);
 let tabs = ref([
@@ -281,6 +288,17 @@ onShow(() => {
     getUserThird(userThirdId.value);
   }
 });
+function toConcatenates() {
+  const userInfo = uni.getStorageSync("userInfo");
+  if (userInfo?.phoneNumber && userInfo?.contactphoto) {
+    uni.showToast({
+      title: "暂无信息",
+      icon: "none",
+    });
+    return
+  }
+  partnerModalRef.value.show(userInfo);
+}
 
 // 跳转关注
 function toGz(type) {
@@ -732,6 +750,7 @@ useZPaging(paging, queryList);
         overflow: hidden;
         text-overflow: ellipsis;
         margin-bottom: 16rpx;
+        word-break: break-all;
         text {
           display: inline-block;
           width: 84rpx;

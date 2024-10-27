@@ -17,9 +17,9 @@
       </view>
       <view class="shop-info">
         <view class="shop-info-content">
-          <view class="left">
+          <view class="left left_title">
             <image src="/static/images/clock.png"></image> 营业时间:
-            {{ getJsonData(info?.businessHoursStart) || "-" }}
+            {{getWecks(info)}}{{ getJsonData(info?.businessHoursStart) || "-" }}
           </view>
           <view class="right">
             <view class="right_btn">{{
@@ -38,7 +38,7 @@
         <view class="shop-info-content">
           <view class="left">
             <image src="/static/images/address_icon.png"></image>
-            {{ info?.distanceMeters }}Km {{ info?.address }}
+            {{ info?.distanceMeters }}Km {{ filterAndRemoveBefore(info?.address) }}
           </view>
           <view class="right" @click="toMap">
             <image src="/static/images/ts_icon.png"></image>
@@ -54,8 +54,7 @@
           <view class="tao_list" v-if="showTc ? true : index < 2"  @click.stop="indetail(item)">
             <view class="tao_list_left">
               <image :src="item?.comboPhotoUrl?.split(',')[0]" mode="aspectFill"></image>
-              <view v-if="item?.discount" class="swiper-item-title"
-                >限时{{ item?.discount }}折</view>
+  
             </view>
             <view class="tao_list_right">
               <view class="right_title"
@@ -106,8 +105,8 @@
 
     <view class="btm_btn">
       <view class="btm_btn_left">
-        <image v-if="info?.isCollect == 1" src="/static/images/Button_dp.png"  @click="collect"></image>
-        <image v-else src="/static/images/Button_dp_two.png" @click="collect"></image>
+        <image v-if="info?.isCollect == 1" src="/static/images/Button_dp.svg"  @click="collect"></image>
+        <image v-else src="/static/images/Button_dp_two.svg" @click="collect"></image>
       </view>
       <view class="btm_btn_right" @click="todapplyPopupPl"> 我要评价 </view>
     </view>
@@ -142,7 +141,7 @@
         <view class="icon_text">
           <image class="icon" src="/static/images/tk1.png"></image> 可用日期
         </view>
-        <view class="no_text"> {{buyItem?.validTimeStart}}-{{ buyItem?.validTimeEnd }} </view>
+        <view class="no_text"> {{buyItem?.validTimeStart?.split(' ')[0]}}-{{ buyItem?.validTimeEnd?.split(' ')[0] }} </view>
         <view class="icon_text">
           <image class="icon" src="/static/images/tk2.png"></image> 使用方式
         </view>
@@ -190,11 +189,13 @@
 </template>
 <script setup>
 import Navbar from "@/components/Navbar/Navbar.vue";
-import { onReachBottom, onPageScroll, onLoad } from "@dcloudio/uni-app";
+import { onReachBottom, onPageScroll, onLoad, onShow, onPullDownRefresh } from "@dcloudio/uni-app";
 import PoupWrap from "@/components/Popup/Wrap.vue";
 import Decimal from "decimal.js";
 import http from "@/utils/http.js";
 import PlList from "@/components/PlList/plList.vue";
+import {filterAndRemoveBefore} from "@/utils/index.js";
+
 import { ref } from "vue";
 const applyPopup = ref(false);
 const info = ref({});
@@ -217,38 +218,92 @@ onLoad((options) => {
   id.value = options.id;
   getDetail();
 });
+onShow(() => {
+  if(id.value) {
+    getDetail();
+
+  }
+});
+function getWecks(info) {
+  const days = [{
+    name: '一',
+    available: info.monday === '1'
+  }, {
+    name: '二',
+    available: info.tuesday === '1'
+  },
+  {
+    name: '三',
+    available: info.wednesday === '1'
+  },
+  {
+    name: '四',
+    available: info.thursday === '1'
+  },
+  {
+    name: '五',
+    available: info.friday === '1'
+  },
+  {
+    name: '六',
+    available: info.saturday === '1'
+  },
+  {
+    name: '日',
+    available: info.sunday === '1'
+  }]
+  const unavailableDays = days.filter((day) => {
+    return !day.available;
+  });
+  if (unavailableDays.length !== 0) {
+    const navailable = days.filter((day) => {
+      return day.available;
+    })
+    const yeName = navailable.map((day) => {
+      return day.name;
+    }).join("、");
+    return "周" + yeName + "营业";
+  }
+
+}
+
+
 function getMemo(item) {
-  if(item.allDayStatus && item.legalHolidayStatus) {
+  if(item.allDayStatus==='true' && item.legalHolidayStatus==='true') {
     return "全部日期可用，包含法定节假日";
-  } else if(item.allDayStatus && !item.legalHolidayStatus) {
-    return "不包含法定节假日"
+  } else if(item.allDayStatus==='true' && item.legalHolidayStatus ==='false') {
+    return "法定节假日不可用"
   }
   // monday  tuesday  wednesday  thursday  friday  saturday  sunday
-  getAvailability(item.monday, item.tuesday, item.wednesday, item.thursday, item.friday, item.saturday, item.sunday)
+  console.log(item.monday, item.tuesday, item.wednesday, item.thursday, item.friday, item.saturday, item.sunday, item.legalHolidayStatus)
+  return getAvailability(item.monday, item.tuesday, item.wednesday, item.thursday, item.friday, item.saturday, item.sunday, item.legalHolidayStatus)
 }
-function getAvailability(monday, tuesday, wednesday, thursday, friday, saturday, sunday) {
+function getAvailability(monday, tuesday, wednesday, thursday, friday, saturday, sunday, legalHolidayStatus) {
     // 将每一天的可用性放入一个数组中
     const days = [
-        { name: '周一', available: monday },
-        { name: '周二', available: tuesday },
-        { name: '周三', available: wednesday },
-        { name: '周四', available: thursday },
-        { name: '周五', available: friday },
-        { name: '周六', available: saturday },
-        { name: '周日', available: sunday },
+        { name: '周一', available: monday==='true' },
+        { name: '周二', available: tuesday ==='true' },
+        { name: '周三', available: wednesday ==='true' },
+        { name: '周四', available: thursday ==='true' },
+        { name: '周五', available: friday ==='true' },
+        { name: '周六', available: saturday ==='true' },
+        { name: '周日', available: sunday ==='true' },
     ];
 
-    // 筛选出可用的日子
-    const availableDays = days.filter(day => day.available).map(day => day.name);
+    // 筛选不可用的日子
+    const unavailableDays = days.filter((day) => {
+        return !day.available;
+    });
+    // 如果没有不可用的日子，则返回全部日期可用
+    if (unavailableDays.length === 0) {
+        return "全部日期可用，" + (legalHolidayStatus==='true' ? "包含法定节假日" : "不包含法定节假日")
+    }
 
-    // 返回结果
-    if (availableDays.length === 7) {
-        return '周一至周日';
-    }
-    if (availableDays.length > 0) {
-        return `${availableDays.join('')}可用`; // 使用模板字符串
-    }
-    return '无可用时间'; // 如果没有任何可用的日子
+    // 如果有不可用的日子，则返回不可用日期
+    const unavailableDate = unavailableDays.map((day) => {
+        return day.name;
+    }).join("、");
+    return unavailableDate + "不可用" + (legalHolidayStatus==='false' ? "，法定节假日不可用" : "")
 }
 function replyComment(item) {
   applyPopupPl.value = true;
@@ -337,6 +392,7 @@ async function doApplyPopup() {
           title: "支付成功",
           icon: "success",
         });
+
         let resSuc = await http.orderPaySuccess({ id:id });
         if (resSuc.code !== "200") {
           uni.showToast({
@@ -345,6 +401,7 @@ async function doApplyPopup() {
           });
         } else {
           // 跳转订单详情页面 目前还没写
+          getDetail();
           applyPopup.value = false;
           // 跳转订单详情页面 目前还没写
           uni.navigateTo({
@@ -387,8 +444,10 @@ function indetail(item) {
     url: "/pages/explore/packageDetail",
     })
 }
-// getDetail
 function getDetail() {
+  uni.showLoading({
+    title: "加载中",
+  });
   const location = uni.getStorageSync("location");
   http
     .headerFindByld({
@@ -398,6 +457,10 @@ function getDetail() {
     })
     .then((res) => {
       info.value = res.data;
+    })
+    .finally(() => {
+       uni.hideLoading();
+      uni.stopPullDownRefresh();
     });
 }
 function getJsonData(datas) {
@@ -446,6 +509,10 @@ function collect() {
 onReachBottom(() => {
   console.log("下拉加载");
 });
+onPullDownRefresh(() => {
+  console.log("上拉刷新");
+  getDetail()
+})
 // 评价
 function dopjPopup() {
   if (ratevalue.value === 0) {
@@ -516,7 +583,7 @@ page {
         .swiper_slider {
           width: 100%;
           height: 100%;
-          img {
+          image {
             width: 100%;
             height: 100%;
           }
@@ -534,7 +601,7 @@ page {
     }
     .shop-info-content {
       width: 100%;
-      height: 72rpx;
+      min-height: 72rpx;
       box-sizing: border-box;
       border-bottom: 1rpx solid #ffffff25;
       display: flex;
@@ -549,6 +616,7 @@ page {
         display: flex;
         align-items: center;
         width: 100%;
+        // 
         image {
           width: 32rpx;
           height: 32rpx;
@@ -559,6 +627,15 @@ page {
           color: #ffb13d;
           font-size: 24rpx;
         }
+      }
+      .left_title{
+        //超出换行
+        word-wrap: break-word;
+        word-break: break-all;
+        white-space: pre-wrap;
+        overflow: normal;
+        
+        font-size: 24rpx;
       }
       .right {
         flex-shrink: 0;

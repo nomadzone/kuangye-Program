@@ -31,7 +31,7 @@
 						<view class="location">
 							<image src="/static/images/map-pin-line.png" mode=""></image>
 							<text>
-								{{ item.address }}
+								{{filterAndRemoveBefore(item?.address)  }}
 							</text>
 						</view>
 						<view class="date">
@@ -98,7 +98,7 @@
 							<view class="location">
 								<image src="/static/images/map-pin-line.png" mode=""></image>
 								<text>
-									{{ item.address }}
+									{{ filterAndRemoveBefore(item?.address) }}
 								</text>
 							</view>
 							<view class="date">
@@ -140,7 +140,7 @@
 						<view class="location">
 							<image src="/static/images/map-pin-line.png" mode=""></image>
 							<text>
-								{{ details.address }}
+								{{ filterAndRemoveBefore(details?.address) }}
 							</text>
 						</view>
 						<view class="date">
@@ -154,7 +154,7 @@
 					<view class="apply-popup-line">
 						<view>
 							<text>退款</text>
-							<text class="big">¥{{ details.price }}</text>
+							<text class="big">¥{{ getPrices(details.price) }}</text>
 						</view>
 						<view class="gray">
 							活动开始24小时前取消，可全额退款
@@ -217,6 +217,7 @@
 	import ListLoading from '@/components/Loading/ListLoading.vue'
 	import Empty from '@/components/Empty/index.vue';
 	import http from '@/utils/http.js';
+	import Decimal from "decimal.js";
 	import {
 		getDayHours,
 		getDayMin,
@@ -274,6 +275,28 @@
 			this.getList()
 		},
 		methods: {
+			getPrices(prices) {
+			if (prices) {
+				if (this.details.refundStatus == 1) {
+					return Decimal(prices).mul(0.5).toNumber()
+				} else {
+					return prices
+				}
+			}
+		},
+			filterAndRemoveBefore(address) {
+				if (!address) return "";
+				let result = address;
+				const patterns = ['省', '市', '县', '自治区' ];
+				for (const pattern of patterns) {
+					const regex = new RegExp(`.*?${pattern}`);
+					const match = result.match(regex);
+					if (match) {
+					result = result.slice(match.index + match[0].length).trim();
+					}
+				}
+				return result;
+				},
 			doCancel(item) {
 				this.popupTypeApply = '1'
 				this.applyPopup = true;

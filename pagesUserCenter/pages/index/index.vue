@@ -162,6 +162,7 @@
               v-for="(item, index) in list"
               :key="index"
               class="activity_item_two"
+              @click="doItem(item, index)"
             >
               <view class="item_two_content">
                 <view class="content_top">
@@ -182,7 +183,7 @@
                         <view class="left_name">{{ item?.initiatorName }}</view>
                       </view>
                       <view class="right_info">
-                        <image src="@/static/images/Vector.png"></image>
+                        <image src="@/static/images/Vector.svg"></image>
                         <view class="right_num">{{ item.orderNumber }}</view>
                       </view>
                     </view>
@@ -198,22 +199,24 @@
               @imageClick="imageClick"
               @loaded="loaded"
               :listStyle="{ background: 'transparent', marginBottom: '0' }"
+              
             >
               <view
                 class="item"
                 v-for="(item, index) in list"
                 :key="index"
                 slot="slot{{ index }}"
+                @click="doItem(item, index)"
               >
                 <view class="activity-item_thr">
                   <view class="thr_content">
                     <view class="content_thr_title">
-                      <text>找搭子</text> {{ item?.describe }}</view
-                    >
+                      {{ item?.describe }}</view>
+                      <view class="zdz_content">找搭子</view>
                     <view class="content_thr_desc">
-                      <view class="dance">{{ item?.distanceMeters }}</view>
+                      <view class="dance">{{ item?.distanceMeters }}km</view>
                       <view class="line"></view>
-                      <view class="position">{{ item?.address }}</view>
+                      <view class="position">{{ filterAndRemoveBefore(item?.address) }}</view>
                     </view>
                     <view class="thr_header">
                       <image
@@ -232,6 +235,7 @@
         </z-paging>
       </view>
     </view>
+    <PartnerModal ref="partnerModalRef" @getDetail="handleDeleteReload" />
   </view>
 </template>
 
@@ -247,13 +251,15 @@ import constant from "@/utils/constant";
 import { formatDateText } from "@/utils/index.js";
 import emptyImg from "@/static/images/empty-my.png";
 import { onShow } from "@dcloudio/uni-app";
-
+import PartnerModal from "@/components/PartnerModal/index.vue";
+import {filterAndRemoveBefore} from "@/utils/index.js";
 let pageViewType = ref(1); // 页面视角 1 自己 0 他人
 const paging = ref(null);
 const waterfallsFlowRef = ref(null);
 
 const userInfo = ref(uni.getStorageSync("userInfo"));
 const list = ref([]);
+const partnerModalRef = ref()
 let tabs = ref([
   {
     label: "一起野",
@@ -343,7 +349,13 @@ function doItem(item, index) {
       url: `/pagesFreshNews/pages/detail/index?id=${item.id}`,
     });
   } else if (item.type === 3) {
+    partnerModalRef.value.show(item);
   }
+}
+function handleDeleteReload() {
+  partnerModalRef.value.handleClose();
+  list.value = [];
+  paging.value.reload();
 }
 /**
  * @description 列表查询
@@ -353,7 +365,7 @@ async function queryList(current, size) {
   try {
     let location = uni.getStorageSync("location");
     const api =
-      activeTabKey.value === 0 ? http.selectUserInfoActivity : http.useActivity;
+    activeTab.value ==0? activeTabKey.value === 0? http.selectUserInfoActivity : http.useActivity : http.selectUserInfoActivity
     const res = await api({
       longitude: location.longitude,
       latitude: location.latitude,
@@ -770,33 +782,40 @@ useZPaging(paging, queryList);
       border-radius: 24rpx;
       overflow: hidden;
       padding: 16rpx;
+      position: relative;
       box-sizing: border-box;
       .content_thr_title {
         color: #121212;
-        font-size: 28rpx;
-        font-weight: 600;
-        width: 100%;
-        line-height: 40rpx;
-        // 两行溢出省略号
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        margin-bottom: 16rpx;
-        text {
-          display: inline-block;
-          width: 84rpx;
-          height: 36rpx;
-          background: #00c4ef;
-          border-radius: 86rpx;
-          text-align: center;
-          line-height: 36rpx;
-          color: #ffffff;
-          font-size: 24rpx;
-          font-weight: 500;
-          margin-right: 16rpx;
-        }
+      font-size: 28rpx;
+      font-weight: 600;
+      width: 100%;
+      line-height: 40rpx;
+      // 两行溢出省略号
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      word-break: break-all;
+      // 开局空四个字
+      text-indent: 4em;
+      }
+      .zdz_content {
+        display: block;
+        width: 84rpx;
+        height: 36rpx;
+        background: #00c4ef;
+        border-radius: 86rpx;
+        text-align: center;
+        line-height: 36rpx;
+        color: #ffffff;
+        font-size: 24rpx;
+        font-weight: 500;
+        margin-right: 16rpx;
+        position: absolute;
+        left: 18rpx;
+        top: 17rpx;
       }
       .content_thr_desc {
         width: 100%;
@@ -903,6 +922,7 @@ useZPaging(paging, queryList);
                 width: 32rpx;
                 height: 32rpx;
                 margin-right: 8rpx;
+                border-radius: 50%;
               }
               .left_name {
                 overflow: hidden;

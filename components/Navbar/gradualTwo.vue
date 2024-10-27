@@ -35,10 +35,13 @@
 <style scoped lang="scss">
 	.gradual {
 		position: fixed;
-		top: 176rpx;
+		top: 0rpx;
 		left: 0;
 		width: 100vw;
 		height: 20rpx;
-		background-image: linear-gradient(to bottom, #90f2ff10, rgba(130, 240, 255, 0.01));
+		// 线性渐变
+		background: rgba(255, 255, 255, 0.5) !important;
+		// 模糊blur 效果
+		backdrop-filter: blur(10px);
 	}
 </style>

@@ -20,6 +20,12 @@
 			}
 		},
 		{
+			"path": "pages/agreement/index",
+			"style": {
+				"navigationBarTitleText": "用户协议"
+			}
+		},
+		{
 			"path": "pages/explore/explore",
 			"style": {
 				"navigationBarTitleText": "探索",
@@ -31,14 +37,17 @@
 			"path": "pages/explore/detail",
 			"style": {
 				"navigationBarTitleText": "探索",
-				"navigationStyle": "custom"
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
+				"backgroundColor": "#efefef",
+				"backgroundTextStyle": "dark"
 			},
 			"needLogin": true
 		},
 		{
 			"path": "pages/explore/packageDetail",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "套餐详情",
 			   "navigationBarBackgroundColor": "#F7F5FF"
 			},
 			"needLogin": true
@@ -135,7 +144,6 @@
 			}, {
 				"path": "pages/order/index",
 				"style": {
-					"enablePullDownRefresh": true,
 					"onReachBottomDistance": 50,
 					"navigationBarTitleText": "我的订单",
 					"navigationBarBackgroundColor": "#fff",
