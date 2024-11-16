@@ -130,7 +130,8 @@
 				"path": "pages/paperclip/index",
 				"style": {
 					"enablePullDownRefresh": true,
-					"navigationStyle": "custom"
+					"navigationBarTitleText": "票夹",
+					"navigationBarBackgroundColor": "#fefbda"
 				},
 				"needLogin": true
 			}, {

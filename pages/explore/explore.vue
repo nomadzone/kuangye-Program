@@ -15,7 +15,7 @@
 					indicator-active-color="#007aff"
 				>
 					<swiper-item v-for="(item, index) in images" :key="index">
-						<image :src="item.images" mode="aspectFill" class="swiper-image"></image>
+						<image :src="item.images" mode="aspectFill" class="swiper-image" @click="toDetail(item)"></image>
 					</swiper-item>
 				</swiper>
 			</view>
@@ -78,6 +78,8 @@
       @close="publicSuccessClose"
       @view="doView"
     ></Popup>
+
+    <PartnerModal ref="partnerModalRef" />
 	</view>
 </template>
 
@@ -100,9 +102,11 @@ const total = ref(0);
 let pageSize = ref(1);
 const searchText = ref("");
 const images = ref([]);
+const partnerModalRef = ref()
 const userInfo = ref(uni.getStorageSync("userInfo"));
 onMounted(() => {
   statusBarHeight.value = uni.getStorageSync("navBarHeight") * 2 + 30 + "rpx";
+  console.log("statusBarHeight", statusBarHeight.value);
   http
     .homeNoticeList({
       type: 1,
@@ -171,6 +175,37 @@ function getheaderList() {
       uni.hideLoading();
     });
 }
+function toDetail(item) {
+  if (item.urlType == 3) {
+      uni.navigateTo({
+        url: `/pagesToggle/pages/details/details?id=${item.url}`,
+        success: (res) => {
+          res.eventChannel.emit("getDetails", item);
+        },
+      });
+    } else if (item.urlType == 4) {
+      uni.navigateTo({
+        url: `/pagesFreshNews/pages/detail/index?id=${item.url}`,
+      });
+    } else if (item.urlType == 2) {
+      uni.navigateTo({ 
+			url: `/pages/explore/detail?id=${item.url}`
+			})
+    } else if (item.urlType == 5) {
+      const locations = uni.getStorageSync("location");
+      http.selectStructure({ id: item.url, latitude: locations.latitude,
+        longitude: locations.longitude}).then(res => {
+          if (res.code === "200") {
+            partnerModalRef.value.show(res.data);
+          }
+        })
+    } else if (item.urlType == 6) {
+      uni.navigateToMiniProgram({
+        appId: item.url
+      })
+    }
+}
+
 function getSearchheaderList() {
   pageSize.value = 1;
   shopList.value = [];

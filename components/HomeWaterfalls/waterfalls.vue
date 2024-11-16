@@ -322,7 +322,7 @@ const props = defineProps({
 
 onShow(() => {
   if(paging.value) {
-    list.value = [];
+    // list.value = [];
     // paging.value.reload();
   }
 })
@@ -345,40 +345,43 @@ async function queryList(current, size) {
     authType: uni.getStorageSync('token')? 0 : 1
   };
   if (props.sortIndex == 0 && uni.getStorageSync('token') && current== 1 ) {
-    let resImg = await http.homeNoticeList({
-      type: 1,
-    });
-    let newResImg = resImg.data.map((item) => {
+        let resImg = await http.homeNoticeList({
+          type: 1,
+        });
+        if (resImg.code === "200" && resImg.data?.length > 0){
+          let newResImg = resImg.data?.map((item) => {
+          return {
+            ...item,
+            type: 4
+              }
+            }
+          )
+        images.value = JSON.parse(JSON.stringify(newResImg|| []));
+      }
+      
+    }
+    const res = await http.homeActivity(params);
+    if (props.sortIndex == 0 && uni.getStorageSync('token') && current== 1 && images.value && images.value?.length > 0) {
+      let unShift = {};
+      unShift = {
+        type: 4,
+        image: images.value[0].images,
+        images: images.value.map((item) => item.images).join(","),
+        title: "最新活动",
+      };
+      res.data.list.unshift(unShift)
+    }
+    res.data.list = res.data.list.map((item) => {
       return {
         ...item,
-        type: 4
-          }
-        }
-      )
-    images.value = JSON.parse(JSON.stringify(newResImg|| []));
-  }
-  const res = await http.homeActivity(params);
-  if (props.sortIndex == 0 && uni.getStorageSync('token') && current== 1) {
-    let unShift = {};
-    unShift = {
-      type: 4,
-      image: images.value[0].images,
-      images: images.value.map((item) => item.images).join(","),
-      title: "最新活动",
-    };
-    res.data.list.unshift(unShift)
-  }
-  res.data.list = res.data.list.map((item) => {
-    return {
-      ...item,
-      image: item.images?.split(",")[0],
-      title: item?.title,
-      desc: item?.initiatorName,
-      initiatorUrl: item?.initiatorUrl,
-      status: item?.status,
-      hide: 1,
-    };
-  });
+        image: item.images?.split(",")[0],
+        title: item?.title,
+        desc: item?.initiatorName,
+        initiatorUrl: item?.initiatorUrl,
+        status: item?.status,
+        hide: 1,
+      };
+    });
   paging.value.complete(res.data.list || []);
   paging.value?.endRefresh();
   }
@@ -405,7 +408,7 @@ function getSjHeader() {
 function toRold() {
   list.value = []
   setTimeout(() => {
-    paging.value.reload();
+    paging.value?.reload();
   }, 100);
 }
 async function doLike(item, index) {
@@ -522,9 +525,37 @@ function doItem(item, index) {
   } else if (item.type === 3) {
     emit('partnerModalShow', item)
   } else if (item.type === 4) {
-    uni.navigateTo({
-      url: "/pages/webview/index?url=" + item.url,
-    });
+    console.log(item)
+    // 2 商家 3 一起野 4 新鲜事 5 找搭子 6 小程序
+    if (item.urlType == 3) {
+      uni.navigateTo({
+        url: `/pagesToggle/pages/details/details?id=${item.url}`,
+        success: (res) => {
+          res.eventChannel.emit("getDetails", item);
+        },
+      });
+    } else if (item.urlType == 4) {
+      uni.navigateTo({
+        url: `/pagesFreshNews/pages/detail/index?id=${item.url}`,
+      });
+    } else if (item.urlType == 2) {
+      uni.navigateTo({ 
+			url: `/pages/explore/detail?id=${item.url}`
+			})
+    } else if (item.urlType == 5) {
+      const locations = uni.getStorageSync("location");
+      http.selectStructure({ id: item.url, latitude: locations.latitude,
+        longitude: locations.longitude}).then(res => {
+          if (res.code === "200") {
+            emit('partnerModalShow', res.data)
+          }
+        })
+    } else if (item.urlType == 6) {
+      uni.navigateToMiniProgram({
+        appId: item.url
+      })
+    }
+
   }
 }
 

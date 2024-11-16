@@ -251,13 +251,13 @@
 							活动开始后，不支持退款，特殊原因协商
 						</view>
 					</view>
-					<view class="protocols" v-if="popupTypeApply == '0'">
+					<!-- <view class="protocols" v-if="popupTypeApply == '0'">
 						<image @click="isReady = !isReady"
 							:src="`/static/images/checkbox${isReady ? '-active' : ''}.png`" mode=""></image>
 						<view>
 							我已知晓并同意 <text class="blue">《活动安全声明同意书》</text>
 						</view>
-					</view>
+					</view> -->
 					<view class="submit" style="padding-left: 0; padding-right: 0">
 						<button class="fill" :class="[activityVo?.status !== 101 ? 'disabled' : '']"
 							hover-class="button-hover" @click="doPay">
@@ -610,13 +610,6 @@ export default {
 					icon: 'none'
 				})
 				return
-			}
-			if (!_this.isReady) {
-				uni.showToast({
-					title: '请先阅读并同意活动安全声明',
-					icon: 'none'
-				});
-				return;
 			}
 
 			// 添加票夹

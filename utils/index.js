@@ -245,7 +245,7 @@ export const formatDateText = (dateString) => {
    * @param type
    */
   export function getUserLocation(isGoSetting = true, type = 'gcj02') {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       uni.getLocation({
         type,
         success: (res) => {
@@ -264,6 +264,7 @@ export const formatDateText = (dateString) => {
               })
             }
           })
+		  reject(err)
         }
       })
     })

@@ -3,12 +3,10 @@
 		 <view class="cark">
 			 <!-- <button class="btn" hover-class="hover" @click="doFunds">提现</button> -->
 			 <image class="bg" src="../../static/images/walet-bg.png" mode=""></image>
-			<view>
-				<view>余额</view>
-				<view class="price">
+				<view class="cark_view">累计收入（含服务费）</view>
+				<view class="cark_view price">
 					<text>¥{{balance}}</text>
 				</view>
-			</view>
 			<!-- <view class="tip" @click="doBank" v-if="!isBank">
 				<image src="../../static/images/wellat.png" mode=""></image>
 				<text>未绑卡，无法提现</text>
@@ -28,23 +26,24 @@
 			<view class="list-title">
 				<view>收支明细</view>
 				<view>
-					<text>收入 ¥{{ addTotalAmount }}</text>
-					<text>支出 ¥{{ jianTotalAmount }}</text>
+					<text>待结算 ¥{{ addTotalAmount}}</text>
+					<text>已结算 ¥{{ jianTotalAmount }}</text>
 				</view>
 			</view>
 			<view class="items" v-if="list.length != 0">
 				<view class="item" v-for="(item, index) in list" :key="index">
 					<view>
 						<view class="title">
-							<text class="type">{{ item.title }}</text>
+							<text class="type">{{ item.title }}-{{ item.nickname }}</text>
 							<!-- <text class="status">未到账</text> -->
-							<!-- <text class="status" :class="[item.status == 0 ? 'ok' : '']">{{ item.status == 0 ? '到账' : '未到账' }}</text> -->
+							<text class="status" :class="[item.settlement == 1 ? 'ok' : '']">{{ item.settlement == 1 ? '已结算' : '待结算' }}</text>
 						</view>
 						<view class="desc">{{ item.createTime }}</view>
 					</view>
 					<view>
-						<view class="price" :class="[item.status == 0 ? 'plus' : '']">{{ item.payType == 1 ? '+' : '-' }}¥{{ item.amout || 0 }}</view>
-						<!-- <view class="desc">余额 ¥{{ item.balance || 0 }}</view> -->
+						<view class="price plus" v-if="!item.refundTotal" >+¥{{ item.total?.toFixed(2) || 0 }}</view>
+						<view class="price plus" v-else>+¥{{ item.refundTotal?.toFixed(2) || 0 }}</view>
+						<view class="desc">服务费 ¥{{ item.serviceAmount?.toFixed(2) || 0 }}</view>
 					</view>
 				</view>
 			</view>
@@ -76,6 +75,7 @@
 	import Toast from '@/components/Toast/Toast.vue';
 	import Empty from '@/components/Empty/index.vue'
 	import http from '@/utils/http.js';
+	import Decimal from 'decimal.js'
 	export default {
 		components: {
 				Toast,
@@ -95,36 +95,76 @@
 		onLoad() {
 			this.getWalletList()
 		},
-		onReachBottom() {
+		onPullDownRefresh() {
 			this.getWalletList()
 		},
 		methods: {
 			async getWalletList() {
+				uni.showLoading({
+					title: '加载中'
+				});
 				let res = await http.balanceInfo({})
 				uni.stopPullDownRefresh();
+				uni.hideLoading();
 				if (res.code != '200') {
 					unisuni.showToast({
 						title: res.msg,
 						duration: 2000
 					});
 				}
-				let addTotalAmount = 0;
-				let jianTotalAmount = 0;
-				this.balance = res.data?.balance?.toFixed(2) * 1 || 0
-				if (res.data?.userConsumptionList) {
-					res.data?.userConsumptionList.map(item=> {
-						if (item.payType == 1) {
-							addTotalAmount += item.amout
-						} else if (item.payType == 2) {
-							jianTotalAmount += item.amout
+				this.list = res.data
+				// 数组中的某个值 相加
+				this.balance = 0
+				this.addTotalAmount = 0
+				this.jianTotalAmount = 0
+				res.data.forEach(element => {
+					if (element.refundTotal) {
+						// this.balance += element.refundTotal
+						this.balance = Decimal(this.balance).add(Decimal(element.refundTotal)).toNumber()
+
+					} else {
+						// this.balance += element.total
+						this.balance = Decimal(this.balance).add(Decimal(element.total)).toNumber()
+					}
+					if (element.settlement == 1){
+						if (element.refundTotal) {
+						// this.jianTotalAmount += element.refundTotal
+						this.jianTotalAmount = Decimal(this.jianTotalAmount).add(Decimal(element.refundTotal)).toNumber()
+						} else {
+						// this.jianTotalAmount += element.total
+						this.jianTotalAmount = Decimal(this.jianTotalAmount).add(Decimal(element.total)).toNumber()
 						}
-						item.createTime = item.createTime.split(':')[0] + ':' + item.createTime.split(':')[1]
-					})
-				}
-				this.list = res.data?.userConsumptionList
-				this.addTotalAmount = addTotalAmount.toFixed(2) * 1
-				this.jianTotalAmount = jianTotalAmount.toFixed(2) * 1 
-				console.log(res, 'list')
+					} else {
+						if (element.refundTotal) {
+						// this.addTotalAmount += element.refundTotal
+						this.addTotalAmount = Decimal(this.addTotalAmount).add(Decimal(element.refundTotal)).toNumber()
+						} else {
+						// this.addTotalAmount += element.total
+						this.addTotalAmount = Decimal(this.addTotalAmount).add(Decimal(element.total)).toNumber()
+						}
+					}
+				});
+				this.balance = this.balance.toFixed(2) 
+				this.addTotalAmount = this.addTotalAmount.toFixed(2)
+				this.jianTotalAmount = this.jianTotalAmount.toFixed(2)
+
+				// let addTotalAmount = 0;
+				// let jianTotalAmount = 0;
+				// this.balance = res.data?.balance?.toFixed(2) * 1 || 0
+				// if (res.data?.userConsumptionList) {
+				// 	res.data?.userConsumptionList.map(item=> {
+				// 		if (item.payType == 1) {
+				// 			addTotalAmount += item.amout
+				// 		} else if (item.payType == 2) {
+				// 			jianTotalAmount += item.amout
+				// 		}
+				// 		item.createTime = item.createTime.split(':')[0] + ':' + item.createTime.split(':')[1]
+				// 	})
+				// }
+				// this.list = res.data?.userConsumptionList
+				// this.addTotalAmount = addTotalAmount.toFixed(2) * 1
+				// this.jianTotalAmount = jianTotalAmount.toFixed(2) * 1 
+				// console.log(res, 'list')
 			},
 			doBank() {
 				uni.navigateTo({
@@ -157,14 +197,18 @@
 			padding: 32rpx 40rpx 40rpx 40rpx;
 			width: 100%;
 			box-sizing: border-box;
-			height: 376rpx;
+			height: 226rpx;
 			border-radius: 32rpx;
 			color: #646464;
 			font-size: 28rpx;
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;
+			align-items: center;
 			position: relative;
+			.cark_view{
+				width: 100%;
+			}
 			.bg {
 				position: absolute;
 				top: 0;
@@ -278,6 +322,11 @@
 							color: #222;
 							line-height: 45rpx;
 							margin-right: 8rpx;
+							max-width: 300rpx;
+							overflow: hidden;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+						
 						}
 						.status {
 							padding: 4rpx 16rpx;
@@ -294,6 +343,9 @@
 					}
 					.price {
 						font-weight: 700;
+						align-items: center;
+						display: flex;
+						justify-content: center;
 						&.plus {
 							color: #0BCA94;
 						}

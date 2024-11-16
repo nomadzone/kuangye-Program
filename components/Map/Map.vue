@@ -74,6 +74,7 @@ console.log(getCurrentInstance())
     })
     const markers = ref([])
     const mapList = ref([])
+    const address = ref('')
     onMounted(() => {
       nextTick(() => {
         // console.log('22222222222222222222222,', location)
@@ -82,6 +83,11 @@ console.log(getCurrentInstance())
     })
     onShow(() => {
       nextTick(() => {
+        const token = uni.getStorageSync("token")
+        if (!token) {
+          resetLocation()
+          return
+        }
         const location = uni.getStorageSync('location')
         if(!location ) {
           resetLocation()
@@ -95,8 +101,16 @@ console.log(getCurrentInstance())
           longitude: location.longitude,
           latitude: location.latitude,
         });
-          getDataList()
+        if(!address.value) {
+          address.value = location.address
           emit("getLocation")
+        }
+        if (address.value !== location.address) {
+          emit("getLocation")
+          address.value = location.address
+        }
+        getDataList()
+
         }
       })
     })
@@ -126,7 +140,7 @@ console.log(getCurrentInstance())
       }
     }
     function resetLocation(type) {
-      if (!uni.getStorageSync("token")) return
+      // if (!uni.getStorageSync("token")) return
       const mapCtx = uni.createMapContext("map", ctx);
 
       getUserLocation(true, 'gcj02').then((res) => {
@@ -143,6 +157,10 @@ console.log(getCurrentInstance())
         if (!type) {
           emit("getLocation")
         }
+        getDataList()
+      })
+      .catch((err) => {
+        console.log(err)
         getDataList()
       })
     }
@@ -166,6 +184,7 @@ console.log(getCurrentInstance())
     }
 
     async function getDataList(options) {
+      console.log('222222222')
       try {
         markers.value = []
         let location = uni.getStorageSync('location')
@@ -221,8 +240,8 @@ console.log(getCurrentInstance())
           let item = uniqueData[i]
           markerData.push({
             infoId: item.id,
-            latitude: Number(item.latitude),
-            longitude: Number(item.longitude),
+            latitude: item.latitude,
+            longitude: item.longitude,
             width: 1,
             height: 1,
             iconPath: uniqueData[i].type === 1 ? '../../static/images/smass_yell_jt.png' :uniqueData[i].type === 2 ? '../../static/images/smass_green_jt.png' : '../../static/images/smass_blue_jt.png',

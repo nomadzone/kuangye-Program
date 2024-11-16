@@ -1,9 +1,8 @@
 <template>
 	<view class="page details">
-		<Navbar :title="'票夹'" background="#fefbda"></Navbar>
+		<!-- <Navbar :title="'票夹'" background="#fefbda"></Navbar> -->
 		<Gradual :background="'linear-gradient(to bottom, #fefbda, #f5f5f5)'" :height="'100vh'" :zIndex="'-1'" />
-		<view style="z-index: 6;margin-top: 64rpx;">
-			<view :style="{ height: StatusBar + 'px' }"></view>
+		<view style="z-index: 6;">
 			<view style="height: 32rpx"></view>
 			<image class="popu-icon" src="/static/images/details-icon.png" mode=""></image>
 			<view class="items" v-for="(item, index) in firstList" :key="index">
@@ -181,13 +180,13 @@
 							活动开始后，不支持退款，特殊原因协商
 						</view>
 					</view>
-					<view class="protocols" v-if="popupTypeApply == '0'">
+					<!-- <view class="protocols" v-if="popupTypeApply == '0'">
 						<image @click="isReady = !isReady"
 							:src="`/static/images/checkbox${isReady ? '-active' : ''}.png`" mode=""></image>
 						<view>
 							我已知晓并同意 <text class="blue">《活动安全声明同意书》</text>
 						</view>
-					</view>
+					</view> -->
 					<view class="submit" style="padding-left: 0; padding-right: 0">
 						<button class="fill" hover-class="button-hover" @click="doPay(null, 3)">
 							<text>¥{{ details.price }}/人</text>
@@ -432,12 +431,8 @@
 			},
 			async doPay(item, type) {
 				const _this = this;
-				if (type == 3 && !this.isReady) {
-					uni.showToast({
-						title: '请点击同意',
-						icon: 'none'
-					})
-					return;
+				if (type == 3) {
+					console.log(type)
 				} else if (type === 1 && this.countdowns[item.id] === this.countdownsDis) {
 					uni.showToast({
 						title: '已超时，无法支付',
@@ -527,7 +522,7 @@
 
 		.popu-icon {
 			position: absolute;
-			top: 90rpx;
+			top: 10rpx;
 			left: 80rpx;
 			width: 192rpx;
 			height: 192rpx;
