@@ -31,6 +31,7 @@
             v-model="activity.describe"
             placeholder="描述一下活动亮点、活动内容、推荐人群、贴心tips等，叫大家一起野吧"
             placeholder-class="placeholder-style"
+            maxlength="800"
           />
         </view>
         <view class="input-tag">
@@ -363,8 +364,9 @@ export default {
     } else {
       const userInfo = uni.getStorageSync("userInfo");
       this.activity.number = userInfo?.phoneNumber;
-      this.activity.contactphoto = [userInfo?.contactphoto]
-      console.log(this.activity.contactphoto)
+      if (userInfo?.contactphoto) {
+        this.activity.contactphoto = [userInfo?.contactphoto]
+      }
     }
   },
   created() {
@@ -673,7 +675,7 @@ export default {
           tip = '最多人数不能小于1'
         }  else if (params.minpeople > params.maxpeople) {
           tip = '最少人数不能大于最多人数'
-        } else if (this.activity.contactphoto &&this.activity.contactphoto.length == 0) {
+        } else if (!this.activity?.contactphoto || this.activity.contactphoto?.length == 0) {
           tip = '请上传联系人照片'
         }
         // else if (!params.number) {
@@ -694,7 +696,7 @@ export default {
         if (res.code !== '200') {
           uni.showToast({
             title: res.msg,
-            icon: "error",
+            icon: "none",
           });
           return;
         }
@@ -750,16 +752,22 @@ export default {
       line-height: 45rpx;
       color: #222;
       margin-bottom: 16rpx;
+      border-top: 1rpx solid #f0f0f0;
+      padding-top: 24rpx;
+      margin-top: 24rpx;
     }
     .input-desc {
       font-family: PingFang SC;
       font-size: 28rpx;
       font-weight: 400;
       color: #222;
+      border-top: 1rpx solid #f0f0f0;
+      padding-top: 24rpx;
       textarea {
         line-height: 1.4;
         height: 240rpx;
         margin-bottom: 16rpx;
+        width: 100%;
       }
     }
     image {
@@ -770,6 +778,7 @@ export default {
       display: flex;
       margin-right: 16rpx;
       flex-wrap: wrap;
+      margin-bottom: 16rpx;
       > view {
         display: flex;
         align-items: center;
@@ -804,6 +813,7 @@ export default {
         align-items: center;
         justify-content: space-between;
         font-size: 28rpx;
+        border-top: 1rpx solid #f0f0f0;
         > view {
           display: flex;
           align-items: center;
@@ -846,6 +856,9 @@ export default {
       .echat {
         display: flex;
         gap: 8rpx;
+        border-top: 1rpx solid #f0f0f0;
+        padding-top: 24rpx;
+        align-items: center;
         image {
           width: 32rpx;
           height: 32rpx;

@@ -30,7 +30,7 @@
     </view>
     <view class="info-box">
       <view class="title-text">{{ detailInfo.title }}</view>
-      <view class="content-text">{{ detailInfo.describe }}</view>
+      <view class="content-text" v-for="(item, index) in detailInfo.describe" :key="index">{{ item }}</view>
       <view class="time-text">{{ detailInfo.createTime }}</view>
     </view>
     <view class="bj_del" v-if="detailInfo.userStatus === 1">
@@ -147,7 +147,9 @@ const getDetailInfo = () => {
   freshNewsService.detailInfo(params).then((res) => {
     console.log("res====", res);
     if (res && res.code === "200") {
+      res.data.describe = res.data.describe.split("\n")
       detailInfo.value = res.data;
+      console.log("detailInfo.11=", detailInfo.value.describe);
       swiperImgs.value = res.data.images.split(",") || [];
     }
   });
@@ -351,7 +353,7 @@ const handleChangeLike = () => {
       font-size: 28rpx;
       font-weight: 400;
       text-align: left;
-      margin-bottom: 32rpx;
+      margin-bottom: 13rpx;
     }
 
     .time-text {

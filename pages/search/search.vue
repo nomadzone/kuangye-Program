@@ -120,7 +120,9 @@
                 ></image>
               </view>
               <view class="content_btm">
-                <view class="content_btm_title">{{ item?.title }}</view>
+                <view class="content_btm_title">
+                  <view class="content_btm_titles">{{ item?.title }}</view>  
+                </view>
                 <view class="content_btm_desc">
                   <view class="content_btm_desc_left">
                     <view class="left_image">
@@ -271,7 +273,7 @@ function queryList() {
       longitude: loacation.longitude
     })
     .then((res) => {
-      res.data.list = res.data.list.map((item) => {
+      res.data.list = res.data?.list.map((item) => {
         return {
           ...item,
           image: item.images?.split(",")[0],
@@ -281,9 +283,9 @@ function queryList() {
           status: item?.status,
           hide: true,
         };
-      });
-      paging.value.complete(res.data.list || []);
-      list.value = res.data.list || [];
+      }) || [];
+      paging.value.complete(res.data?.list || []);
+      list.value = res.data?.list || [];
     })
     .catch((err) => {
       paging.value.complete([]);
@@ -381,7 +383,6 @@ function queryList() {
 
 .activity-item-content {
   width: 100%;
-  min-height: 526rpx;
   background: #fff7e2;
   border-radius: 24rpx;
   overflow: hidden;
@@ -566,8 +567,7 @@ function queryList() {
 
   .thr_content {
     width: 100%;
-    min-height: 180rpx;
-    background: #e1fff8;
+    background: #00c4ef40;
     border-radius: 24rpx;
     overflow: hidden;
     padding: 16rpx;
@@ -605,7 +605,7 @@ function queryList() {
 
     .content_thr_desc {
       width: 100%;
-      height: 50rpx;
+      height: 40rpx;
       display: flex;
       align-items: center;
       overflow: hidden;
@@ -672,7 +672,6 @@ function queryList() {
 
   .item_two_content {
     width: calc(100% - 8rpx);
-    min-height: 470rpx;
     background: #e1fff8;
     border-radius: 24rpx;
     overflow: hidden;
@@ -699,8 +698,16 @@ function queryList() {
         color: #121212;
         font-weight: 600;
         overflow: hidden;
+        display: flex;
+        align-items: center;
         text-overflow: ellipsis;
         white-space: nowrap;
+        .content_btm_titles{
+          overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
+        }
       }
 
       .content_btm_desc {
@@ -723,6 +730,7 @@ function queryList() {
               width: 32rpx;
               height: 32rpx;
               margin-right: 8rpx;
+              border-radius: 50%;
             }
 
             .left_name {

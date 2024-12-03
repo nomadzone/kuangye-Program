@@ -65,6 +65,8 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	padding: 0 12rpx;
+	box-sizing: border-box;
 	.sort-search {
 		width: 72rpx;
 		display: flex;

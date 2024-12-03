@@ -16,7 +16,8 @@
         <custom-waterfalls-flow
           ref="waterfallsFlowRef"
           :value="list"
-          :listStyle="{ background: 'transparent', marginBottom: '0' }"
+          columnSpace="0"
+          :listStyle="{ background: 'transparent', marginBottom: '0', marginLeft: '0' }"
         >
           <view
             class="item"
@@ -46,7 +47,7 @@
                 </swiper-item>
               </swiper>
             </view> 
-            <view v-if="item.type === 1" class="activity-item-content" style="width: 100%;">
+            <view v-if="item.type === 1" class="activity-item-content activity-item-active">
               <view class="content_top">
                 <view class="top_img">
                   <image
@@ -105,7 +106,7 @@
               </view>
             </view>
 
-            <view v-if="item.type === 2" class="activity_item_two" style="width: 100%;">
+            <view v-if="item.type === 2" class="activity_item_two activity-item-active" >
               <view class="item_two_content">
                 <view class="content_top">
                   <image
@@ -114,7 +115,10 @@
                   ></image>
                 </view>
                 <view class="content_btm">
-                  <view class="content_btm_title">{{ item?.title }}</view>
+                  <view class="content_btm_title">
+                    
+                    <view class="content_btm_titles">{{ item?.title }}</view>
+                  </view>
                   <view class="content_btm_desc">
                     <view class="content_btm_desc_left">
                       <view class="left_image">
@@ -145,7 +149,7 @@
                 </view>
               </view>
             </view>
-            <view v-if="item.type === 3" class="activity-item_thr" style="width: 100%;">
+            <view v-if="item.type === 3" class="activity-item_thr">
               <view class="thr_content">
                 <view class="content_thr_title">
                   {{ item?.describe }}
@@ -237,7 +241,7 @@
               ></image>
             </view>
             <view class="content_btm">
-              <view class="content_btm_title">{{ item?.title }}</view>
+              <view class="content_btm_title"><view class="content_btm_titles">{{ item?.title }}</view></view>
               <view class="content_btm_desc">
                 <view class="content_btm_desc_left">
                   <view class="left_image">
@@ -263,6 +267,7 @@
         <custom-waterfalls-flow
           ref="waterfallsFlowRef"
           :value="list"
+          columnSpace="0"
           :listStyle="{ background: 'transparent', marginBottom: '0' }"
         >
           <view
@@ -567,7 +572,7 @@ defineExpose({
 .waterfalls_content {
   width: 100%;
   height: 100%;
-  padding: 8rpx;
+  padding: 20rpx 0 0 16rpx;
   box-sizing: border-box;
   padding-bottom: 200rpx;
 }
@@ -575,14 +580,12 @@ defineExpose({
 .activity-item {
   width: 50%;
   display: inline-flex;
-  margin-bottom: 16rpx;
 }
 
 .activity-item-content {
-  width: calc(100% - 8rpx);
-  min-height: 526rpx;
+  width: calc(100% - 16rpx);
   background: #fff7e2;
-  border-radius: 24rpx;
+  border-radius: 16rpx;
   overflow: hidden;
   margin-bottom: 16rpx;
 
@@ -643,7 +646,7 @@ defineExpose({
 
     .btm_createby {
       width: 100%;
-      height: 50rpx;
+      height: 40rpx;
       display: flex;
       align-items: center;
 
@@ -697,7 +700,7 @@ defineExpose({
 
     .all_img {
       width: 100%;
-      height: 50rpx;
+      height: 40rpx;
       display: flex;
       align-items: center;
 
@@ -767,15 +770,14 @@ defineExpose({
 
 // 找搭子
 .activity-item_thr {
-  width: 100%;
+  width: calc(100% - 16rpx);
   display: inline-flex;
   margin-bottom: 16rpx;
 
   .thr_content {
     width: 100%;
-    min-height: 180rpx;
     background: #00c4ef40;
-    border-radius: 24rpx;
+    border-radius: 16rpx;
     overflow: hidden;
     padding: 16rpx;
     box-sizing: border-box;
@@ -817,7 +819,7 @@ defineExpose({
       }
     .content_thr_desc {
       width: 100%;
-      height: 50rpx;
+      height: 40rpx;
       display: flex;
       align-items: center;
       overflow: hidden;
@@ -883,10 +885,9 @@ defineExpose({
   margin-bottom: 16rpx;
 
   .item_two_content {
-    width: calc(100% - 8rpx);
-    min-height: 470rpx;
+    width: calc(100% - 16rpx);
     background: #e1fff8;
-    border-radius: 24rpx;
+    border-radius: 16rpx;
     overflow: hidden;
 
     .content_top {
@@ -911,8 +912,16 @@ defineExpose({
         color: #121212;
         font-weight: 600;
         overflow: hidden;
+        display: flex;
+        align-items: center;
         text-overflow: ellipsis;
         white-space: nowrap;
+        .content_btm_titles{
+          overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
+        }
       }
 
       .content_btm_desc {
@@ -975,7 +984,7 @@ defineExpose({
 .swiper {
   width: 100%;
   height: 526rpx;
-  border-radius: 24rpx;
+  border-radius: 16rpx;
   overflow: hidden;
 }
 
@@ -983,13 +992,14 @@ defineExpose({
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 24rpx;
+  border-radius: 16rpx;
 }
 
 .active {
   position: relative;
-  width: calc(100% - 8rpx);
+  width: calc(100% - 16rpx);
   margin-bottom: 16rpx;
+
 }
 
 .tags {
@@ -1003,6 +1013,10 @@ defineExpose({
   font-size: 24rpx;
   color: #fff;
 }
+.activity-item-active{
+  width: calc(100% - 16rpx) !important;
+}
+</style>
+<style>
 
 </style>
-<style></style>

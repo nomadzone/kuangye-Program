@@ -82,7 +82,8 @@ export default {
       clientY: 0,
       showVh: "50vh",
       topVh: "",
-	  halfVh: "",
+	    halfVh: "",
+      halTop: false,
       pageheight: "",
 	  screenHeight: '',
       userInfo: {
@@ -162,8 +163,8 @@ export default {
     touchM(e) {
       this.touchType = true;
       this.pointHeight = e.changedTouches[0].clientY - this.clientY;
-	  this.pageheight =  this.screenHeight - e.changedTouches[0].clientY
-	  this.topVh =  e.changedTouches[0].clientY
+      this.pageheight =  this.screenHeight - e.changedTouches[0].clientY
+      this.topVh =  e.changedTouches[0].clientY
 
       // this.showVh =
       // if(this.showPointList) {
@@ -181,14 +182,40 @@ export default {
     touchE(e) {
       this.touchType = true;
       this.clientY = 0;
+      console.log(this.halTop)
       if(this.topVh < this.showVh) {
 			this.topVh = this.showVh
+      setTimeout(() => {
+        this.halTop = true
+      }, 500)
 			this.pageheight = this.screenHeight - this.showVh
 	  }
 	  if (this.topVh >this.halfVh) {
 			this.topVh = this.halfVh
+      setTimeout(() => {
+        this.halTop = false
+      }, 500)
 			this.pageheight = this.halfVh
 	  }
+    if(!this.halTop) {
+      if(this.halfVh/5 < this.halfVh - this.topVh) {
+      this.topVh = this.showVh
+			this.pageheight = this.screenHeight - this.showVh
+      setTimeout(() => {
+        this.halTop = true
+      }, 500)
+    } 
+    }
+    if(this.halTop) {
+        if(this.halfVh/5 < this.halfVh - this.topVh) {
+        this.topVh = this.halfVh
+        setTimeout(() => {
+        this.halTop = false
+      }, 500)
+        this.pageheight = this.halfVh
+      }
+    }
+
     },
     async getLocation() {
       let location = uni.getStorageSync("location");
@@ -301,7 +328,7 @@ export default {
 .water-view {
   height: 100%;
   overflow-y: auto;
-  padding: 0 16rpx 0 16rpx;
+  padding: 0;
   background-color: #fff;
   position: relative;
 }
@@ -312,7 +339,7 @@ export default {
   z-index: 9;
   height: 100%;
   background-color: #fff;
-  padding: 40rpx 16rpx 0 16rpx;
+  padding: 20rpx 0 0;
 
   .touch_view {
     width: 100%;
@@ -321,6 +348,7 @@ export default {
     position: absolute;
     left: 0;
     top: 0;
+    z-index: 10;
   }
 }
 </style>

@@ -12,7 +12,9 @@
 				</view>
 			</view> -->
 				<input class="title-input" v-model="detailInfo.title" name="title" placeholder="标题" />
-				<textarea class="content-textarea" v-model="detailInfo.describe" name="describe"  placeholder="介绍一下你周边好玩的事情吧" />
+				<view class="content-textarea">
+					<textarea class="textarea" v-model="detailInfo.describe" name="describe" maxlength="800"  placeholder="介绍一下你周边好玩的事情吧" />
+				</view>
 
 				<view class="location-row"  @tap="handleSelectLocation()">
 					<image class="map-icon" src="../../static/images/release-location-icon.svg"></image>
@@ -208,11 +210,22 @@
 
 			.content-textarea {
 				//styleName: 正文-普通;
-				font-size: 28rpx;
-				font-weight: 400;
-				text-align: left;
-				min-height: 260rpx;
-
+				position: relative;
+				.textarea{
+					font-size: 28rpx;
+					font-weight: 400;
+					text-align: left;
+					min-height: 260rpx;
+					padding-bottom: 40rpx;
+				}
+				.text-count{
+					position: absolute;
+					bottom: 20rpx;
+					right: 20rpx;
+					font-size: 28rpx;
+					font-weight: 400;
+					color: #F6F5F5;
+				}
 			}
 
 			.location-row {

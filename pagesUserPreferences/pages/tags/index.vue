@@ -9,7 +9,7 @@
     <image
       class="top-bk-img"
       src="../../static/images/tags-page-bk.svg"
-      mode="widthFix"
+      mode="aspectFill"
     ></image>
 
     <view class="nav_box_loading" v-if="showloading">
@@ -24,7 +24,7 @@
       <view class="title-text">偏好设置</view>
       <view class="tips">我们将根据你的偏好为推荐个性内容</view>
     </view>
-    <view class="tag-group-item" v-if="!showloading">
+    <scroll-view class="tag-group-item" v-if="!showloading" scroll-y>
       <view
         class="tags-group-box"
         v-for="(item, index) in characterOptions"
@@ -50,7 +50,7 @@
           </view>
         </view>
       </view>
-    </view>
+    </scroll-view>
     <view class="submit-actions" v-if="!showloading">
       <button class="submit-btn" form-type="submit" @click="handleSubmit">
         选好了
@@ -116,6 +116,9 @@ function handleSubmit() {
     userId: uni.getStorageSync("userInfo")?.id,
     userPreferences: choosenCharacter.value,
   };
+  uni.showLoading({
+    title: "正在保存",
+    });
   http.preferenceAdd(data).then((res) => {
     if (res.code === "200") {
       uni.showToast({
@@ -135,7 +138,10 @@ function handleSubmit() {
 		}, 3000)
 	  }, 1000)
     }
-  });
+  })
+  .finally(() => {
+    uni.hideLoading();
+    });
 }
 </script>
 
@@ -151,6 +157,7 @@ function handleSubmit() {
     left: 0;
     top: 0;
     width: 100vw;
+    height: 100vh;
   }
   .title-box {
     margin: 48rpx;
@@ -180,13 +187,15 @@ function handleSubmit() {
   }
   .tag-group-item {
     width: 100%;
-    padding: 0 48rpx 300rpx;
     box-sizing: border-box;
     z-index: 2;
+    height: calc(100vh - 560rpx);
+    overflow: scroll;
   }
   .tags-group-box {
     position: relative;
-
+    padding: 0 48rpx;
+    box-sizing: border-box;
     z-index: 999;
     .tags-group-item {
       display: flex;

@@ -7,13 +7,9 @@
         mode=""
         @click="remove(index)"
       ></image>
-      <image :src="item" mode=""  @click="doUpload(index)"></image>
+      <image :src="item" mode="" @click="doUpload(index)"></image>
     </view>
-    <view
-      class="upload"
-      @click="doUpload(-1)"
-      v-if="fileList.length < limit"
-    >
+    <view class="upload" @click="doUpload(-1)" v-if="fileList.length < limit">
       <view>
         <image src="../../static/images/upload-add.png" mode=""></image>
         <text>{{ title }}</text>
@@ -42,12 +38,14 @@ export default {
   data() {
     return {
       fileList: [],
+      fileIndex: 0,
+      tempFilePaths: [],
     };
   },
   watch: {
     images(newVal) {
-      this.fileList = newVal
-    }
+      this.fileList = newVal;
+    },
   },
   methods: {
     remove(index) {
@@ -59,6 +57,7 @@ export default {
           if (res.confirm) {
             // 用户点击确定
             _this.fileList.splice(index, 1);
+            _this.$emit("upload", _this.fileList);
           } else if (res.cancel) {
             // 用户点击取消，可以选择不做任何处理
             console.log("用户取消删除");
@@ -75,21 +74,89 @@ export default {
         success: function (res) {
           const tempFilePaths = res.tempFilePaths; // 获取所有选择的图片路径
           // 遍历所有文件路径，并逐个上传
-          tempFilePaths.forEach((filePath) => {
-            _this.uploadFile(filePath, index); // 调用上传方法，逐个上传
+          // 如果是多个 就倒序
+          if(tempFilePaths.length > 1) {
+            tempFilePaths.reverse();
+          }
+
+          _this.fileIndex = 0;
+          _this.tempFilePaths = tempFilePaths;
+          // tempFilePaths.forEach((filePath) => {
+          //   _this.uploadFile(filePath, index); // 调用上传方法，逐个上传
+          // });
+          uni.showLoading({
+            title: "上传中...",
+            mask: true,
           });
+          _this.uploadFiles(tempFilePaths, _this.fileIndex);
         },
         fail: function (err) {
           console.error("选择图片失败", err);
         },
       });
     },
+    // 递归上传
+    uploadFiles(filePaths, index) {
+      const _this = this;
+     
+      uni.uploadFile({
+        url: `${prefixUrl}/oss/upload`, // 你的服务器接口
+        filePath: filePaths[_this.fileIndex], // 选择的文件路径
+        name: "file", // 文件对应的 key
+        header: {
+          "Content-Type": "multipart/form-data",
+          token: uni.getStorageSync("token"),
+        },
+        formData: {
+          // 如果有其他的表单数据，也可以在这里传递
+        },
+        success(uploadRes) {
+          uni.hideLoading();
+          let res = JSON.parse(uploadRes.data);
+          if (res.code !== "200") {
+            uni.showToast({
+              title: res.msg,
+              icon: "none",
+            });
+            return;
+          }
+          console.log("上传成功：", index);
+          if (index === -1) {
+            _this.$emit("upload", [..._this.fileList, res.data]);
+            _this.fileList.push(res.data);
+            _this.fileIndex++;
+            if(_this.fileIndex < _this.tempFilePaths.length) {
+              _this.uploadFiles(_this.tempFilePaths, _this.fileIndex);
+            } else {
+              _this.fileIndex = 0;
+              _this.tempFilePaths = [];
+              uni.hideLoading();
+            }
+          } else {
+            _this.$emit("upload", _this.fileList);
+            _this.fileList[_this.fileList?.length] = res.data;
+            _this.fileIndex++;
+            if(_this.fileIndex < _this.tempFilePaths.length) {
+              _this.uploadFiles(_this.tempFilePaths, _this.fileIndex);
+            } else {
+              _this.fileIndex = 0;
+              _this.tempFilePaths = [];
+              uni.hideLoading();
+            }
+          }
+        },
+        fail(error) {
+          uni.hideLoading();
+          console.error("上传失败：", error);
+        },
+      });
+    },
     uploadFile(filePath, index) {
       const _this = this;
       uni.showLoading({
-        title: '上传中...',
-        mask: true
-      })
+        title: "上传中...",
+        mask: true,
+      });
       uni.uploadFile({
         url: `${prefixUrl}/oss/upload`, // 你的服务器接口
         filePath: filePath, // 选择的文件路径
@@ -102,25 +169,25 @@ export default {
           // 如果有其他的表单数据，也可以在这里传递
         },
         success(uploadRes) {
-          uni.hideLoading()
-			let res = JSON.parse(uploadRes.data);
-			if (res.code !== '200') {
-				uni.showToast({
-					title: res.msg,
-					icon: 'none'
-				})
-				return;
-			}
-			if (index === -1) {
-				_this.$emit('upload', [..._this.fileList, res.data]);
-				_this.fileList.push(res.data);
-			} else {
-				_this.$emit('upload', _this.fileList);
-				_this.fileList[index] = res.data;
-			}
+          uni.hideLoading();
+          let res = JSON.parse(uploadRes.data);
+          if (res.code !== "200") {
+            uni.showToast({
+              title: res.msg,
+              icon: "none",
+            });
+            return;
+          }
+          if (index === -1) {
+            _this.$emit("upload", [..._this.fileList, res.data]);
+            _this.fileList.push(res.data);
+          } else {
+            _this.$emit("upload", _this.fileList);
+            _this.fileList[index] = res.data;
+          }
         },
         fail(error) {
-          uni.hideLoading()
+          uni.hideLoading();
           console.error("上传失败：", error);
         },
       });

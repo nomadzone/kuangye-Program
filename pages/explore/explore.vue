@@ -109,7 +109,7 @@ onMounted(() => {
   console.log("statusBarHeight", statusBarHeight.value);
   http
     .homeNoticeList({
-      type: 1,
+      type: 3,
     })
     .then((res) => {
       images.value = res.data || [];

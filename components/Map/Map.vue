@@ -334,6 +334,7 @@ defineExpose({
     top: 4rpx;
     width: 52rpx;
     height: 50rpx;
+    flex-shrink: 0;
   }
   .sanjiao_down{
     position: absolute;
@@ -402,6 +403,7 @@ defineExpose({
     top: -9rpx;
     width: 60rpx;
     height: 60rpx;
+    flex-shrink: 0;
   }
   .sanjiao_down{
     position: absolute;
@@ -457,6 +459,7 @@ defineExpose({
         height: 32rpx;
         border-radius: 50%;
         margin-right: 16rpx;
+        flex-shrink: 0;
       }
     }
     .rightImg{
@@ -465,6 +468,7 @@ defineExpose({
     top: -20rpx;
     width: 60rpx;
     height: 60rpx;
+    flex-shrink: 0;
   }
   .sanjiao_down{
     position: absolute;

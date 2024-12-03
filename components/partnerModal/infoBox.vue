@@ -99,7 +99,7 @@
             </view>
             <view class="sex-box"></view>
           </view>
-          <view class="tag-info">
+          <scroll-view scroll-x class="tag-info">
             <view
               class="sex_box_list"
               v-for="(item, index) in info?.userPreferenceList"
@@ -107,7 +107,7 @@
             >
               {{ item.name }}
             </view>
-          </view>
+          </scroll-view>
         </view>
       </view>
     </view>
@@ -388,6 +388,7 @@ export default {
         justify-content: space-between;
         align-items: flex-start;
         height: 100%;
+        width: calc(100% - 130rpx);
         .name-sex {
           display: flex;
           flex-direction: row;
@@ -416,11 +417,10 @@ export default {
           }
         }
         .tag-info {
-          height: 40rpx;
           width: 100%;
-          display: flex;
-          min-width: 300rpx;
           overflow: hidden;
+          white-space: nowrap;
+          
           .sex_box_list {
             margin-right: 10rpx;
             font-size: 24rpx;
@@ -429,6 +429,7 @@ export default {
             padding: 7rpx 18rpx;
             line-height: 30rpx;
             border-radius: 30rpx;
+            display: inline-block;
           }
         }
       }

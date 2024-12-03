@@ -104,8 +104,8 @@
 
 			<view class="module descption">
 				<view class="title">活动描述</view>
-				<view>
-					{{ activityVo?.describe }}
+				<view class="descption-content" v-for="(item, index) in activityVo?.describe" :key="index">
+					{{ item }}
 				</view>
 			</view>
 
@@ -496,7 +496,9 @@ export default {
 				if (res?.data?.activityVo?.startdate) {
 					res.data.activityVo.startdate = formatDateText(res?.data?.activityVo?.startdate)
 				}
+				res.data.activityVo.describe = res?.data?.activityVo?.describe?.split('\n')
 				this.activityVo = res?.data.activityVo
+				console.log('this.activityVo', this.activityVo)
 				this.userActivityUpVo = res?.data.userActivityUpVo
 				this.info = res.data
 				console.log('this.info', this.info)
@@ -990,6 +992,9 @@ export default {
 				line-height: 45rpx;
 				color: #222222;
 				padding-bottom: 32rpx;
+			}
+			.descption-content{
+				margin-bottom: 12rpx;
 			}
 		}
 	}

@@ -143,7 +143,8 @@ export default {
 }
 
 .left{
-  width: 40px;
+  width: 80rpx;
+  flex-shrink: 0;
   height: 100%;
   display: flex;
   align-items: center;

@@ -154,7 +154,7 @@ const pickerStart = ref(null);
 const popupheader = ref(null);
 const formcontactphoto = ref([])
 const activeList = [["男", "女"]];
-
+ 
 const userInfo = ref({});
 const form = ref({});
 const formAct = ref(null);
@@ -177,7 +177,7 @@ function showBirDay() {
 	pickerStart.value.open();
 }
 const doUploadContractImgs = (imgs) => {
-	form.value.contactphoto = imgs[0]
+	form.value.contactphoto = imgs[0]? imgs[0].url : '';
 }
 function activeConfirm(e) {
 	console.log(e.indexs[0]);
@@ -322,6 +322,7 @@ function handleSure() {
 	// 		return;
 	// 	}
 	// }
+
 	http.updateUserInfo(form.value).then((res) => {
 		if (res.code === "200") {
 			uni.showToast({

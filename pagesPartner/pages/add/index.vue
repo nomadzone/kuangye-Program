@@ -142,7 +142,9 @@ onLoad((options) => {
   } else {
     const userInfo = uni.getStorageSync("userInfo");
     form.value.number = userInfo?.phoneNumber;
-    contractImgs.value = [userInfo?.contactphoto]
+    if (userInfo?.contactphoto) {
+      contractImgs.value = [userInfo?.contactphoto]
+    }
   }
 });
 // 选择面基地点
@@ -178,8 +180,8 @@ const handleSelectLocation = () => {
 let meetingTime = ref(null);
 let meetingTimeRef = ref();
 
-let timeList = ref([getDatesAndWeeks(false), getDayHours(), getDayMin()]);
-
+let timeList = ref([getDatesAndWeeks(true), getDayHours(), getDayMin()]);
+console.log("timeList====", timeList.value);
 // 选择面基时间
 const handleOpenMeetingTime = () => {
   console.log("meetingTimeRef====", meetingTimeRef);
@@ -224,7 +226,7 @@ const handleSubmit = (e) => {
       title: "请选择面基地点",
       icon: "none",
     });
-    return;
+    return; 
   }
   if (!meetingTime.value) {
     uni.showToast({
@@ -355,7 +357,8 @@ const handleSubmit = (e) => {
       align-items: center;
       margin-bottom: 32rpx;
       margin-top: 32rpx;
-
+      border-top: 1rpx solid #f0f0f0;
+      padding-top: 24rpx;
       .map-icon {
         width: 32rpx;
         height: 32rpx;

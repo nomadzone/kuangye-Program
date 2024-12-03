@@ -164,7 +164,9 @@
                   ></image>
                 </view>
                 <view class="content_btm">
-                  <view class="content_btm_title">{{ item?.title }}</view>
+                  <view class="content_btm_title">
+                    <view class="content_btm_titles">{{ item?.title }}</view>
+                    </view>
                   <view class="content_btm_desc">
                     <view class="content_btm_desc_left">
                       <view class="left_image">
@@ -190,6 +192,7 @@
               :value="list"
               @imageClick="imageClick"
               @loaded="loaded"
+              columnSpace="0"
               :listStyle="{ background: 'transparent', marginBottom: '0' }"
             >
               <view
@@ -560,7 +563,7 @@ useZPaging(paging, queryList);
 }
 .activity-list-box {
   width: 100%;
-  padding: 16rpx;
+  padding: 16rpx 0;
   height: calc(100vh - 780rpx);
   box-sizing: border-box;
 
@@ -569,8 +572,7 @@ useZPaging(paging, queryList);
     display: inline-flex;
     margin-bottom: 16rpx;
     .activity-item-content {
-      width: calc(100% - 8rpx);
-      min-height: 526rpx;
+      width: calc(100% - 16rpx);
       background: #fff7e2;
       border-radius: 24rpx;
       overflow: hidden;
@@ -619,7 +621,7 @@ useZPaging(paging, queryList);
         }
         .btm_createby {
           width: 100%;
-          height: 50rpx;
+          height: 40rpx;
           display: flex;
           align-items: center;
           image {
@@ -666,7 +668,7 @@ useZPaging(paging, queryList);
         }
         .all_img {
           width: 100%;
-          height: 50rpx;
+          height: 40rpx;
           display: flex;
           align-items: center;
           .all_img_item {
@@ -730,8 +732,7 @@ useZPaging(paging, queryList);
     display: inline-flex;
     margin-bottom: 16rpx;
     .thr_content {
-      width: 100%;
-      min-height: 180rpx;
+      width: calc(100% - 16rpx);
       background: #e1fff8;
       border-radius: 24rpx;
       overflow: hidden;
@@ -826,8 +827,7 @@ useZPaging(paging, queryList);
     display: inline-flex;
     margin-bottom: 16rpx;
     .item_two_content {
-      width: calc(100% - 8rpx);
-      min-height: 470rpx;
+      width: calc(100% - 16rpx);
       background: #e1fff8;
       border-radius: 24rpx;
       overflow: hidden;
@@ -844,15 +844,23 @@ useZPaging(paging, queryList);
         padding: 0 16rpx;
         box-sizing: border-box;
         .content_btm_title {
-          width: 100%;
-          height: 56rpx;
-          font-size: 28rpx;
-          color: #121212;
-          font-weight: 600;
+        width: 100%;
+        height: 56rpx;
+        font-size: 28rpx;
+        color: #121212;
+        font-weight: 600;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        .content_btm_titles{
           overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 100%;
         }
+      }
         .content_btm_desc {
           width: 100%;
           height: 50rpx;
@@ -870,6 +878,7 @@ useZPaging(paging, queryList);
                 width: 32rpx;
                 height: 32rpx;
                 margin-right: 8rpx;
+                border-radius: 50%;
               }
               .left_name {
                 overflow: hidden;
