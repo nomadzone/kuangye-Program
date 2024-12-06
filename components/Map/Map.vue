@@ -37,7 +37,9 @@
             </cover-view>
             <cover-view v-if="item.type == 1" class="customCalloutbox_three">
               <cover-view  class="customCallout">
-              <cover-image class="headImg" :src="item.image" mode="aspectFill" /> 
+                <cover-view class="headImg_box">
+                  <cover-image class="box_img" :src="item.image" mode="aspectFill" /> 
+                </cover-view>
               <cover-view class="title"> {{ item.title }}</cover-view>
             </cover-view>
               <cover-view class="sanjiao_down"></cover-view>
@@ -88,10 +90,13 @@ console.log(getCurrentInstance())
           resetLocation()
           return
         }
+        console.log(1)
         const location = uni.getStorageSync('location')
         if(!location ) {
+          console.log(2)
           resetLocation()
         } else if (location.address === '西安钟楼') {
+          console.log(3)
           resetLocation()
         } else {
           const mapCtx = uni.createMapContext("map", ctx);
@@ -101,12 +106,14 @@ console.log(getCurrentInstance())
           longitude: location.longitude,
           latitude: location.latitude,
         });
-        if(!address.value) {
+        if(!address.value && location.address) {
           address.value = location.address
+
           emit("getLocation")
         }
         if (address.value !== location.address) {
           emit("getLocation")
+
           address.value = location.address
         }
         getDataList()
@@ -184,7 +191,6 @@ console.log(getCurrentInstance())
     }
 
     async function getDataList(options) {
-      console.log('222222222')
       try {
         markers.value = []
         let location = uni.getStorageSync('location')
@@ -311,12 +317,16 @@ defineExpose({
       box-sizing: border-box;
       font-size: 24rpx;
       font-weight: 600;
-      .headImg{
+      .headImg_box{
         width: 100%;
         height: 125rpx;
         border-radius: 16rpx 16rpx 0 0;
         flex-shrink: 0;
         object-fit: cover;
+        overflow: hidden;
+        .box_img{
+          width: 100%;
+        }
       }
       .title{
         overflow: hidden;

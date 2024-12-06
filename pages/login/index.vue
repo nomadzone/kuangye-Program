@@ -37,18 +37,10 @@
         open-type="getPhoneNumber"
         @getphonenumber="handleWxLogin"
       >
-        <image
-          class="wechat-icon"
-          src="../../static/images/login-wechat.svg"
-        ></image>
-        <text>微信一键登录</text>
+        <text>手机号快捷登录</text>
       </button>
       <button class="login-btn" v-else @tap="handleClickLogin">
-        <image
-          class="wechat-icon"
-          src="../../static/images/login-wechat.svg"
-        ></image>
-        <text>微信一键登录</text>
+        <text>手机号快捷登录</text>
       </button>
       <view class="login-access">
         <view class="agree-checkbox-box" @tap="handleChangeAgreeStatus()">

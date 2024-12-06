@@ -30,10 +30,6 @@
       <view class="sex-box"></view>
     </view>
     <view class="wx-info" @click="copyDetail">
-      <image
-        class="wx-icon"
-        src="/static/images/partner-modal-wx-icon.svg"
-      ></image>
       <view class="wx-name">{{ info?.phoneNumber || "-" }}</view>
       <image
         class="wx-copy"
