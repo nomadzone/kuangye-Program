@@ -19,7 +19,8 @@
         <view class="shop-info-content">
           <view class="left left_title">
             <image src="/static/images/clock.png"></image> 营业时间:
-            {{getWecks(info)}}{{ getJsonData(info?.businessHoursStart) || "-" }}
+<!--            {{getWecks(info)}}-->
+            {{ getJsonData(info?.businessHoursStart) || "-" }}
           </view>
           <view class="right">
             <view class="right_btn">{{
@@ -54,7 +55,7 @@
           <view class="tao_list" v-if="showTc ? true : index < 2"  @click.stop="indetail(item)">
             <view class="tao_list_left">
               <image :src="item?.comboPhotoUrl?.split(',')[0]" mode="aspectFill"></image>
-  
+
             </view>
             <view class="tao_list_right">
               <view class="right_title"
@@ -100,7 +101,7 @@
       <PlList :commentList="info?.shopCommentList" @replyComment="replyComment"></plList>
 
       </view>
-      
+
     </view>
 
     <view class="btm_btn">
@@ -225,6 +226,9 @@ onShow(() => {
   }
 });
 function getWecks(info) {
+  if (!info) {
+    return "";
+  }
   const days = [{
     name: '一',
     available: info.monday === '1'
@@ -252,16 +256,19 @@ function getWecks(info) {
     name: '日',
     available: info.sunday === '1'
   }]
-  const unavailableDays = days.filter((day) => {
-    return !day.available;
+  let data = JSON.parse(JSON.stringify(days))
+  const unavailableDays = data.filter((day) => {
+    return day.available;
   });
   if (unavailableDays.length !== 0) {
+
     const navailable = days.filter((day) => {
       return day.available;
     })
     const yeName = navailable.map((day) => {
       return day.name;
     }).join("、");
+    console.log("yeName", yeName)
     return "周" + yeName + "营业";
   }
 
@@ -456,6 +463,10 @@ function getDetail() {
       	dimension: location.latitude,
     })
     .then((res) => {
+      // 替换富文本中的 <img 为 <img width="100"
+
+      res.data.shopRemark = res.data?.shopRemark.replace(/<img/g, '<img width="100%"');
+
       info.value = res.data;
     })
     .finally(() => {
@@ -616,7 +627,7 @@ page {
         display: flex;
         align-items: center;
         width: 100%;
-        // 
+        //
         image {
           width: 32rpx;
           height: 32rpx;
@@ -634,7 +645,7 @@ page {
         word-break: break-all;
         white-space: pre-wrap;
         overflow: normal;
-        
+
         font-size: 24rpx;
       }
       .right {

@@ -10,10 +10,10 @@
 				<image :src="`../../static/images/sort-eye${sortIndex==2?'-seleted':''}.png`" mode=""></image>
 				<text>新鲜事</text>
 			</view>
-			<view class="flex" :class="[sortIndex==3?'active':'']" @click="doSort(3)">
-				<image :src="`../../static/images/sort-go${sortIndex==3?'-seleted':''}.png`" mode=""></image>
-				<text>找搭子</text>
-			</view>
+<!--			<view class="flex" :class="[sortIndex==3?'active':'']" @click="doSort(3)">-->
+<!--				<image :src="`../../static/images/sort-go${sortIndex==3?'-seleted':''}.png`" mode=""></image>-->
+<!--				<text>找搭子</text>-->
+<!--			</view>-->
 		</view>
 		<view class="sort-search" @click="doSearch">
 			<image src="../../static/images/search.png" mode=""></image>

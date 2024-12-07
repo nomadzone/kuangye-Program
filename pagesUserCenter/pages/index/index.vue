@@ -208,7 +208,7 @@
               @loaded="loaded"
               columnSpace="0"
               :listStyle="{ background: 'transparent', marginBottom: '0' }"
-              
+
             >
               <view
                 class="item"
@@ -281,13 +281,13 @@ let tabs = ref([
     key: 1,
     defaultIcon: "../../static/icons/tabs/news-normal.svg",
     activeIcon: "../../static/icons/tabs/news-active.svg",
-  },
-  {
-    label: "找搭子",
-    key: 2,
-    defaultIcon: "../../static/icons/tabs/find-friends-normal.svg",
-    activeIcon: "../../static/icons/tabs/find-friends-active.svg",
-  },
+  }
+  // {
+  //   label: "找搭子",
+  //   key: 2,
+  //   defaultIcon: "../../static/icons/tabs/find-friends-normal.svg",
+  //   activeIcon: "../../static/icons/tabs/find-friends-active.svg",
+  // },
 ]);
 let activeTab = ref(0);
 let activeTabKey = ref(0);

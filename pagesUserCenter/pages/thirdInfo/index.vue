@@ -234,7 +234,7 @@
     <Partner ref="partnerModalRef"/>
   </view>
 </template>
-  
+
   <script setup>
 import { ref } from "vue";
 import CustomNavBar from "@/components/CustomNavBar/CustomNavBar.vue";
@@ -270,12 +270,12 @@ let tabs = ref([
     defaultIcon: "../../static/icons/tabs/news-normal.svg",
     activeIcon: "../../static/icons/tabs/news-active.svg",
   },
-  {
-    label: "找搭子",
-    key: 2,
-    defaultIcon: "../../static/icons/tabs/find-friends-normal.svg",
-    activeIcon: "../../static/icons/tabs/find-friends-active.svg",
-  },
+  // {
+  //   label: "找搭子",
+  //   key: 2,
+  //   defaultIcon: "../../static/icons/tabs/find-friends-normal.svg",
+  //   activeIcon: "../../static/icons/tabs/find-friends-active.svg",
+  // },
 ]);
 let activeTab = ref(0);
 let activeTabKey = ref(0);
@@ -292,15 +292,15 @@ onShow(() => {
   }
 });
 function toConcatenates() {
-  const userInfo = uni.getStorageSync("userInfo");
-  if (userInfo?.phoneNumber && userInfo?.contactphoto) {
+  const userInfos = userInfo.value
+  if (userInfos?.phoneNumber && userInfos?.contactphoto) {
     uni.showToast({
       title: "暂无信息",
       icon: "none",
     });
     return
   }
-  partnerModalRef.value.show(userInfo);
+  partnerModalRef.value.show(userInfos);
 }
 
 // 跳转关注
@@ -389,7 +389,7 @@ async function queryList(current, size) {
 }
 useZPaging(paging, queryList);
 </script>
-  
+
   <style lang="scss" scoped>
 .user-center-page {
   height: 100vh;

@@ -28,7 +28,7 @@
             </cover-view>
             <cover-view v-if="item.type == 2" class="customCalloutbox_two">
               <cover-view  class="customCallout">
-              <cover-image class="headImg" :src="item.avatarUrl" mode="aspectFill" /> 
+              <cover-image class="headImg" :src="item.avatarUrl" mode="aspectFill" />
               <cover-view class="title"> {{ item.title }}</cover-view>
             </cover-view>
               <cover-view class="sanjiao_down"></cover-view>
@@ -37,8 +37,8 @@
             </cover-view>
             <cover-view v-if="item.type == 1" class="customCalloutbox_three">
               <cover-view  class="customCallout">
-                <cover-view class="headImg_box">
-                  <cover-image class="box_img" :src="item.image" mode="aspectFill" /> 
+                <cover-view class="headImg_box" :style="{backgroundImage: 'url('+item.image+')'}" >
+<!--                  <cover-image class="box_img" :src="item.image" mode="aspectFill" />-->
                 </cover-view>
               <cover-view class="title"> {{ item.title }}</cover-view>
             </cover-view>
@@ -51,6 +51,7 @@
       </cover-view>
     </map>
 
+    <canvas canvas-id="myCanvas" style="width: 300px; height: 300px;"></canvas>
     <div class="positon" @click="resetLocationClick" v-if="isPositon">
       <image src="/static/images/location_m.png" mode=""></image>
     </div>
@@ -81,6 +82,7 @@ console.log(getCurrentInstance())
       nextTick(() => {
         // console.log('22222222222222222222222,', location)
         // resetLocation('no')
+        cropImage()
       })
     })
     onShow(() => {
@@ -90,13 +92,10 @@ console.log(getCurrentInstance())
           resetLocation()
           return
         }
-        console.log(1)
         const location = uni.getStorageSync('location')
         if(!location ) {
-          console.log(2)
           resetLocation()
         } else if (location.address === '西安钟楼') {
-          console.log(3)
           resetLocation()
         } else {
           const mapCtx = uni.createMapContext("map", ctx);
@@ -121,6 +120,63 @@ console.log(getCurrentInstance())
         }
       })
     })
+
+// 模拟一个图片路径，实际应用中可通过用户选择等方式获取真实图片路径
+const imagePath = 'https://images.kuangyeonline.com/f3f5109a-5263-4f33-bcff-acc24dd1625f.png';
+function cropImage() {
+  const ctx = wx.createCanvasContext('myCanvas');
+  // 使用wx.getImageInfo获取图片信息
+  console.log(ctx)
+  wx.getImageInfo({
+    src: imagePath,
+    success: function (imageInfo) {
+      const originalWidth = imageInfo.width;
+      const originalHeight = imageInfo.height;
+      // 设定的裁剪宽度和高度
+      const cropWidth = 200;
+      const cropHeight = 150;
+      // 计算原始图片的宽高比例以及设定裁剪区域的宽高比例
+      const originalRatio = originalWidth / originalHeight;
+      const cropRatio = cropWidth / cropHeight;
+
+      let startX = 0;
+      let startY = 0;
+      let drawWidth = originalWidth;
+      let drawHeight = originalHeight;
+
+      // 判断图片原始宽高比例与裁剪区域宽高比例的关系，来决定如何选取裁剪区域
+      if (originalRatio > cropRatio) {
+        // 图片比较宽，按宽度来计算裁剪区域
+        drawWidth = originalHeight * cropRatio;
+        startX = (originalWidth - drawWidth) / 2;
+      } else if (originalRatio < cropRatio) {
+        // 图片比较高，按高度来计算裁剪区域
+        drawHeight = originalWidth / cropRatio;
+        startY = (originalHeight - drawHeight) / 2;
+      }
+
+      ctx.width = cropWidth;
+      ctx.height = cropHeight;
+
+      ctx.drawImage(imageInfo.path, startX, startY, drawWidth, drawHeight, 0, 0, cropWidth, cropHeight);
+      ctx.draw(false, function () {
+        wx.canvasToTempFilePath({
+          canvasId: 'myCanvas',
+          success: function (res) {
+            console.log('222', res.tempFilePath)
+          },
+          fail: function (err) {
+            console.error('裁剪图片失败：', err);
+          }
+        });
+      });
+    },
+    fail: function (err) {
+      console.error('获取图片信息失败：', err);
+    }
+  });
+}
+
     function doItem(items, index) {
       if (!uni.getStorageSync("token")) {
 					uni.navigateTo({
@@ -173,7 +229,7 @@ console.log(getCurrentInstance())
     }
     function resetLocationClick() {
       resetLocation()
-        
+
     }
     function onCalloutTap(e) {
       goPath(e)
@@ -197,9 +253,9 @@ console.log(getCurrentInstance())
         let res = await http.homeActivityMap({
           longitude:  options?.longitude || position.value.longitude || location.longitude,
           latitude: options?.latitude || position.value.latitude || location.longitude,
-        });	
+        });
         let data = res.data
-        // 
+        //
         const uniqueData = [];
         const seenCoords = new Set();
 
@@ -218,7 +274,6 @@ console.log(getCurrentInstance())
             }
           }
         });
-        console.log(uniqueData,' 222222222')
         let markerData = [];
         this.mapList = res.data;
         let color = {
@@ -324,8 +379,14 @@ defineExpose({
         flex-shrink: 0;
         object-fit: cover;
         overflow: hidden;
+        position: relative;
+        background-size: cover;
+        background-position: center;
         .box_img{
           width: 100%;
+          position: absolute;
+          left: 0;
+          top: 0;
         }
       }
       .title{
@@ -365,7 +426,7 @@ defineExpose({
     height: 0;
     border-left: 8rpx solid transparent;
     border-right: 8rpx solid transparent;
-    border-bottom: 14rpx solid #fff7e2; 
+    border-bottom: 14rpx solid #fff7e2;
     z-index: 3;
     transform: rotate(180deg);
     }

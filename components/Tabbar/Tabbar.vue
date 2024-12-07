@@ -19,11 +19,11 @@
 				<image src="../../static/images/popu-1.png" mode=""></image>
 			</view>
 			<view class="popup-bottom">
-				<view @tap="doPath('/pagesPartner/pages/add/index')">
-					<view class="popup-title">找搭子</view>
-					<view class="popup-desc">找搭子一起玩</view>
-					<image src="../../static/images/popu-2.png" mode=""></image>
-				</view>
+<!--				<view @tap="doPath('/pagesPartner/pages/add/index')">-->
+<!--					<view class="popup-title">找搭子</view>-->
+<!--					<view class="popup-desc">找搭子一起玩</view>-->
+<!--					<image src="../../static/images/popu-2.png" mode=""></image>-->
+<!--				</view>-->
 				<view @tap="doPath('/pagesFreshNews/pages/release/index')">
 					<view class="popup-title">新鲜事</view>
 					<view class="popup-desc">记录附近新鲜事</view>
@@ -37,7 +37,7 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<div class="tab-item center-item" @click="addAction">
 			<div class="add-button">
 				<img src="/static/images/add.png" alt="" />
@@ -76,7 +76,7 @@
 					})
 					return
 				}
-				if (!url) return 
+				if (!url) return
 				if (type === 1) {
 					let userInfo = uni.getStorageSync('userInfo')
 					if (userInfo.status != 1) {
@@ -216,7 +216,7 @@
 		justify-content: center;
 		align-items: center;
 	}
-	
+
 .fade-enter {
   animation: fadeIn .4s;
 }
